@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>E/CYCLE INDIA — E-Waste Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script type="module" src="index.js"></script>
+<style>
+/* ── RESET & BASE ── */
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;}
+html{scroll-behavior:smooth;}
+body{background:#040c05;color:#e8f5e9;font-family:'Outfit',sans-serif;min-height:100vh;cursor:default;overflow-x:hidden;}
+input,textarea,select{cursor:text;user-select:text;-webkit-user-select:text;}
+button,[onclick]{cursor:pointer;user-select:none;-webkit-user-select:none;}
+
+/* ── CSS VARIABLES ── */
+:root{
+  --g:#39d353;--gdim:#1a6e2e;--glow:rgba(57,211,83,0.13);--glow2:rgba(57,211,83,0.22);
+  --dark:#040c05;--dark2:#080f09;--card:#0b1c0d;--card2:#0f2212;
+  --border:rgba(57,211,83,0.16);--border2:rgba(57,211,83,0.38);
+  --text:#c8e6c9;--muted:#5a8a62;--muted2:#7aab82;
+  --danger:#ef5350;--warn:#ffb300;
+  --accent1:#00e5ff;--accent2:#69ff47;
+}
+
+/* ── TYPOGRAPHY HELPERS ── */
+.mono{font-family:'IBM Plex Mono',monospace;}
+.disp{font-family:'Bebas Neue',sans-serif;letter-spacing:.03em;}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--g);letter-spacing:.18em;text-transform:uppercase;border:1px solid var(--border2);padding:4px 14px;border-radius:2px;display:inline-block;margin-bottom:14px;background:rgba(57,211,83,0.05);}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:24px;transition:border-color .3s,box-shadow .3s,transform .2s;}
+.card:hover{border-color:var(--border2);}
+.card-glow:hover{box-shadow:0 0 32px var(--glow),0 4px 20px rgba(0,0,0,.4);transform:translateY(-2px);}
+.card-accent{border-left:3px solid var(--g);}
+
+/* ── BUTTONS ── */
+.btn{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;padding:11px 24px;border-radius:3px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;border:none;display:inline-flex;align-items:center;gap:8px;}
+.btn-g{background:var(--g);color:#040c05;box-shadow:0 0 20px rgba(57,211,83,.25);}.btn-g:hover{opacity:.88;transform:translateY(-2px);box-shadow:0 4px 28px rgba(57,211,83,.4);}
+.btn-o{background:transparent;color:var(--g);border:1px solid var(--g);}.btn-o:hover{background:var(--glow2);box-shadow:0 0 16px var(--glow);}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);}.btn-ghost:hover{border-color:var(--g);color:var(--g);}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid rgba(239,83,80,.4);}.btn-danger:hover{background:rgba(239,83,80,.1);}
+
+/* ── FORMS ── */
+input,select,textarea{background:rgba(255,255,255,.04);border:1px solid var(--border);color:#e8f5e9;font-family:'Outfit',sans-serif;font-size:14px;padding:11px 15px;border-radius:3px;outline:none;width:100%;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(57,211,83,.08);}
+select option{background:#0b1c0d;}
+label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:7px;}
+.fg{margin-bottom:16px;}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
+@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes glow-breathe{0%,100%{box-shadow:0 0 20px rgba(57,211,83,.2)}50%{box-shadow:0 0 40px rgba(57,211,83,.5)}}
+@keyframes scan{from{transform:translateY(-100%)}to{transform:translateY(100vh)}}
+@keyframes number-count{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+
+.anim{animation:fadeUp .45s ease both;}
+.spinner{width:18px;height:18px;border:2px solid var(--border);border-top:2px solid var(--g);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+
+/* ── BACKGROUND LAYERS ── */
+#canvas-bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.hero-grid{position:fixed;inset:0;opacity:.025;background-image:linear-gradient(var(--g) 1px,transparent 1px),linear-gradient(90deg,var(--g) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0;}
+.hero-glow{position:fixed;inset:0;background:radial-gradient(ellipse at 10% 40%,rgba(57,211,83,.08) 0%,transparent 50%),radial-gradient(ellipse at 90% 80%,rgba(0,229,255,.04) 0%,transparent 45%);pointer-events:none;z-index:0;}
+.scan-line{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(57,211,83,.4),transparent);animation:scan 8s linear infinite;pointer-events:none;z-index:1;}
+
+/* ── NAVIGATION ── */
+nav{position:sticky;top:0;z-index:500;background:rgba(4,12,5,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:60px;display:flex;align-items:center;}
+.nav-inner{max-width:1140px;margin:0 auto;padding:0 28px;width:100%;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer;}
+.nav-logo-icon{width:32px;height:32px;border:1.5px solid var(--g);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:16px;animation:glow-breathe 3s ease infinite;}
+.nav-links{display:flex;align-items:center;gap:8px;}
+.nav-link{font-family:'IBM Plex Mono',monospace;font-size:11px;cursor:pointer;color:var(--muted);letter-spacing:.06em;transition:color .2s;padding:6px 10px;border-radius:3px;}
+.nav-link:hover{color:var(--g);background:var(--glow);}
+.nav-link.active{color:var(--g);background:rgba(57,211,83,.08);}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--g);animation:pulse 2s infinite;flex-shrink:0;}
+
+/* ── VIEWS ── */
+.view{display:none;position:relative;z-index:1;}.view.active{display:block;}
+
+/* ── LAYOUT ── */
+.container{max-width:1140px;margin:0 auto;padding:0 28px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.section{padding:80px 0;}
+.section-alt{background:var(--dark2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+
+/* ── STAT CARDS ── */
+.stat-card{text-align:center;padding:22px 14px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(57,211,83,.07),transparent 70%);pointer-events:none;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--g);line-height:1;letter-spacing:-.01em;}
+.stat-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);margin-top:8px;letter-spacing:.14em;}
+
+/* ── STATUS SYSTEM ── */
+.status-Pending{color:#ffb300;background:rgba(255,179,0,.12);}
+.status-Confirmed{color:#29b6f6;background:rgba(41,182,246,.12);}
+.status-Picked{color:#ab47bc;background:rgba(171,71,188,.12);}
+.status-Processing{color:#ff7043;background:rgba(255,112,67,.12);}
+.status-Completed{color:#39d353;background:rgba(57,211,83,.12);}
+.status-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 10px;border-radius:3px;letter-spacing:.04em;}
+
+/* ── PROGRESS BAR ── */
+.prog-steps{display:flex;gap:4px;margin-top:16px;}
+.prog-step{flex:1;}
+.prog-bar{height:3px;border-radius:2px;margin-bottom:5px;transition:background .4s;}
+.prog-lbl{font-family:'IBM Plex Mono',monospace;font-size:7px;white-space:nowrap;letter-spacing:.04em;}
+
+/* ── TABS ── */
+.tab-row{display:flex;gap:0;border:1px solid var(--border);border-radius:3px;overflow:hidden;margin-bottom:26px;}
+.tab-btn{flex:1;padding:11px;background:transparent;border:none;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.tab-btn.active{background:var(--glow2);color:var(--g);}
+
+/* ── FILTER CHIPS ── */
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px;}
+.chip{padding:7px 16px;border:1px solid var(--border);border-radius:3px;background:transparent;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;transition:all .2s;letter-spacing:.06em;}
+.chip.active{border-color:var(--g);background:var(--glow2);color:var(--g);}
+.chip:hover:not(.active){border-color:var(--border2);color:var(--muted2);}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);padding:12px 22px;border-radius:5px;font-family:'IBM Plex Mono',monospace;font-size:12px;z-index:9999;display:none;white-space:nowrap;animation:fadeUp .3s ease;letter-spacing:.04em;}
+
+/* ── CHATBOT ── */
+#chatbot-btn{position:fixed;bottom:28px;right:28px;width:54px;height:54px;border-radius:50%;background:var(--g);border:none;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(57,211,83,.45),0 0 0 0 rgba(57,211,83,.3);z-index:1000;animation:glow-breathe 3s ease infinite;}
+#chatbot-box{position:fixed;bottom:94px;right:28px;width:320px;background:#0b1c0d;border:1px solid var(--g);border-radius:8px;z-index:1000;display:none;flex-direction:column;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.7),0 0 0 1px rgba(57,211,83,.08);animation:fadeUp .3s ease;}
+#chatbot-box.open{display:flex;}
+.chat-header{background:linear-gradient(135deg,#1a6e2e,#39d353);padding:12px 16px;display:flex;gap:10px;align-items:center;}
+#chat-msgs{overflow-y:auto;max-height:280px;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.chat-bubble{max-width:88%;padding:9px 13px;border-radius:12px;font-size:12.5px;line-height:1.55;}
+.chat-bubble.user{align-self:flex-end;background:var(--g);color:#040c05;border-radius:12px 12px 3px 12px;font-weight:500;}
+.chat-bubble.bot{align-self:flex-start;background:rgba(255,255,255,.07);color:var(--text);border-radius:12px 12px 12px 3px;border:1px solid var(--border);}
+
+/* ── CAPACITY BAR ── */
+.cap-track{height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:10px;overflow:hidden;}
+.cap-fill{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+
+/* ── BAR CHART ── */
+.bar-chart{display:flex;gap:6px;align-items:flex-end;height:110px;}
+.bar{flex:1;border-radius:3px 3px 0 0;transition:all .3s;cursor:pointer;}
+.bar:hover{opacity:.8;transform:scaleY(1.04);transform-origin:bottom;}
+
+/* ── LEADERBOARD ── */
+.lb-row{display:flex;align-items:center;gap:16px;padding:18px 22px;}
+.lb-avatar{width:38px;height:38px;border-radius:50%;background:var(--glow);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--g);flex-shrink:0;font-weight:600;}
+
+/* ── ADMIN ── */
+.status-action{padding:5px 11px;border-radius:3px;background:transparent;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;transition:all .2s;letter-spacing:.04em;}
+
+/* ── QUIZ ── */
+.quiz-opt{padding:13px 18px;border:1px solid var(--border);border-radius:5px;cursor:pointer;font-size:14px;transition:all .25s;margin-bottom:9px;line-height:1.4;}
+.quiz-opt:hover{border-color:var(--border2);background:rgba(255,255,255,.03);}
+.quiz-opt.correct{border-color:var(--g);background:rgba(57,211,83,.12);color:var(--g);}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,83,80,.1);color:var(--danger);}
+
+/* ── DEVICE CARDS ── */
+.dev-card{padding:16px 10px;border:1px solid var(--border);border-radius:5px;cursor:pointer;text-align:center;transition:all .2s;}
+.dev-card:hover,.dev-card.active{border-color:var(--g);background:var(--glow2);}
+.dev-card.active .dev-lbl{color:var(--g);}
+.dev-lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-top:5px;letter-spacing:.06em;}
+
+/* ── CONDITION BUTTONS ── */
+.cond-row{display:flex;gap:8px;}
+.cond-btn{flex:1;padding:9px 4px;border:1px solid var(--border);border-radius:3px;background:transparent;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;transition:all .2s;}
+.cond-btn.active{border-color:var(--g);background:var(--glow2);color:var(--g);}
+
+/* ── BADGES ── */
+.badge-card{text-align:center;padding:16px 12px;transition:all .2s;}
+.badge-card.locked{opacity:.28;filter:grayscale(1);}
+.badge-card:not(.locked):hover{transform:scale(1.05);}
+.badge-emoji{font-size:30px;display:block;margin-bottom:6px;animation:float 3s ease infinite;}
+
+/* ── HERO ── */
+.hero-section{min-height:92vh;display:flex;align-items:center;padding:70px 0 50px;}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-line{height:1px;width:60px;background:linear-gradient(90deg,var(--g),transparent);}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(68px,12vw,128px);line-height:.88;letter-spacing:.01em;margin-bottom:30px;}
+.hero-title .accent{background:linear-gradient(135deg,var(--g),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-subtitle{font-size:16px;color:var(--muted2);max-width:500px;line-height:1.8;margin-bottom:40px;}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:60px;}
+
+/* ── HOW IT WORKS ENHANCED ── */
+.step-card{position:relative;padding:28px;overflow:hidden;}
+.step-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g),transparent);opacity:0;transition:opacity .3s;}
+.step-card:hover::after{opacity:1;}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:72px;color:rgba(57,211,83,.12);line-height:1;margin-bottom:4px;letter-spacing:-.02em;}
+
+/* ── IMPACT STRIP ── */
+.impact-strip{display:flex;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-top:60px;}
+.impact-item{flex:1;padding:20px 14px;text-align:center;border-right:1px solid var(--border);}
+.impact-item:last-child{border-right:none;}
+.impact-val{font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--g);line-height:1;}
+.impact-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.12em;margin-top:4px;}
+
+/* ── TESTIMONIAL STRIPE ── */
+.marquee-wrap{overflow:hidden;position:relative;}
+.marquee-track{display:flex;gap:24px;animation:marqueeScroll 30s linear infinite;}
+@keyframes marqueeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marquee-chip{white-space:nowrap;padding:8px 18px;border:1px solid var(--border);border-radius:20px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);background:var(--card);}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
+.footer-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--dark);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:750px){
+  .grid2,.grid3,.grid4{grid-template-columns:1fr;}
+  .nav-links{gap:4px;}
+  .nav-link{font-size:10px;padding:5px 7px;}
+  .hero-title{font-size:clamp(54px,15vw,90px);}
+  .impact-strip{flex-direction:column;}
+  .impact-item{border-right:none;border-bottom:1px solid var(--border);}
+  .footer-inner{justify-content:center;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND LAYERS -->
+<canvas id="canvas-bg"></canvas>
+<div class="hero-grid"></div>
+<div class="hero-glow"></div>
+<div class="scan-line"></div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ── NAVBAR ── -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="showView('home')">
+      <div class="nav-logo-icon">♻</div>
+      <span class="disp" style="font-size:22px;color:var(--g);letter-spacing:.06em">E/CYCLE</span>
+      <span class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.12em">INDIA</span>
+    </div>
+    <div class="nav-links" id="nav-links"></div>
+  </div>
+</nav>
+
+<!-- ══════════════════ HOME ══════════════════ -->
+<div id="view-home" class="view active">
+
+  <!-- HERO -->
+  <div class="hero-section container">
+    <div style="width:100%">
+      <div class="hero-eyebrow anim">
+        <div class="pulse-dot"></div>
+        <span class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.16em">INDIA'S PREMIER E-WASTE PLATFORM</span>
+        <div class="hero-line"></div>
+      </div>
+      <div class="hero-title anim" style="animation-delay:.1s">
+        RECYCLE<br><span class="accent">SMARTER.</span><br>LIVE GREENER.
+      </div>
+      <p class="hero-subtitle anim" style="animation-delay:.2s">
+        Schedule free doorstep pickups, track your environmental impact in real time, and earn rewards for every device you recycle responsibly.
+      </p>
+      <div class="hero-cta anim" style="animation-delay:.3s">
+        <button class="btn btn-g" onclick="showView('auth')">Get Started →</button>
+        <button class="btn btn-o" onclick="showView('leaderboard')">View Leaderboard</button>
+        <button class="btn btn-ghost" onclick="showView('submit')" id="hero-schedule-btn" style="display:none">+ Schedule Pickup</button>
+      </div>
+
+      <!-- LIVE STATS ROW -->
+      <div class="impact-strip anim" style="animation-delay:.4s">
+        <div class="impact-item">
+          <div class="impact-val" id="st-devices">0</div>
+          <div class="impact-lbl">DEVICES RECYCLED</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-val" id="st-kg">0 kg</div>
+          <div class="impact-lbl">E-WASTE COLLECTED</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-val" id="st-co2">0 kg</div>
+          <div class="impact-lbl">CO₂ EQUIV. SAVED</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-val" id="st-users">0</div>
+          <div class="impact-lbl">REGISTERED USERS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap" style="padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--dark2)">
+    <div class="marquee-track" id="marquee-track">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- LIVE FEED -->
+  <div class="section section-alt">
+    <div class="container">
+      <div class="tag">↯ Live Activity</div>
+      <h2 class="disp" style="font-size:46px;margin-bottom:8px">RECENT SUBMISSIONS</h2>
+      <p class="mono" style="font-size:11px;color:var(--muted);margin-bottom:32px;letter-spacing:.06em">Real-time feed from our community</p>
+      <div class="grid3" id="home-feed"></div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="section">
+    <div class="container">
+      <div class="tag">Process</div>
+      <h2 class="disp" style="font-size:52px;margin-bottom:10px">HOW IT WORKS</h2>
+      <p class="mono" style="font-size:11px;color:var(--muted);margin-bottom:44px;letter-spacing:.06em">Four simple steps to a cleaner planet</p>
+      <div class="grid4">
+        <div class="card card-glow step-card">
+          <div class="step-num">01</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">Register</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.7">Create your free account in under a minute.</div>
+        </div>
+        <div class="card card-glow step-card">
+          <div class="step-num">02</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">Submit</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.7">Log your e-waste and schedule a free doorstep pickup.</div>
+        </div>
+        <div class="card card-glow step-card">
+          <div class="step-num">03</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">We Collect</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.7">Certified agents come to your door within 24 hours.</div>
+        </div>
+        <div class="card card-glow step-card">
+          <div class="step-num">04</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">Earn Points</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.7">Earn reward points, badges, and an impact certificate.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEVICE ESTIMATOR -->
+  <div class="section section-alt">
+    <div class="container">
+      <div style="max-width:700px;margin:0 auto">
+        <div class="card" style="padding:36px;border-color:var(--border2);box-shadow:0 0 60px rgba(57,211,83,.06)">
+          <div class="tag">💡 Device Estimator</div>
+          <h3 class="disp" style="font-size:36px;margin-bottom:8px">What's Your E-Waste Worth?</h3>
+          <p class="mono" style="font-size:10px;color:var(--muted);margin-bottom:28px;letter-spacing:.06em">Select a device and condition to get an instant recycling credit estimate</p>
+          <div class="grid3" id="est-devices" style="margin-bottom:22px;gap:10px"></div>
+          <div class="fg">
+            <label>Device Condition</label>
+            <div class="cond-row" id="cond-row">
+              <button class="cond-btn active" data-cond="excellent" onclick="setCond(this)">Excellent</button>
+              <button class="cond-btn" data-cond="good" onclick="setCond(this)">Good</button>
+              <button class="cond-btn" data-cond="fair" onclick="setCond(this)">Fair</button>
+              <button class="cond-btn" data-cond="broken" onclick="setCond(this)">Broken</button>
+            </div>
+          </div>
+          <button class="btn btn-g" style="width:100%;padding:14px;font-size:13px;margin-bottom:18px" onclick="runEstimate()">Estimate Recycling Value →</button>
+          <div id="est-result" style="display:none;background:rgba(57,211,83,.08);border:1px solid var(--g);border-radius:5px;padding:24px;text-align:center;animation:fadeUp .4s ease">
+            <div class="mono" style="font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:.12em">ESTIMATED RECYCLING CREDIT</div>
+            <div class="disp" id="est-val" style="font-size:56px;color:var(--g);line-height:1">—</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:8px" id="est-note"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="container">
+      <div style="max-width:600px;margin:0 auto">
+        <div class="tag" style="display:block;text-align:center;margin-bottom:20px">🧠 Test Your Knowledge</div>
+        <h2 class="disp" style="font-size:52px;margin-bottom:12px;text-align:center">E-WASTE QUIZ</h2>
+        <p class="mono" style="font-size:11px;color:var(--muted);margin-bottom:36px;text-align:center;letter-spacing:.06em">How much do you know about electronic waste?</p>
+        <div class="card" id="quiz-box" style="padding:32px;border-color:var(--border2)"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ AUTH ══════════════════ -->
+<div id="view-auth" class="view">
+  <div style="max-width:440px;margin:80px auto;padding:0 24px">
+    <div class="card anim" style="padding:36px;border-color:var(--border2);box-shadow:0 0 60px rgba(57,211,83,.07)">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="font-size:36px;margin-bottom:8px">♻</div>
+        <div class="disp" style="font-size:40px;color:var(--g);margin-bottom:4px" id="auth-title">WELCOME BACK</div>
+        <p class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.08em" id="auth-sub">Sign in to track your impact</p>
+      </div>
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+        <button class="tab-btn" onclick="switchTab('register')">Register</button>
+      </div>
+      <div id="auth-form"></div>
+      <p class="mono" style="font-size:9px;color:var(--muted);margin-top:20px;text-align:center;letter-spacing:.06em;opacity:.7">Passwords stored locally · Demo purposes only</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ DASHBOARD ══════════════════ -->
+<div id="view-dashboard" class="view">
+  <div style="max-width:1140px;margin:0 auto;padding:44px 28px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;flex-wrap:wrap;gap:18px">
+      <div>
+        <div class="tag">📊 Dashboard</div>
+        <h2 class="disp" style="font-size:54px;line-height:.9" id="dash-greeting">HELLO!</h2>
+        <div class="mono" style="font-size:10px;color:var(--muted);margin-top:8px;letter-spacing:.08em" id="dash-since"></div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="showView('track')">📦 My Pickups</button>
+        <button class="btn btn-g" onclick="showView('submit')">+ New Pickup</button>
+      </div>
+    </div>
+    <div class="grid4" style="margin-bottom:36px" id="dash-stats"></div>
+    <div class="grid2" style="gap:24px">
+      <div>
+        <h3 class="disp" style="font-size:30px;margin-bottom:18px">RECENT PICKUPS</h3>
+        <div id="dash-pickups"></div>
+      </div>
+      <div>
+        <h3 class="disp" style="font-size:30px;margin-bottom:18px">YOUR BADGES</h3>
+        <div class="grid3" id="dash-badges" style="gap:12px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ SUBMIT ══════════════════ -->
+<div id="view-submit" class="view">
+  <div style="max-width:720px;margin:44px auto;padding:0 28px">
+    <div id="submit-done" style="display:none;text-align:center;padding:80px 0" class="anim">
+      <div style="font-size:64px;margin-bottom:16px">✅</div>
+      <div class="disp" style="font-size:52px;color:var(--g);margin-bottom:10px">PICKUP BOOKED!</div>
+      <div class="mono" style="font-size:12px;color:var(--g);margin-bottom:6px;letter-spacing:.1em" id="submit-id"></div>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:28px;max-width:420px;margin-left:auto;margin-right:auto" id="submit-msg"></p>
+      <button class="btn btn-o" onclick="resetSubmit()">Submit Another Device</button>
+    </div>
+    <div id="submit-form-wrap">
+      <div style="margin-bottom:18px">
+        <button class="btn btn-ghost" onclick="showView('home')" style="font-size:11px;padding:8px 18px">← Return to Home</button>
+      </div>
+      <div class="tag">🚚 New Request</div>
+      <h2 class="disp" style="font-size:56px;margin-bottom:8px">SCHEDULE PICKUP</h2>
+      <p class="mono" style="font-size:10px;color:var(--muted);margin-bottom:36px;letter-spacing:.06em">Free doorstep collection · Certified recycling</p>
+      <div class="card" style="padding:32px;border-color:var(--border2)">
+        <div class="grid2">
+          <div class="fg" style="grid-column:1/-1">
+            <label>Device Type</label>
+            <select id="f-device" onchange="updateEstPts()">
+              <option value="">Select your device…</option>
+              <option value="smartphone" data-pts="50">📱 Smartphone (+50 pts)</option>
+              <option value="laptop" data-pts="120">💻 Laptop (+120 pts)</option>
+              <option value="tablet" data-pts="80">📟 Tablet (+80 pts)</option>
+              <option value="tv" data-pts="150">📺 Television (+150 pts)</option>
+              <option value="battery" data-pts="60">🔋 Battery / UPS (+60 pts)</option>
+              <option value="printer" data-pts="100">🖨️ Printer (+100 pts)</option>
+              <option value="ac" data-pts="200">❄️ Air Conditioner (+200 pts)</option>
+              <option value="other" data-pts="40">🔌 Other Electronics (+40 pts)</option>
+            </select>
+          </div>
+          <div class="fg"><label>Quantity</label><input type="number" id="f-qty" value="1" min="1" max="50" oninput="updateEstPts()"/></div>
+          <div class="fg"><label>Phone Number</label><input type="tel" id="f-phone" placeholder="+91 98765 43210"/></div>
+          <div class="fg" style="grid-column:1/-1"><label>Pickup Address</label><textarea id="f-address" rows="2" placeholder="House/Flat no., Street, Locality"></textarea></div>
+          <div class="fg"><label>City</label><input id="f-city" placeholder="e.g. Greater Noida"/></div>
+          <div class="fg"><label>Notes (optional)</label><input id="f-notes" placeholder="Any special instructions…"/></div>
+        </div>
+        <div id="est-pts-row" style="display:none;margin-top:4px;background:rgba(57,211,83,.08);border:1px solid var(--border2);border-radius:5px;padding:16px 22px;display:flex;justify-content:space-between;align-items:center;margin-bottom:22px">
+          <div>
+            <div class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.08em">Estimated reward for this pickup</div>
+            <div style="font-size:12px;color:var(--muted2);margin-top:2px">Points credited on completion</div>
+          </div>
+          <div class="disp" style="font-size:36px;color:var(--g)" id="est-pts-val">+0 pts</div>
+        </div>
+        <button class="btn btn-g" style="width:100%;padding:15px;font-size:13px;margin-top:8px" id="submit-btn" onclick="submitPickup()">Confirm Pickup Request →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ TRACKER ══════════════════ -->
+<div id="view-track" class="view">
+  <div style="max-width:940px;margin:44px auto;padding:0 28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;flex-wrap:wrap;gap:14px">
+      <div>
+        <div class="tag">📦 My Pickups</div>
+        <h2 class="disp" style="font-size:52px">PICKUP TRACKER</h2>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-g" onclick="showView('submit')">+ New Pickup</button>
+        <button class="btn btn-ghost" onclick="loadTrack()">↻ Refresh</button>
+      </div>
+    </div>
+    <div class="chip-row" id="track-chips"></div>
+    <div id="track-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════════ LEADERBOARD ══════════════════ -->
+<div id="view-leaderboard" class="view">
+  <div style="max-width:720px;margin:44px auto;padding:0 28px">
+    <div class="tag">🏆 Community</div>
+    <h2 class="disp" style="font-size:56px;margin-bottom:8px">LEADERBOARD</h2>
+    <p class="mono" style="font-size:10px;color:var(--muted);margin-bottom:36px;letter-spacing:.08em">Rankings update when pickups are marked complete.</p>
+    <div id="lb-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════════ ADMIN ══════════════════ -->
+<div id="view-admin" class="view">
+  <div id="admin-login" style="max-width:380px;margin:100px auto;padding:0 28px">
+    <div class="card anim" style="padding:32px;border-color:rgba(255,179,0,.35)">
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="font-size:32px;margin-bottom:8px">🔐</div>
+        <div class="disp" style="font-size:36px;color:var(--warn)">ADMIN ACCESS</div>
+      </div>
+      <div class="fg"><label>Admin Password</label><input type="password" id="admin-pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()"/></div>
+      <p class="mono" style="font-size:9px;color:var(--muted);margin:8px 0 18px;letter-spacing:.06em">Demo hint: admin123</p>
+      <button class="btn btn-g" style="width:100%" onclick="adminLogin()">Enter Panel →</button>
+    </div>
+  </div>
+  <div id="admin-panel" style="display:none;max-width:1100px;margin:44px auto;padding:0 28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;flex-wrap:wrap;gap:14px">
+      <div>
+        <div class="tag" style="border-color:rgba(255,179,0,.4);color:var(--warn)">⚙ Admin Panel</div>
+        <h2 class="disp" style="font-size:52px">ALL PICKUPS</h2>
+      </div>
+      <button class="btn btn-ghost" onclick="loadAdmin()">↻ Refresh</button>
+    </div>
+    <div id="admin-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════════ CHATBOT ══════════════════ -->
+<button id="chatbot-btn" onclick="toggleChat()">🌿</button>
+<div id="chatbot-box">
+  <div class="chat-header">
+    <div class="pulse-dot" style="background:#040c05"></div>
+    <div style="flex:1">
+      <div class="mono" style="font-size:12px;font-weight:600;color:#040c05;letter-spacing:.06em">EcoBot · AI Assistant</div>
+      <div class="mono" style="font-size:9px;color:rgba(4,12,5,.6);letter-spacing:.04em">Powered by Groq AI</div>
+    </div>
+  </div>
+  <div id="chat-msgs"></div>
+  <div style="padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;background:rgba(11,28,13,.8)">
+    <input id="chat-input" placeholder="Ask about e-waste recycling…" style="font-size:12px;padding:8px 12px;border-radius:20px" onkeydown="if(event.key==='Enter')sendChat()"/>
+    <button onclick="sendChat()" style="background:var(--g);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:14px;color:#040c05;flex-shrink:0;display:flex;align-items:center;justify-content:center">→</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="pulse-dot"></div>
+      <span class="disp" style="font-size:18px;color:var(--g)">E/CYCLE INDIA</span>
+    </div>
+    <span class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.08em">Certified E-Waste Recycling · © 2026 · Made for a greener India</span>
+    <span class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.06em;opacity:.6">Admin: <span style="cursor:pointer;color:var(--muted)" onclick="showView('admin')">Panel →</span></span>
+  </div>
+</footer>
+
+<script>
+// ── PARTICLE CANVAS ──
+(function(){
+  const c=document.getElementById('canvas-bg');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  let W,H,pts=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  for(let i=0;i<55;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,r:Math.random()*1.8+.4,o:Math.random()*.5+.1});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(57,211,83,${p.o})`;ctx.fill();
+    });
+    pts.forEach((a,i)=>pts.slice(i+1).forEach(b=>{
+      const dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<130){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(57,211,83,${(.07*(1-d/130))})`;ctx.lineWidth=.5;ctx.stroke();}
+    }));
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── DATA ──
+const DEVICES=[
+  {id:"smartphone",label:"Smartphone",pts:50,kg:.18,icon:"📱",vlo:800,vhi:2200},
+  {id:"laptop",label:"Laptop",pts:120,kg:2.1,icon:"💻",vlo:1500,vhi:6000},
+  {id:"tablet",label:"Tablet",pts:80,kg:.65,icon:"📟",vlo:600,vhi:1800},
+  {id:"tv",label:"Television",pts:150,kg:8.5,icon:"📺",vlo:400,vhi:2500},
+  {id:"battery",label:"Battery/UPS",pts:60,kg:1.2,icon:"🔋",vlo:80,vhi:300},
+  {id:"printer",label:"Printer",pts:100,kg:3.8,icon:"🖨️",vlo:200,vhi:900},
+  {id:"ac",label:"AC Unit",pts:200,kg:12,icon:"❄️",vlo:500,vhi:3000},
+  {id:"other",label:"Other",pts:40,kg:1,icon:"🔌",vlo:100,vhi:800}
+];
+const STATUS_FLOW=["Pending","Confirmed","Picked Up","Processing","Completed"];
+const STATUS_COLOR={Pending:"#ffb300",Confirmed:"#29b6f6","Picked Up":"#ab47bc",Processing:"#ff7043",Completed:"#39d353"};
+const COND_MULT={excellent:1.3,good:1,fair:.7,broken:.3};
+const BADGES=[
+  {emoji:"🌱",name:"First Drop",desc:"Submit your first pickup",check:u=>u.totalPickups>=1},
+  {emoji:"⚡",name:"Power Saver",desc:"Recycle 3+ devices",check:u=>u.totalDevices>=3},
+  {emoji:"🔩",name:"Metals Hero",desc:"Recycle 5+ devices",check:u=>u.totalDevices>=5},
+  {emoji:"🌍",name:"Earth Guard",desc:"Recycle 10+ devices",check:u=>u.totalDevices>=10},
+  {emoji:"💎",name:"Pro Recycler",desc:"Earn 500+ points",check:u=>u.points>=500},
+  {emoji:"🏆",name:"Champion",desc:"Earn 1000+ points",check:u=>u.points>=1000}
+];
+const QUIZ=[
+  {q:"What percentage of e-waste is formally recycled globally?",opts:["12%","20%","35%","52%"],ans:1,fact:"Only about 20% of global e-waste is formally recycled."},
+  {q:"Which metal found in phones is rarer than gold?",opts:["Copper","Indium","Aluminum","Zinc"],ans:1,fact:"Indium is rarer than gold and is used in touchscreens."},
+  {q:"How many phones are discarded globally each year?",opts:["500M","1.2B","2.5B","5.3B"],ans:2,fact:"Approximately 2.5 billion phones are discarded yearly."},
+  {q:"What is the fastest growing waste stream worldwide?",opts:["Plastic waste","E-waste","Food waste","Paper waste"],ans:1,fact:"E-waste is the world's fastest growing waste stream."}
+];
+const MARQUEE_ITEMS=["♻ 53 Million Tonnes of E-Waste Generated Yearly","🌱 Recycling Saves Critical Rare Earth Metals","🔋 Proper Disposal Prevents Toxic Leaching","⚡ One Recycled Phone Saves Enough Energy to Charge 3,500 Phones","🌍 India Is The 5th Largest E-Waste Producer","💎 Gold, Silver & Copper Are Recoverable From Old Electronics","📱 78% of Metals in Phones Can Be Reclaimed","🔌 E-Waste Contains 60+ Elements From The Periodic Table"];
+
+// ── STORAGE ──
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}
+function lsSet(k,v){localStorage.setItem(k,JSON.stringify(v));}
+function lsDel(k){localStorage.removeItem(k);}
+
+// ── DB ──
+function uid(){return Math.random().toString(36).slice(2,10).toUpperCase();}
+function now(){return new Date().toISOString();}
+function fmtDate(iso){return new Date(iso).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
+function hashPwd(s){return btoa(s+'ecycle_salt_2024');}
+
+function getStats(){return lsGet('ecycle-stats')||{totalDevices:0,totalKg:0,co2Saved:0,totalUsers:0};}
+function saveStats(s){lsSet('ecycle-stats',s);}
+function getFeed(){return lsGet('ecycle-feed')||[];}
+function getLB(){return lsGet('ecycle-lb')||[];}
+
+function dbRegister(name,email,password){
+  if(lsGet('user:'+email))return{ok:false,error:'Email already registered.'};
+  const user={name,email,passwordHash:hashPwd(password),points:0,totalDevices:0,totalPickups:0,joinedAt:now()};
+  lsSet('user:'+email,user);lsSet('pickups:'+email,[]);
+  const s=getStats();s.totalUsers=(s.totalUsers||0)+1;saveStats(s);
+  const lb=getLB();lb.push({name,email,points:0,totalDevices:0});lsSet('ecycle-lb',lb);
+  return{ok:true,user};
+}
+function dbLogin(email,password){
+  const u=lsGet('user:'+email);
+  if(!u)return{ok:false,error:'No account found with this email.'};
+  if(u.passwordHash!==hashPwd(password))return{ok:false,error:'Incorrect password.'};
+  return{ok:true,user:u};
+}
+function dbGetUser(email){return lsGet('user:'+email);}
+function dbGetPickups(email){return lsGet('pickups:'+email)||[];}
+
+function dbSubmitPickup(user,form){
+  const dev=DEVICES.find(d=>d.id===form.device)||DEVICES[7];
+  const qty=parseInt(form.qty)||1;
+  const entry={id:uid(),userId:user.email,userName:user.name,device:form.device,deviceLabel:dev.label,qty,address:form.address,city:form.city,phone:form.phone,notes:form.notes,status:'Pending',pts:dev.pts*qty,kgEstimate:dev.kg*qty,createdAt:now(),updatedAt:now()};
+  const pickups=dbGetPickups(user.email);pickups.unshift(entry);lsSet('pickups:'+user.email,pickups);
+  const feed=getFeed();feed.unshift({id:entry.id,userName:user.name,deviceLabel:dev.label,city:form.city,createdAt:now()});lsSet('ecycle-feed',feed.slice(0,30));
+  return{ok:true,entry};
+}
+
+function dbUpdateStatus(ownerEmail,pickupId,newStatus){
+  const pickups=dbGetPickups(ownerEmail);
+  const idx=pickups.findIndex(p=>p.id===pickupId);
+  if(idx===-1)return{ok:false};
+  pickups[idx].status=newStatus;pickups[idx].updatedAt=now();lsSet('pickups:'+ownerEmail,pickups);
+  if(newStatus==='Completed'){
+    const u=dbGetUser(ownerEmail);
+    if(u){
+      u.points+=pickups[idx].pts;u.totalDevices+=pickups[idx].qty;u.totalPickups=(u.totalPickups||0)+1;lsSet('user:'+ownerEmail,u);
+      const lb=getLB();const li=lb.findIndex(x=>x.email===ownerEmail);
+      if(li>=0){lb[li].points=u.points;lb[li].totalDevices=u.totalDevices;}
+      lsSet('ecycle-lb',lb.sort((a,b)=>b.points-a.points));
+      const s=getStats();s.totalDevices=(s.totalDevices||0)+pickups[idx].qty;s.totalKg=Math.round(((s.totalKg||0)+pickups[idx].kgEstimate)*10)/10;s.co2Saved=Math.round(s.totalKg*2.3);saveStats(s);
+    }
+  }
+  return{ok:true,pickup:pickups[idx]};
+}
+
+function dbGetAllPickups(){
+  const lb=getLB();
+  return lb.flatMap(u=>dbGetPickups(u.email)).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+}
+
+// ── SESSION ──
+let currentUser=null;
+(function restoreSession(){
+  const sess=lsGet('ecycle-session');
+  if(sess?.email){const u=dbGetUser(sess.email);if(u){currentUser=u;}}
+})();
+
+// ── TOAST ──
+let toastTimer=null;
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.display='block';
+  t.style.background=type==='error'?'rgba(239,83,80,.95)':type==='warn'?'rgba(255,179,0,.95)':'rgba(57,211,83,.95)';
+  t.style.color=type==='error'?'#fff':'#040c05';
+  t.style.border=`1px solid ${type==='error'?'#ef5350':type==='warn'?'#ffb300':'#39d353'}`;
+  if(toastTimer)clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{t.style.display='none';},3200);
+}
+
+// ── NAVIGATION ──
+function showView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  const el=document.getElementById('view-'+v);
+  if(el){el.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+  renderNav(v);
+  if(v==='home')renderHome();
+  if(v==='dashboard'&&currentUser)renderDashboard();
+  if(v==='track'&&currentUser)loadTrack();
+  if(v==='leaderboard')loadLeaderboard();
+  if(v==='submit'){if(!currentUser){showView('auth');return;}renderSubmitForm();}
+}
+
+function renderNav(active){
+  const links=document.getElementById('nav-links');
+  const base=currentUser
+    ?[['home','Home'],['dashboard','Dashboard'],['submit','+ Pickup'],['track','Track'],['leaderboard','Rankings']]
+    :[['home','Home'],['leaderboard','Rankings'],['auth','Sign In']];
+  links.innerHTML=base.map(([v,l])=>`<div class="nav-link ${active===v?'active':''}" onclick="showView('${v}')">${l}</div>`).join('');
+  if(currentUser){links.innerHTML+=`<div class="nav-link" onclick="logout()" style="color:var(--danger);">Log Out</div>`;}
+  const heroBtn=document.getElementById('hero-schedule-btn');
+  if(heroBtn)heroBtn.style.display=currentUser?'inline-flex':'none';
+}
+
+// ── ANIMATED COUNTER ──
+function animateCount(el,target,suffix='',duration=1200){
+  if(!el)return;
+  const start=performance.now();
+  const startVal=0;
+  function step(now){
+    const pct=Math.min((now-start)/duration,1);
+    const ease=1-Math.pow(1-pct,3);
+    const val=Math.round(startVal+(target-startVal)*ease);
+    el.textContent=val+suffix;
+    if(pct<1)requestAnimationFrame(step);
+    else el.textContent=target+suffix;
+  }
+  requestAnimationFrame(step);
+}
+
+// ── HOME ──
+let statsAnimated=false;
+function renderHome(){
+  const s=getStats();
+  const devEl=document.getElementById('st-devices');
+  const kgEl=document.getElementById('st-kg');
+  const co2El=document.getElementById('st-co2');
+  const usrEl=document.getElementById('st-users');
+
+  if(!statsAnimated){
+    statsAnimated=true;
+    setTimeout(()=>{
+      animateCount(devEl,s.totalDevices||0);
+      animateCount(kgEl,s.totalKg||0,' kg');
+      animateCount(co2El,s.co2Saved||0,' kg');
+      animateCount(usrEl,s.totalUsers||0);
+    },600);
+  } else {
+    if(devEl)devEl.textContent=s.totalDevices||0;
+    if(kgEl)kgEl.textContent=(s.totalKg||0)+' kg';
+    if(co2El)co2El.textContent=(s.co2Saved||0)+' kg';
+    if(usrEl)usrEl.textContent=s.totalUsers||0;
+  }
+
+  // Feed
+  const feed=getFeed();
+  const feedEl=document.getElementById('home-feed');
+  if(feedEl){
+    if(feed.length===0){
+      feedEl.innerHTML=`<div class="card" style="grid-column:1/-1;text-align:center;padding:48px;color:var(--muted)"><div style="font-size:32px;margin-bottom:10px">📭</div><div class="mono" style="font-size:11px;letter-spacing:.06em">No activity yet. Be the first to recycle!</div></div>`;
+    } else {
+      feedEl.innerHTML=feed.slice(0,6).map(f=>`
+        <div class="card card-glow" style="padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+            <div class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.1em">#${f.id}</div>
+            <div class="mono" style="font-size:9px;color:var(--muted)">${fmtDate(f.createdAt)}</div>
+          </div>
+          <div style="font-weight:600;font-size:15px;margin-bottom:4px">${f.userName}</div>
+          <div style="color:var(--g);font-size:13px;margin-bottom:4px">♻ ${f.deviceLabel}</div>
+          <div class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.06em">📍 ${f.city}</div>
+        </div>`).join('');
+    }
+  }
+
+  // Marquee
+  const mt=document.getElementById('marquee-track');
+  if(mt){
+    const items=[...MARQUEE_ITEMS,...MARQUEE_ITEMS].map(t=>`<div class="marquee-chip">${t}</div>`).join('');
+    mt.innerHTML=items;
+  }
+
+  // Estimator devices
+  const estEl=document.getElementById('est-devices');
+  if(estEl){
+    estEl.innerHTML=DEVICES.slice(0,6).map(d=>`
+      <div class="dev-card" data-id="${d.id}" onclick="selectEstDev(this,'${d.id}')">
+        <div style="font-size:24px">${d.icon}</div>
+        <div class="dev-lbl">${d.label}</div>
+      </div>`).join('');
+  }
+
+  renderQuiz();
+}
+
+// ── ESTIMATOR ──
+let estDevice=null,estCond='excellent';
+function selectEstDev(el,id){
+  document.querySelectorAll('.dev-card').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');estDevice=id;
+  document.getElementById('est-result').style.display='none';
+}
+function setCond(el){
+  document.querySelectorAll('.cond-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');estCond=el.dataset.cond;
+}
+function runEstimate(){
+  if(!estDevice){showToast('Please select a device first','warn');return;}
+  const dev=DEVICES.find(d=>d.id===estDevice);
+  const mult=COND_MULT[estCond]||1;
+  const lo=Math.round(dev.vlo*mult);const hi=Math.round(dev.vhi*mult);
+  const res=document.getElementById('est-result');
+  document.getElementById('est-val').textContent=`₹${lo.toLocaleString()}–${hi.toLocaleString()}`;
+  document.getElementById('est-note').textContent=`${dev.label} in ${estCond} condition · ${dev.kg} kg · ${dev.pts} reward points`;
+  res.style.display='block';
+}
+
+// ── QUIZ ──
+let quizIdx=0,quizScore=0;
+function renderQuiz(){
+  const box=document.getElementById('quiz-box');
+  if(!box)return;
+  if(quizIdx>=QUIZ.length){
+    box.innerHTML=`<div style="text-align:center;padding:20px">
+      <div style="font-size:48px;margin-bottom:12px">${quizScore===QUIZ.length?'🏆':quizScore>=QUIZ.length/2?'🌿':'📚'}</div>
+      <div class="disp" style="font-size:44px;color:var(--g);margin-bottom:8px">${quizScore}/${QUIZ.length}</div>
+      <div style="color:var(--muted);font-size:14px;margin-bottom:20px">${quizScore===QUIZ.length?'Perfect! You\'re an e-waste expert!':quizScore>=QUIZ.length/2?'Great job! Keep learning!':'Keep learning to become an eco-champion!'}</div>
+      <button class="btn btn-o" onclick="quizIdx=0;quizScore=0;renderQuiz()">Try Again</button>
+    </div>`;return;
+  }
+  const q=QUIZ[quizIdx];
+  box.innerHTML=`
+    <div class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.1em;margin-bottom:16px">QUESTION ${quizIdx+1} OF ${QUIZ.length}</div>
+    <div style="font-weight:600;font-size:15px;line-height:1.5;margin-bottom:20px">${q.q}</div>
+    ${q.opts.map((o,i)=>`<div class="quiz-opt" onclick="answerQuiz(${i},this)">${o}</div>`).join('')}`;
+}
+function answerQuiz(i,el){
+  const q=QUIZ[quizIdx];
+  document.querySelectorAll('.quiz-opt').forEach(o=>o.onclick=null);
+  el.classList.add(i===q.ans?'correct':'wrong');
+  if(i!==q.ans)document.querySelectorAll('.quiz-opt')[q.ans].classList.add('correct');
+  if(i===q.ans)quizScore++;
+  const fact=document.createElement('div');
+  fact.style.cssText='font-size:12px;color:var(--muted);margin-top:12px;padding:10px 14px;background:rgba(255,255,255,.04);border-radius:4px;line-height:1.5;border-left:2px solid var(--g)';
+  fact.textContent='💡 '+q.fact;
+  document.getElementById('quiz-box').appendChild(fact);
+  setTimeout(()=>{quizIdx++;renderQuiz();},2000);
+}
+
+// ── AUTH ──
+let authTab='login';
+function switchTab(tab){
+  authTab=tab;
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',(tab==='login'?i===0:i===1)));
+  const t=tab==='login';
+  document.getElementById('auth-title').textContent=t?'WELCOME BACK':'JOIN US';
+  document.getElementById('auth-sub').textContent=t?'Sign in to track your impact':'Create a free account today';
+  renderAuthForm();
+}
+function renderAuthForm(){
+  const el=document.getElementById('auth-form');if(!el)return;
+  if(authTab==='register'){
+    el.innerHTML=`
+      <div class="fg"><label>Full Name</label><input id="af-name" placeholder="Your name" /></div>
+      <div class="fg"><label>Email</label><input id="af-email" type="email" placeholder="you@example.com" /></div>
+      <div class="fg"><label>Password</label><input id="af-pass" type="password" placeholder="Min 6 characters" /></div>
+      <div class="fg"><label>Confirm Password</label><input id="af-conf" type="password" placeholder="Repeat password" /></div>
+      <div id="auth-err" style="display:none;color:var(--danger);font-family:'IBM Plex Mono',monospace;font-size:11px;margin-bottom:12px;padding:10px;background:rgba(239,83,80,.08);border-radius:3px;border-left:2px solid var(--danger)"></div>
+      <button class="btn btn-g" style="width:100%;padding:13px" onclick="doAuth()">Create Account →</button>`;
+  } else {
+    el.innerHTML=`
+      <div class="fg"><label>Email</label><input id="af-email" type="email" placeholder="you@example.com" /></div>
+      <div class="fg"><label>Password</label><input id="af-pass" type="password" placeholder="Your password" onkeydown="if(event.key==='Enter')doAuth()" /></div>
+      <div id="auth-err" style="display:none;color:var(--danger);font-family:'IBM Plex Mono',monospace;font-size:11px;margin-bottom:12px;padding:10px;background:rgba(239,83,80,.08);border-radius:3px;border-left:2px solid var(--danger)"></div>
+      <button class="btn btn-g" style="width:100%;padding:13px" onclick="doAuth()">Sign In →</button>`;
+  }
+}
+function showAuthErr(msg){
+  const e=document.getElementById('auth-err');if(e){e.textContent=msg;e.style.display='block';}
+}
+function doAuth(){
+  const email=(document.getElementById('af-email')||{}).value?.trim()?.toLowerCase();
+  const pass=(document.getElementById('af-pass')||{}).value;
+  if(!email||!pass){showAuthErr('Please fill in all fields.');return;}
+  if(authTab==='register'){
+    const name=(document.getElementById('af-name')||{}).value?.trim();
+    const conf=(document.getElementById('af-conf')||{}).value;
+    if(!name){showAuthErr('Name is required.');return;}
+    if(pass.length<6){showAuthErr('Password must be at least 6 characters.');return;}
+    if(pass!==conf){showAuthErr('Passwords don\'t match.');return;}
+    const r=dbRegister(name,email,pass);
+    if(!r.ok){showAuthErr(r.error);return;}
+    currentUser=r.user;lsSet('ecycle-session',{email});
+    showToast('Welcome, '+r.user.name+'! 🌿');showView('dashboard');
+  } else {
+    const r=dbLogin(email,pass);
+    if(!r.ok){showAuthErr(r.error);return;}
+    currentUser=r.user;lsSet('ecycle-session',{email});
+    showToast('Welcome back, '+r.user.name+'! 🌿');showView('dashboard');
+  }
+}
+function logout(){
+  currentUser=null;lsDel('ecycle-session');statsAnimated=false;
+  showView('home');showToast('Logged out successfully.');
+}
+
+// ── DASHBOARD ──
+function renderDashboard(){
+  const u=dbGetUser(currentUser.email);currentUser=u;
+  document.getElementById('dash-greeting').textContent='HELLO, '+(u.name.split(' ')[0]).toUpperCase()+'!';
+  document.getElementById('dash-since').textContent='Member since '+fmtDate(u.joinedAt)+' · '+u.email;
+  const pickups=dbGetPickups(u.email);
+  const completed=pickups.filter(p=>p.status==='Completed');
+  const pending=pickups.filter(p=>p.status!=='Completed');
+  document.getElementById('dash-stats').innerHTML=[
+    ['🏆',u.points,'YOUR POINTS'],['♻',u.totalDevices||0,'DEVICES RECYCLED'],
+    ['📦',pending.length,'ACTIVE PICKUPS'],['✅',completed.length,'COMPLETED']
+  ].map(([icon,v,l])=>`<div class="card card-glow stat-card"><div style="font-size:20px;margin-bottom:4px">${icon}</div><div class="stat-val">${v}</div><div class="stat-lbl">${l}</div></div>`).join('');
+  const dp=document.getElementById('dash-pickups');
+  if(pickups.length===0){
+    dp.innerHTML=`<div class="card" style="text-align:center;padding:48px">
+      <div style="font-size:40px;margin-bottom:10px">♻</div>
+      <div class="mono" style="font-size:11px;color:var(--muted);letter-spacing:.06em;margin-bottom:16px">No pickups scheduled yet.</div>
+      <button class="btn btn-g" onclick="showView('submit')">Schedule First Pickup</button>
+    </div>`;
+  } else {
+    dp.innerHTML=pickups.slice(0,5).map(p=>`
+      <div class="card" style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px;margin-bottom:3px">${p.qty}× ${p.deviceLabel}</div>
+          <div class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.06em">#${p.id} · ${fmtDate(p.createdAt)} · ${p.city}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="status-badge" style="color:${STATUS_COLOR[p.status]};background:${STATUS_COLOR[p.status]}18;display:block;margin-bottom:4px">${p.status}</div>
+          <div class="mono" style="font-size:10px;color:var(--muted)">${p.pts} pts</div>
+        </div>
+      </div>`).join('');
+    if(pickups.length>5)dp.innerHTML+=`<button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="showView('track')">View All ${pickups.length} Pickups →</button>`;
+  }
+  document.getElementById('dash-badges').innerHTML=BADGES.map(b=>{
+    const unlocked=b.check({points:u.points,totalDevices:u.totalDevices,totalPickups:u.totalPickups});
+    return `<div class="card badge-card ${unlocked?'':'locked'}" title="${b.desc}">
+      <span class="badge-emoji">${b.emoji}</span>
+      <div class="mono" style="font-size:9px;color:${unlocked?'var(--g)':'var(--muted)'};letter-spacing:.08em">${b.name}</div>
+      ${unlocked?'<div class="mono" style="font-size:8px;color:var(--g);margin-top:2px">✓ Unlocked</div>':''}
+    </div>`;
+  }).join('');
+}
+
+// ── SUBMIT ──
+function renderSubmitForm(){
+  document.getElementById('submit-done').style.display='none';
+  document.getElementById('submit-form-wrap').style.display='block';
+}
+function updateEstPts(){
+  const sel=document.getElementById('f-device');
+  const opt=sel.options[sel.selectedIndex];
+  const pts=parseInt(opt.dataset.pts)||0;
+  const qty=parseInt(document.getElementById('f-qty').value)||1;
+  const row=document.getElementById('est-pts-row');
+  const val=document.getElementById('est-pts-val');
+  if(pts>0){row.style.display='flex';val.textContent='+'+pts*qty+' pts';}
+  else row.style.display='none';
+}
+function submitPickup(){
+  if(!currentUser){showView('auth');return;}
+  const form={
+    device:document.getElementById('f-device').value,
+    qty:document.getElementById('f-qty').value,
+    phone:document.getElementById('f-phone').value.trim(),
+    address:document.getElementById('f-address').value.trim(),
+    city:document.getElementById('f-city').value.trim(),
+    notes:document.getElementById('f-notes').value.trim()
+  };
+  if(!form.device||!form.address||!form.city||!form.phone){showToast('Please fill all required fields','error');return;}
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Processing…';
+  setTimeout(()=>{
+    const r=dbSubmitPickup(currentUser,form);
+    if(r.ok){
+      document.getElementById('submit-form-wrap').style.display='none';
+      document.getElementById('submit-done').style.display='block';
+      document.getElementById('submit-id').textContent='Booking ID: #'+r.entry.id;
+      document.getElementById('submit-msg').innerHTML=`Our certified agent will contact you within 24 hours. You'll earn <strong style="color:var(--g)">${r.entry.pts} points</strong> upon successful completion.`;
+      showToast('Pickup scheduled successfully! 🌿');
+    }
+    btn.disabled=false;btn.innerHTML='Confirm Pickup Request →';
+  },700);
+}
+function resetSubmit(){
+  ['f-device','f-phone','f-city','f-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('f-qty').value='1';
+  document.getElementById('f-address').value='';
+  document.getElementById('est-pts-row').style.display='none';
+  document.getElementById('submit-done').style.display='none';
+  document.getElementById('submit-form-wrap').style.display='block';
+}
+
+// ── TRACKER ──
+let trackFilter='All';
+function loadTrack(){
+  if(!currentUser)return;
+  const pickups=dbGetPickups(currentUser.email);
+  const chips=document.getElementById('track-chips');
+  chips.innerHTML=['All',...STATUS_FLOW].map(s=>`<div class="chip ${trackFilter===s?'active':''}" onclick="setTrackFilter('${s}')">${s}</div>`).join('');
+  const filtered=trackFilter==='All'?pickups:pickups.filter(p=>p.status===trackFilter);
+  const list=document.getElementById('track-list');
+  if(filtered.length===0){list.innerHTML=`<div class="card" style="text-align:center;padding:60px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">📭</div><div class="mono" style="font-size:11px;letter-spacing:.06em">No pickups for this filter.</div></div>`;return;}
+  list.innerHTML=filtered.map(p=>{
+    const si=STATUS_FLOW.indexOf(p.status);
+    const steps=STATUS_FLOW.map((s,i)=>{
+      const done=i<=si;const c=done?STATUS_COLOR[p.status]:'rgba(255,255,255,.08)';
+      return `<div class="prog-step"><div class="prog-bar" style="background:${c}"></div><div class="prog-lbl" style="color:${done?STATUS_COLOR[p.status]:'var(--muted)'}">${s}</div></div>`;
+    }).join('');
+    return `<div class="card" style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap">
+            <span style="font-weight:700;font-size:16px">${p.qty}× ${p.deviceLabel}</span>
+            <span class="status-badge" style="color:${STATUS_COLOR[p.status]};background:${STATUS_COLOR[p.status]}18">${p.status}</span>
+          </div>
+          <div class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.06em">#${p.id} · ${p.address}, ${p.city}</div>
+          <div class="mono" style="font-size:9px;color:var(--muted);margin-top:4px">Submitted ${fmtDate(p.createdAt)} · Updated ${fmtDate(p.updatedAt)}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="disp" style="font-size:32px;color:${p.status==='Completed'?'var(--g)':'var(--muted)'}">${p.pts} pts</div>
+          <div class="mono" style="font-size:9px;color:var(--muted)">~${p.kgEstimate.toFixed(1)} kg</div>
+        </div>
+      </div>
+      <div class="prog-steps">${steps}</div>
+    </div>`;
+  }).join('');
+}
+function setTrackFilter(f){trackFilter=f;loadTrack();}
+
+// ── LEADERBOARD ──
+function loadLeaderboard(){
+  const lb=getLB().sort((a,b)=>b.points-a.points);
+  const medals=['🥇','🥈','🥉'];
+  const list=document.getElementById('lb-list');
+  if(lb.length===0){
+    list.innerHTML=`<div class="card" style="text-align:center;padding:60px">
+      <div style="font-size:40px;margin-bottom:10px">🏆</div>
+      <div class="mono" style="font-size:11px;color:var(--muted);letter-spacing:.06em">No rankings yet. Complete a pickup to appear here!</div>
+    </div>`;return;
+  }
+  list.innerHTML=lb.map((e,i)=>{
+    const isMe=currentUser&&e.email===currentUser.email;
+    const isTop=i<3;
+    return `<div class="card lb-row" style="margin-bottom:10px;border-color:${isMe?'var(--g)':isTop&&i===0?'gold':i===1?'silver':i===2?'#cd7f32':'var(--border)'};background:${isMe?'var(--glow)':'var(--card)'}">
+      <div class="disp" style="font-size:28px;width:44px;text-align:center;flex-shrink:0">${i<3?medals[i]:'<span style="color:var(--muted);font-size:18px">#'+(i+1)+'</span>'}</div>
+      <div class="lb-avatar" style="border-color:${i===0?'gold':i===1?'silver':i===2?'#cd7f32':'var(--border)'};${i<3?'box-shadow:0 0 12px rgba(57,211,83,.3)':''}">${(e.name||'?')[0].toUpperCase()}</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:15px">${e.name} ${isMe?'<span class="mono" style="font-size:9px;color:var(--g);border:1px solid var(--g);padding:2px 6px;border-radius:2px">YOU</span>':''}</div>
+        <div class="mono" style="font-size:9px;color:var(--muted);margin-top:3px;letter-spacing:.06em">${e.totalDevices||0} device${(e.totalDevices||0)!==1?'s':''} recycled</div>
+      </div>
+      <div>
+        <div class="disp" style="font-size:36px;color:${i===0?'gold':i===1?'silver':i===2?'#cd7f32':'var(--g)'}">${(e.points||0).toLocaleString()}</div>
+        <div class="mono" style="font-size:8px;color:var(--muted);text-align:right;letter-spacing:.08em">POINTS</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ADMIN ──
+function adminLogin(){
+  const pwd=document.getElementById('admin-pwd').value;
+  if(pwd==='admin123'){
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-panel').style.display='block';
+    loadAdmin();
+  } else showToast('Wrong password','error');
+}
+function loadAdmin(){
+  const all=dbGetAllPickups();
+  const list=document.getElementById('admin-list');
+  if(all.length===0){list.innerHTML=`<div class="card" style="text-align:center;padding:60px"><div style="font-size:40px;margin-bottom:10px">📭</div><div class="mono" style="font-size:11px;color:var(--muted)">No pickups in the system yet.</div></div>`;return;}
+  // Summary stats
+  const byStatus={};STATUS_FLOW.forEach(s=>byStatus[s]=all.filter(p=>p.status===s).length);
+  const summary=`<div class="grid4" style="margin-bottom:24px">
+    ${STATUS_FLOW.map(s=>`<div class="card" style="text-align:center;padding:14px"><div style="font-size:22px;font-weight:700;color:${STATUS_COLOR[s]}">${byStatus[s]}</div><div class="mono" style="font-size:9px;color:var(--muted);margin-top:4px;letter-spacing:.08em">${s.toUpperCase()}</div></div>`).join('')}
+  </div>`;
+  list.innerHTML=summary+all.map(p=>{
+    const actionBtns=STATUS_FLOW.filter(s=>s!==p.status).map(s=>`<button class="status-action" style="color:${STATUS_COLOR[s]};border:1px solid ${STATUS_COLOR[s]}40" onclick="adminUpdateStatus('${p.userId}','${p.id}','${s}')">→ ${s}</button>`).join('');
+    return `<div class="card" id="aprow-${p.id}" style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+        <div>
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;flex-wrap:wrap">
+            <span class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.06em">#${p.id}</span>
+            <span style="font-weight:700">${p.userName}</span>
+            <span style="color:var(--muted2);font-size:13px">— ${p.qty}× ${p.deviceLabel}</span>
+          </div>
+          <div class="mono" style="font-size:10px;color:var(--muted)">${p.address}, ${p.city} · ${fmtDate(p.createdAt)}</div>
+          ${p.phone?`<div class="mono" style="font-size:9px;color:var(--muted);margin-top:2px">📞 ${p.phone}</div>`:''}
+          ${p.notes?`<div style="font-size:12px;color:var(--muted);margin-top:4px;font-style:italic;padding-left:8px;border-left:2px solid var(--border)">Note: ${p.notes}</div>`:''}
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <span class="status-badge" style="color:${STATUS_COLOR[p.status]};background:${STATUS_COLOR[p.status]}18">${p.status}</span>
+          ${actionBtns}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function adminUpdateStatus(email,id,status){
+  const r=dbUpdateStatus(email,id,status);
+  if(r.ok){showToast(`Pickup #${id} → ${status}`);loadAdmin();}
+}
+
+// ── CHATBOT (Groq AI) ──
+const GROQ_API_KEY='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';
+let chatOpen=false;
+function toggleChat(){
+  chatOpen=!chatOpen;
+  const box=document.getElementById('chatbot-box');
+  const btn=document.getElementById('chatbot-btn');
+  box.classList.toggle('open',chatOpen);
+  btn.textContent=chatOpen?'✕':'🌿';
+  if(chatOpen&&document.getElementById('chat-msgs').children.length===0){
+    appendChatMsg('bot','Hi! I\'m EcoBot 🌿 Ask me anything about e-waste recycling, your account, or how to schedule a free pickup!');
+  }
+}
+function appendChatMsg(role,text){
+  const msgs=document.getElementById('chat-msgs');
+  const div=document.createElement('div');
+  div.className='chat-bubble '+role;
+  div.textContent=text;
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+async function sendChat(){
+  const input=document.getElementById('chat-input');
+  const text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  appendChatMsg('user',text);
+  const typing=document.createElement('div');
+  typing.className='chat-bubble bot';
+  typing.innerHTML='<span class="spinner" style="width:14px;height:14px;border-width:2px"></span>';
+  document.getElementById('chat-msgs').appendChild(typing);
+  document.getElementById('chat-msgs').scrollTop=9999;
+  try{
+    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+GROQ_API_KEY
+      },
+      body:JSON.stringify({
+        model:'llama3-8b-8192',
+        max_tokens:300,
+        messages:[
+          {role:'system',content:`You are EcoBot, the friendly AI assistant for E/CYCLE India — India's premier e-waste recycling platform. ${currentUser?'The logged-in user is '+currentUser.name+' who has '+currentUser.points+' points and has recycled '+currentUser.totalDevices+' devices.':''} Help users with e-waste questions, scheduling pickups, understanding the rewards system, and environmental impact. Keep responses to 2-3 sentences. Be warm, encouraging, and eco-positive.`},
+          {role:'user',content:text}
+        ]
+      })
+    });
+    const data=await res.json();
+    typing.innerHTML='';
+    if(data.error){
+      typing.textContent='⚠️ '+(data.error.message||'API error.');
+    } else {
+      typing.textContent=data.choices?.[0]?.message?.content||'Sorry, I couldn\'t process that right now.';
+    }
+  }catch(err){
+    typing.innerHTML='';
+    typing.textContent='Connection error. Please check your network and try again.';
+  }
+  document.getElementById('chat-msgs').scrollTop=9999;
+}
+
+// ── INIT ──
+renderNav('home');
+renderAuthForm();
+renderHome();
+if(currentUser)showView('dashboard');
+</script>
+</body>
+</html>
