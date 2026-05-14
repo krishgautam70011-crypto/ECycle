@@ -6,7 +6,6 @@
 <title>E/CYCLE INDIA — E-Waste Management</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<script type="module" src="index.js"></script>
 <style>
 /* ── RESET & BASE ── */
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;}
@@ -126,15 +125,29 @@ nav{position:sticky;top:0;z-index:500;background:rgba(4,12,5,.92);backdrop-filte
 /* ── TOAST ── */
 #toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);padding:12px 22px;border-radius:5px;font-family:'IBM Plex Mono',monospace;font-size:12px;z-index:9999;display:none;white-space:nowrap;animation:fadeUp .3s ease;letter-spacing:.04em;}
 
-/* ── CHATBOT ── */
-#chatbot-btn{position:fixed;bottom:28px;right:28px;width:54px;height:54px;border-radius:50%;background:var(--g);border:none;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(57,211,83,.45),0 0 0 0 rgba(57,211,83,.3);z-index:1000;animation:glow-breathe 3s ease infinite;}
-#chatbot-box{position:fixed;bottom:94px;right:28px;width:320px;background:#0b1c0d;border:1px solid var(--g);border-radius:8px;z-index:1000;display:none;flex-direction:column;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.7),0 0 0 1px rgba(57,211,83,.08);animation:fadeUp .3s ease;}
-#chatbot-box.open{display:flex;}
-.chat-header{background:linear-gradient(135deg,#1a6e2e,#39d353);padding:12px 16px;display:flex;gap:10px;align-items:center;}
-#chat-msgs{overflow-y:auto;max-height:280px;padding:14px;display:flex;flex-direction:column;gap:10px;}
-.chat-bubble{max-width:88%;padding:9px 13px;border-radius:12px;font-size:12.5px;line-height:1.55;}
-.chat-bubble.user{align-self:flex-end;background:var(--g);color:#040c05;border-radius:12px 12px 3px 12px;font-weight:500;}
-.chat-bubble.bot{align-self:flex-start;background:rgba(255,255,255,.07);color:var(--text);border-radius:12px 12px 12px 3px;border:1px solid var(--border);}
+/* ── ECOBOT ── */
+#eco-btn{position:fixed;bottom:28px;right:28px;width:56px;height:56px;border-radius:50%;background:var(--g);border:none;cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(57,211,83,.5);z-index:1000;animation:glow-breathe 3s ease infinite;transition:transform .2s;}
+#eco-btn:hover{transform:scale(1.08);}
+#eco-box{position:fixed;bottom:96px;right:28px;width:340px;background:#0b1c0d;border:1px solid var(--g);border-radius:10px;z-index:1000;display:none;flex-direction:column;overflow:hidden;box-shadow:0 16px 56px rgba(0,0,0,.8);}
+#eco-box.open{display:flex;animation:fadeUp .25s ease;}
+.eco-head{background:linear-gradient(135deg,#1a6e2e,#2ea84a);padding:13px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.eco-head-title{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;color:#040c05;letter-spacing:.06em;}
+.eco-head-sub{font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(4,12,5,.65);margin-top:1px;}
+.eco-close{background:rgba(4,12,5,.2);border:none;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#040c05;font-size:14px;margin-left:auto;}
+#eco-msgs{overflow-y:auto;height:260px;padding:14px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;}
+#eco-msgs::-webkit-scrollbar{width:4px;}
+#eco-msgs::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.eco-bubble{max-width:90%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.6;word-break:break-word;}
+.eco-bubble.user{align-self:flex-end;background:var(--g);color:#040c05;border-radius:14px 14px 3px 14px;font-weight:500;}
+.eco-bubble.bot{align-self:flex-start;background:rgba(255,255,255,.06);color:var(--text);border-radius:14px 14px 14px 3px;border:1px solid var(--border);}
+.eco-bubble.err{border-color:rgba(239,83,80,.4);color:#ef9a9a;}
+.eco-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--muted);animation:eco-bounce .9s infinite;margin:0 2px;}
+.eco-dot:nth-child(2){animation-delay:.18s;}.eco-dot:nth-child(3){animation-delay:.36s;}
+@keyframes eco-bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.eco-footer{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;background:rgba(4,12,5,.6);flex-shrink:0;}
+#eco-input{font-size:12px;padding:8px 14px;border-radius:20px;flex:1;}
+.eco-send{background:var(--g);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:16px;color:#040c05;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.eco-send:disabled{opacity:.4;cursor:not-allowed;}
 
 /* ── CAPACITY BAR ── */
 .cap-track{height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:10px;overflow:hidden;}
@@ -534,20 +547,21 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
   </div>
 </div>
 
-<!-- ══════════════════ CHATBOT ══════════════════ -->
-<button id="chatbot-btn" onclick="toggleChat()">🌿</button>
-<div id="chatbot-box">
-  <div class="chat-header">
+<!-- ══════════════════ ECOBOT ══════════════════ -->
+<button id="eco-btn" onclick="ecoToggle()" title="Chat with EcoBot">🌿</button>
+<div id="eco-box">
+  <div class="eco-head">
     <div class="pulse-dot" style="background:#040c05"></div>
-    <div style="flex:1">
-      <div class="mono" style="font-size:12px;font-weight:600;color:#040c05;letter-spacing:.06em">EcoBot · AI Assistant</div>
-      <div class="mono" style="font-size:9px;color:rgba(4,12,5,.6);letter-spacing:.04em">Powered by Groq AI</div>
+    <div>
+      <div class="eco-head-title">EcoBot · AI Assistant</div>
+      <div class="eco-head-sub">Powered by Google Gemini · Free</div>
     </div>
+    <button class="eco-close" onclick="ecoToggle()">✕</button>
   </div>
-  <div id="chat-msgs"></div>
-  <div style="padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;background:rgba(11,28,13,.8)">
-    <input id="chat-input" placeholder="Ask about e-waste recycling…" style="font-size:12px;padding:8px 12px;border-radius:20px" onkeydown="if(event.key==='Enter')sendChat()"/>
-    <button onclick="sendChat()" style="background:var(--g);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:14px;color:#040c05;flex-shrink:0;display:flex;align-items:center;justify-content:center">→</button>
+  <div id="eco-msgs"></div>
+  <div class="eco-footer">
+    <input id="eco-input" placeholder="Ask about e-waste, pickups, points…" onkeydown="if(event.key==='Enter'&&!event.shiftKey)ecoSend()"/>
+    <button class="eco-send" id="eco-send-btn" onclick="ecoSend()">↑</button>
   </div>
 </div>
 
@@ -1124,68 +1138,94 @@ function adminUpdateStatus(email,id,status){
   if(r.ok){showToast(`Pickup #${id} → ${status}`);loadAdmin();}
 }
 
-// ── CHATBOT (Groq AI) ──
-const GROQ_API_KEY='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';
-let chatOpen=false;
-function toggleChat(){
-  chatOpen=!chatOpen;
-  const box=document.getElementById('chatbot-box');
-  const btn=document.getElementById('chatbot-btn');
-  box.classList.toggle('open',chatOpen);
-  btn.textContent=chatOpen?'✕':'🌿';
-  if(chatOpen&&document.getElementById('chat-msgs').children.length===0){
-    appendChatMsg('bot','Hi! I\'m EcoBot 🌿 Ask me anything about e-waste recycling, your account, or how to schedule a free pickup!');
+// ── ECOBOT (Google Gemini 2.0 Flash — free, no login needed) ──
+// Uses the Gemini API which allows browser-side calls with CORS support.
+// Get your own free key at: https://aistudio.google.com/apikey
+const GEMINI_KEY = 'AIzaSyCJtwmsy7obSrUcrkCIFWoPujAKMszYVqs'; // ← replace with your Gemini key
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=';
+let ecoOpen = false;
+let ecoBusy = false;
+const ecoHistory = []; // keeps conversation context
+
+function ecoToggle(){
+  ecoOpen = !ecoOpen;
+  document.getElementById('eco-box').classList.toggle('open', ecoOpen);
+  document.getElementById('eco-btn').textContent = ecoOpen ? '✕' : '🌿';
+  if(ecoOpen && document.getElementById('eco-msgs').children.length === 0){
+    ecoPush('bot', 'Hi! I\'m EcoBot 🌿 Ask me anything about e-waste recycling, pickup scheduling, or your rewards!');
   }
-}
-function appendChatMsg(role,text){
-  const msgs=document.getElementById('chat-msgs');
-  const div=document.createElement('div');
-  div.className='chat-bubble '+role;
-  div.textContent=text;
-  msgs.appendChild(div);
-  msgs.scrollTop=msgs.scrollHeight;
-}
-async function sendChat(){
-  const input=document.getElementById('chat-input');
-  const text=input.value.trim();
-  if(!text)return;
-  input.value='';
-  appendChatMsg('user',text);
-  const typing=document.createElement('div');
-  typing.className='chat-bubble bot';
-  typing.innerHTML='<span class="spinner" style="width:14px;height:14px;border-width:2px"></span>';
-  document.getElementById('chat-msgs').appendChild(typing);
-  document.getElementById('chat-msgs').scrollTop=9999;
-  try{
-    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer '+GROQ_API_KEY
-      },
-      body:JSON.stringify({
-        model:'llama3-8b-8192',
-        max_tokens:300,
-        messages:[
-          {role:'system',content:`You are EcoBot, the friendly AI assistant for E/CYCLE India — India's premier e-waste recycling platform. ${currentUser?'The logged-in user is '+currentUser.name+' who has '+currentUser.points+' points and has recycled '+currentUser.totalDevices+' devices.':''} Help users with e-waste questions, scheduling pickups, understanding the rewards system, and environmental impact. Keep responses to 2-3 sentences. Be warm, encouraging, and eco-positive.`},
-          {role:'user',content:text}
-        ]
-      })
-    });
-    const data=await res.json();
-    typing.innerHTML='';
-    if(data.error){
-      typing.textContent='⚠️ '+(data.error.message||'API error.');
-    } else {
-      typing.textContent=data.choices?.[0]?.message?.content||'Sorry, I couldn\'t process that right now.';
-    }
-  }catch(err){
-    typing.innerHTML='';
-    typing.textContent='Connection error. Please check your network and try again.';
-  }
-  document.getElementById('chat-msgs').scrollTop=9999;
+  if(ecoOpen) setTimeout(()=>document.getElementById('eco-input').focus(), 120);
 }
 
+function ecoPush(role, text, isErr){
+  const msgs = document.getElementById('eco-msgs');
+  const d = document.createElement('div');
+  d.className = 'eco-bubble ' + role + (isErr ? ' err' : '');
+  d.textContent = text;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+
+function ecoTyping(){
+  const msgs = document.getElementById('eco-msgs');
+  const d = document.createElement('div');
+  d.className = 'eco-bubble bot';
+  d.id = 'eco-typing';
+  d.innerHTML = '<span class="eco-dot"></span><span class="eco-dot"></span><span class="eco-dot"></span>';
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function ecoSend(){
+  if(ecoBusy) return;
+  const inp = document.getElementById('eco-input');
+  const text = inp.value.trim();
+  if(!text) return;
+  inp.value = '';
+  ecoPush('user', text);
+  ecoHistory.push({ role:'user', parts:[{ text }] });
+
+  ecoBusy = true;
+  document.getElementById('eco-send-btn').disabled = true;
+  ecoTyping();
+
+  const systemPrompt = `You are EcoBot, the helpful AI assistant for E/CYCLE India — India's e-waste recycling platform. ${currentUser ? 'The current user is ' + currentUser.name + ' with ' + currentUser.points + ' points and ' + (currentUser.totalDevices||0) + ' devices recycled.' : ''} Answer questions about e-waste recycling, scheduling pickups, reward points, and environmental impact. Be friendly, concise (2-3 sentences), and eco-positive. If asked something unrelated, gently redirect to e-waste topics.`;
+
+  try {
+    const body = {
+      system_instruction: { parts:[{ text: systemPrompt }] },
+      contents: ecoHistory,
+      generationConfig: { maxOutputTokens: 300, temperature: 0.7 }
+    };
+    const res = await fetch(GEMINI_URL + GEMINI_KEY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    const typing = document.getElementById('eco-typing');
+    if(typing) typing.remove();
+
+    if(data.error){
+      ecoPush('bot', '⚠️ ' + (data.error.message || 'API error. Check your key.'), true);
+    } else {
+      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, no response received.';
+      ecoPush('bot', reply);
+      ecoHistory.push({ role:'model', parts:[{ text: reply }] });
+      // keep history trimmed to last 10 turns to stay within context limits
+      if(ecoHistory.length > 20) ecoHistory.splice(0, 2);
+    }
+  } catch(e) {
+    const typing = document.getElementById('eco-typing');
+    if(typing) typing.remove();
+    ecoPush('bot', '⚠️ Network error. Please check your internet connection and try again.', true);
+  }
+
+  ecoBusy = false;
+  document.getElementById('eco-send-btn').disabled = false;
+  document.getElementById('eco-input').focus();
+}
 // ── INIT ──
 renderNav('home');
 renderAuthForm();
