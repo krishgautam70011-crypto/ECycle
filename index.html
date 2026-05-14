@@ -202,15 +202,119 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
 ::-webkit-scrollbar-track{background:var(--dark);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 
-/* ── RESPONSIVE ── */
 @media(max-width:750px){
+  #dash-inner,
+  #view-track>div,
+  #view-submit>div,
+  #view-leaderboard>div,
+  #admin-panel,
+  #admin-login{padding-left:16px!important;padding-right:16px!important;padding-top:28px!important;}
+}
+
+/* ── MOBILE NAV ── */
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border-radius:4px;background:transparent;border:1px solid var(--border);transition:border-color .2s;}
+.nav-hamburger:hover{border-color:var(--g);}
+.nav-hamburger span{display:block;width:20px;height:2px;background:var(--g);border-radius:2px;transition:all .3s;}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+.mobile-menu{display:none;position:fixed;top:60px;left:0;right:0;background:rgba(4,12,5,.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:499;padding:16px;flex-direction:column;gap:4px;animation:fadeIn .2s ease;}
+.mobile-menu.open{display:flex;}
+.mobile-menu .nav-link{font-size:13px;padding:12px 16px;border-radius:4px;display:block;text-align:left;width:100%;letter-spacing:.06em;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .grid4{grid-template-columns:repeat(2,1fr);}
+}
+
+@media(max-width:750px){
+  /* Nav */
+  .nav-hamburger{display:flex;}
+  .nav-links{display:none;}
+  .nav-inner{padding:0 16px;}
+
+  /* Grids */
   .grid2,.grid3,.grid4{grid-template-columns:1fr;}
-  .nav-links{gap:4px;}
-  .nav-link{font-size:10px;padding:5px 7px;}
-  .hero-title{font-size:clamp(54px,15vw,90px);}
+
+  /* Hero */
+  .hero-section{min-height:auto;padding:40px 0 36px;}
+  .hero-title{font-size:clamp(52px,14vw,82px);}
+  .hero-subtitle{font-size:14px;margin-bottom:28px;}
+  .hero-cta{gap:10px;margin-bottom:40px;}
+  .hero-cta .btn{flex:1;justify-content:center;min-width:0;}
+
+  /* Impact strip */
   .impact-strip{flex-direction:column;}
-  .impact-item{border-right:none;border-bottom:1px solid var(--border);}
-  .footer-inner{justify-content:center;text-align:center;}
+  .impact-item{border-right:none;border-bottom:1px solid var(--border);padding:16px 14px;}
+  .impact-item:last-child{border-bottom:none;}
+  .impact-val{font-size:28px;}
+
+  /* Sections */
+  .section{padding:48px 0;}
+  .container{padding:0 16px;}
+
+  /* Cards & forms */
+  .card{padding:18px;}
+  input,select,textarea{font-size:16px;} /* prevents iOS zoom */
+
+  /* Submit form grid */
+  #view-submit .grid2{grid-template-columns:1fr;}
+  #view-submit .fg[style*="grid-column:1/-1"]{grid-column:1;}
+
+  /* Dashboard */
+  #view-dashboard{padding:28px 16px;}
+  #view-dashboard h2.disp{font-size:38px;}
+  #view-dashboard .grid4{grid-template-columns:repeat(2,1fr);}
+  #view-dashboard .grid2{grid-template-columns:1fr;}
+
+  /* Stat cards */
+  .stat-val{font-size:38px;}
+
+  /* Leaderboard rows */
+  .lb-row{padding:14px 16px;gap:10px;}
+  .lb-avatar{width:32px;height:32px;font-size:12px;}
+
+  /* Track / submit page headers */
+  #view-track h2,.disp[style*="font-size:52px"]{font-size:36px;}
+  #view-submit h2.disp{font-size:40px;}
+
+  /* Buttons bar in track/dashboard */
+  .btn-bar-mobile{flex-direction:column;width:100%;}
+  .btn-bar-mobile .btn{width:100%;justify-content:center;}
+
+  /* Progress labels smaller */
+  .prog-lbl{font-size:6px;}
+
+  /* Chips wrap nicely */
+  .chip{font-size:9px;padding:6px 12px;}
+
+  /* Condition row stacks */
+  .cond-row{flex-wrap:wrap;}
+  .cond-btn{flex:1 1 calc(50% - 8px);}
+
+  /* Device estimator grid */
+  #est-devices{grid-template-columns:repeat(4,1fr);}
+
+  /* Admin status buttons */
+  .status-action{font-size:9px;padding:4px 8px;}
+
+  /* Footer */
+  .footer-inner{justify-content:center;text-align:center;flex-direction:column;align-items:center;}
+  footer{padding:24px 16px;}
+
+  /* Toast */
+  #toast{max-width:calc(100vw - 32px);white-space:normal;text-align:center;font-size:11px;}
+
+  /* Tab row */
+  .tab-btn{font-size:10px;padding:10px 6px;}
+}
+
+@media(max-width:380px){
+  .hero-title{font-size:clamp(44px,13vw,68px);}
+  #est-devices{grid-template-columns:repeat(2,1fr);}
+  .impact-val{font-size:24px;}
+  .stat-val{font-size:32px;}
 }
 </style>
 </head>
@@ -234,8 +338,12 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
       <span class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.12em">INDIA</span>
     </div>
     <div class="nav-links" id="nav-links"></div>
+    <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+<div class="mobile-menu" id="mobile-menu"></div>
 
 <!-- ══════════════════ HOME ══════════════════ -->
 <div id="view-home" class="view active">
@@ -337,7 +445,7 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
         <div class="card" style="padding:36px;border-color:var(--border2);box-shadow:0 0 60px rgba(57,211,83,.06)">
           <div class="tag">💡 Device Estimator</div>
           <h3 class="disp" style="font-size:36px;margin-bottom:8px">What's Your E-Waste Worth?</h3>
-          <p class="mono" style="font-size:10px;color:var(--muted);margin-bottom:28px;letter-spacing:.06em">Select a device and condition to get an instant recycling credit estimate · Prices updated May 2026 · India certified-recycler market rates</p>
+          <p class="mono" style="font-size:10px;color:var(--muted);margin-bottom:28px;letter-spacing:.06em">Select a device and condition to get an instant recycling credit estimate</p>
           <div class="grid3" id="est-devices" style="margin-bottom:22px;gap:10px"></div>
           <div class="fg">
             <label>Device Condition</label>
@@ -393,14 +501,14 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
 
 <!-- ══════════════════ DASHBOARD ══════════════════ -->
 <div id="view-dashboard" class="view">
-  <div style="max-width:1140px;margin:0 auto;padding:44px 28px">
+  <div style="max-width:1140px;margin:0 auto;padding:44px 28px" id="dash-inner">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;flex-wrap:wrap;gap:18px">
       <div>
         <div class="tag">📊 Dashboard</div>
         <h2 class="disp" style="font-size:54px;line-height:.9" id="dash-greeting">HELLO!</h2>
         <div class="mono" style="font-size:10px;color:var(--muted);margin-top:8px;letter-spacing:.08em" id="dash-since"></div>
       </div>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap" class="btn-bar-mobile">
         <button class="btn btn-ghost" onclick="showView('track')">📦 My Pickups</button>
         <button class="btn btn-g" onclick="showView('submit')">+ New Pickup</button>
       </div>
@@ -479,7 +587,7 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
         <div class="tag">📦 My Pickups</div>
         <h2 class="disp" style="font-size:52px">PICKUP TRACKER</h2>
       </div>
-      <div style="display:flex;gap:10px">
+      <div style="display:flex;gap:10px" class="btn-bar-mobile">
         <button class="btn btn-g" onclick="showView('submit')">+ New Pickup</button>
         <button class="btn btn-ghost" onclick="loadTrack()">↻ Refresh</button>
       </div>
@@ -567,19 +675,15 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
 })();
 
 // ── DATA ──
-// E-waste recycling credit ranges (INR) — calibrated to India 2026 certified-recycler market rates.
-// Sources: India EPR Rules 2022 (min ₹22/kg appliances, ₹34/kg smartphones), IndiaMart/TradeIndia
-// scrap listings (Apr–May 2026), Gravity E-Waste (₹110–500/kg bulk), ITAD streams (₹120–200/kg PCBs).
-// vlo = broken/scrap-only credit; vhi = working/refurbishable (excellent condition) credit.
 const DEVICES=[
-  {id:"smartphone",label:"Smartphone",pts:50,kg:.18,icon:"📱",vlo:200,vhi:8000},
-  {id:"laptop",label:"Laptop",pts:120,kg:2.1,icon:"💻",vlo:600,vhi:22000},
-  {id:"tablet",label:"Tablet",pts:80,kg:.65,icon:"📟",vlo:350,vhi:9000},
-  {id:"tv",label:"Television",pts:150,kg:8.5,icon:"📺",vlo:800,vhi:8000},
-  {id:"battery",label:"Battery/UPS",pts:60,kg:1.2,icon:"🔋",vlo:300,vhi:3500},
-  {id:"printer",label:"Printer",pts:100,kg:3.8,icon:"🖨️",vlo:400,vhi:4000},
-  {id:"ac",label:"AC Unit",pts:200,kg:12,icon:"❄️",vlo:3000,vhi:15000},
-  {id:"other",label:"Other",pts:40,kg:1,icon:"🔌",vlo:150,vhi:2500}
+  {id:"smartphone",label:"Smartphone",pts:50,kg:.18,icon:"📱",vlo:600,vhi:4500},
+  {id:"laptop",label:"Laptop",pts:120,kg:2.1,icon:"💻",vlo:1800,vhi:14000},
+  {id:"tablet",label:"Tablet",pts:80,kg:.65,icon:"📟",vlo:800,vhi:6500},
+  {id:"tv",label:"Television",pts:150,kg:8.5,icon:"📺",vlo:600,vhi:5000},
+  {id:"battery",label:"Battery/UPS",pts:60,kg:1.2,icon:"🔋",vlo:400,vhi:2000},
+  {id:"printer",label:"Printer",pts:100,kg:3.8,icon:"🖨️",vlo:400,vhi:2500},
+  {id:"ac",label:"AC Unit",pts:200,kg:12,icon:"❄️",vlo:2000,vhi:9000},
+  {id:"other",label:"Other",pts:40,kg:1,icon:"🔌",vlo:200,vhi:1500}
 ];
 const STATUS_FLOW=["Pending","Confirmed","Picked Up","Processing","Completed"];
 const STATUS_COLOR={Pending:"#ffb300",Confirmed:"#29b6f6","Picked Up":"#ab47bc",Processing:"#ff7043",Completed:"#39d353"};
@@ -685,6 +789,18 @@ function showToast(msg,type='success'){
   toastTimer=setTimeout(()=>{t.style.display='none';},3200);
 }
 
+// ── MOBILE MENU ──
+function toggleMobileMenu(){
+  const btn=document.getElementById('nav-hamburger');
+  const menu=document.getElementById('mobile-menu');
+  const open=menu.classList.toggle('open');
+  btn.classList.toggle('open',open);
+}
+function closeMobileMenu(){
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('nav-hamburger').classList.remove('open');
+}
+
 // ── NAVIGATION ──
 function showView(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
@@ -700,11 +816,15 @@ function showView(v){
 
 function renderNav(active){
   const links=document.getElementById('nav-links');
+  const mobileMenu=document.getElementById('mobile-menu');
   const base=currentUser
     ?[['home','Home'],['dashboard','Dashboard'],['submit','+ Pickup'],['track','Track'],['leaderboard','Rankings']]
     :[['home','Home'],['leaderboard','Rankings'],['auth','Sign In']];
-  links.innerHTML=base.map(([v,l])=>`<div class="nav-link ${active===v?'active':''}" onclick="showView('${v}')">${l}</div>`).join('');
-  if(currentUser){links.innerHTML+=`<div class="nav-link" onclick="logout()" style="color:var(--danger);">Log Out</div>`;}
+  const linksHtml=base.map(([v,l])=>`<div class="nav-link ${active===v?'active':''}" onclick="showView('${v}')">${l}</div>`).join('');
+  const logoutHtml=currentUser?`<div class="nav-link" onclick="logout()" style="color:var(--danger);">Log Out</div>`:'';
+  links.innerHTML=linksHtml+logoutHtml;
+  if(mobileMenu)mobileMenu.innerHTML=linksHtml+logoutHtml;
+  closeMobileMenu();
   const heroBtn=document.getElementById('hero-schedule-btn');
   if(heroBtn)heroBtn.style.display=currentUser?'inline-flex':'none';
 }
