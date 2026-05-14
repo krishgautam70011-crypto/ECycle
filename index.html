@@ -125,29 +125,6 @@ nav{position:sticky;top:0;z-index:500;background:rgba(4,12,5,.92);backdrop-filte
 /* ── TOAST ── */
 #toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);padding:12px 22px;border-radius:5px;font-family:'IBM Plex Mono',monospace;font-size:12px;z-index:9999;display:none;white-space:nowrap;animation:fadeUp .3s ease;letter-spacing:.04em;}
 
-/* ── ECOBOT ── */
-#eco-btn{position:fixed;bottom:28px;right:28px;width:56px;height:56px;border-radius:50%;background:var(--g);border:none;cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(57,211,83,.5);z-index:1000;animation:glow-breathe 3s ease infinite;transition:transform .2s;}
-#eco-btn:hover{transform:scale(1.08);}
-#eco-box{position:fixed;bottom:96px;right:28px;width:340px;background:#0b1c0d;border:1px solid var(--g);border-radius:10px;z-index:1000;display:none;flex-direction:column;overflow:hidden;box-shadow:0 16px 56px rgba(0,0,0,.8);}
-#eco-box.open{display:flex;animation:fadeUp .25s ease;}
-.eco-head{background:linear-gradient(135deg,#1a6e2e,#2ea84a);padding:13px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.eco-head-title{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;color:#040c05;letter-spacing:.06em;}
-.eco-head-sub{font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(4,12,5,.65);margin-top:1px;}
-.eco-close{background:rgba(4,12,5,.2);border:none;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#040c05;font-size:14px;margin-left:auto;}
-#eco-msgs{overflow-y:auto;height:260px;padding:14px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;}
-#eco-msgs::-webkit-scrollbar{width:4px;}
-#eco-msgs::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-.eco-bubble{max-width:90%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.6;word-break:break-word;}
-.eco-bubble.user{align-self:flex-end;background:var(--g);color:#040c05;border-radius:14px 14px 3px 14px;font-weight:500;}
-.eco-bubble.bot{align-self:flex-start;background:rgba(255,255,255,.06);color:var(--text);border-radius:14px 14px 14px 3px;border:1px solid var(--border);}
-.eco-bubble.err{border-color:rgba(239,83,80,.4);color:#ef9a9a;}
-.eco-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--muted);animation:eco-bounce .9s infinite;margin:0 2px;}
-.eco-dot:nth-child(2){animation-delay:.18s;}.eco-dot:nth-child(3){animation-delay:.36s;}
-@keyframes eco-bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
-.eco-footer{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;background:rgba(4,12,5,.6);flex-shrink:0;}
-#eco-input{font-size:12px;padding:8px 14px;border-radius:20px;flex:1;}
-.eco-send{background:var(--g);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:16px;color:#040c05;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-.eco-send:disabled{opacity:.4;cursor:not-allowed;}
 
 /* ── CAPACITY BAR ── */
 .cap-track{height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:10px;overflow:hidden;}
@@ -360,7 +337,7 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
         <div class="card" style="padding:36px;border-color:var(--border2);box-shadow:0 0 60px rgba(57,211,83,.06)">
           <div class="tag">💡 Device Estimator</div>
           <h3 class="disp" style="font-size:36px;margin-bottom:8px">What's Your E-Waste Worth?</h3>
-          <p class="mono" style="font-size:10px;color:var(--muted);margin-bottom:28px;letter-spacing:.06em">Select a device and condition to get an instant recycling credit estimate</p>
+          <p class="mono" style="font-size:10px;color:var(--muted);margin-bottom:28px;letter-spacing:.06em">Select a device and condition to get an instant recycling credit estimate · Prices updated May 2026 · India certified-recycler market rates</p>
           <div class="grid3" id="est-devices" style="margin-bottom:22px;gap:10px"></div>
           <div class="fg">
             <label>Device Condition</label>
@@ -547,23 +524,7 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
   </div>
 </div>
 
-<!-- ══════════════════ ECOBOT ══════════════════ -->
-<button id="eco-btn" onclick="ecoToggle()" title="Chat with EcoBot">🌿</button>
-<div id="eco-box">
-  <div class="eco-head">
-    <div class="pulse-dot" style="background:#040c05"></div>
-    <div>
-      <div class="eco-head-title">EcoBot · AI Assistant</div>
-      <div class="eco-head-sub">Powered by Google Gemini · Free</div>
-    </div>
-    <button class="eco-close" onclick="ecoToggle()">✕</button>
-  </div>
-  <div id="eco-msgs"></div>
-  <div class="eco-footer">
-    <input id="eco-input" placeholder="Ask about e-waste, pickups, points…" onkeydown="if(event.key==='Enter'&&!event.shiftKey)ecoSend()"/>
-    <button class="eco-send" id="eco-send-btn" onclick="ecoSend()">↑</button>
-  </div>
-</div>
+
 
 <!-- FOOTER -->
 <footer>
@@ -606,15 +567,19 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
 })();
 
 // ── DATA ──
+// E-waste recycling credit ranges (INR) — calibrated to India 2026 certified-recycler market rates.
+// Sources: India EPR Rules 2022 (min ₹22/kg appliances, ₹34/kg smartphones), IndiaMart/TradeIndia
+// scrap listings (Apr–May 2026), Gravity E-Waste (₹110–500/kg bulk), ITAD streams (₹120–200/kg PCBs).
+// vlo = broken/scrap-only credit; vhi = working/refurbishable (excellent condition) credit.
 const DEVICES=[
-  {id:"smartphone",label:"Smartphone",pts:50,kg:.18,icon:"📱",vlo:800,vhi:2200},
-  {id:"laptop",label:"Laptop",pts:120,kg:2.1,icon:"💻",vlo:1500,vhi:6000},
-  {id:"tablet",label:"Tablet",pts:80,kg:.65,icon:"📟",vlo:600,vhi:1800},
-  {id:"tv",label:"Television",pts:150,kg:8.5,icon:"📺",vlo:400,vhi:2500},
-  {id:"battery",label:"Battery/UPS",pts:60,kg:1.2,icon:"🔋",vlo:80,vhi:300},
-  {id:"printer",label:"Printer",pts:100,kg:3.8,icon:"🖨️",vlo:200,vhi:900},
-  {id:"ac",label:"AC Unit",pts:200,kg:12,icon:"❄️",vlo:500,vhi:3000},
-  {id:"other",label:"Other",pts:40,kg:1,icon:"🔌",vlo:100,vhi:800}
+  {id:"smartphone",label:"Smartphone",pts:50,kg:.18,icon:"📱",vlo:200,vhi:8000},
+  {id:"laptop",label:"Laptop",pts:120,kg:2.1,icon:"💻",vlo:600,vhi:22000},
+  {id:"tablet",label:"Tablet",pts:80,kg:.65,icon:"📟",vlo:350,vhi:9000},
+  {id:"tv",label:"Television",pts:150,kg:8.5,icon:"📺",vlo:800,vhi:8000},
+  {id:"battery",label:"Battery/UPS",pts:60,kg:1.2,icon:"🔋",vlo:300,vhi:3500},
+  {id:"printer",label:"Printer",pts:100,kg:3.8,icon:"🖨️",vlo:400,vhi:4000},
+  {id:"ac",label:"AC Unit",pts:200,kg:12,icon:"❄️",vlo:3000,vhi:15000},
+  {id:"other",label:"Other",pts:40,kg:1,icon:"🔌",vlo:150,vhi:2500}
 ];
 const STATUS_FLOW=["Pending","Confirmed","Picked Up","Processing","Completed"];
 const STATUS_COLOR={Pending:"#ffb300",Confirmed:"#29b6f6","Picked Up":"#ab47bc",Processing:"#ff7043",Completed:"#39d353"};
@@ -1138,94 +1103,6 @@ function adminUpdateStatus(email,id,status){
   if(r.ok){showToast(`Pickup #${id} → ${status}`);loadAdmin();}
 }
 
-// ── ECOBOT (Google Gemini 2.0 Flash — free, no login needed) ──
-// Uses the Gemini API which allows browser-side calls with CORS support.
-// Get your own free key at: https://aistudio.google.com/apikey
-const GEMINI_KEY = 'AIzaSyCJtwmsy7obSrUcrkCIFWoPujAKMszYVqs'; // ← replace with your Gemini key
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=';
-let ecoOpen = false;
-let ecoBusy = false;
-const ecoHistory = []; // keeps conversation context
-
-function ecoToggle(){
-  ecoOpen = !ecoOpen;
-  document.getElementById('eco-box').classList.toggle('open', ecoOpen);
-  document.getElementById('eco-btn').textContent = ecoOpen ? '✕' : '🌿';
-  if(ecoOpen && document.getElementById('eco-msgs').children.length === 0){
-    ecoPush('bot', 'Hi! I\'m EcoBot 🌿 Ask me anything about e-waste recycling, pickup scheduling, or your rewards!');
-  }
-  if(ecoOpen) setTimeout(()=>document.getElementById('eco-input').focus(), 120);
-}
-
-function ecoPush(role, text, isErr){
-  const msgs = document.getElementById('eco-msgs');
-  const d = document.createElement('div');
-  d.className = 'eco-bubble ' + role + (isErr ? ' err' : '');
-  d.textContent = text;
-  msgs.appendChild(d);
-  msgs.scrollTop = msgs.scrollHeight;
-  return d;
-}
-
-function ecoTyping(){
-  const msgs = document.getElementById('eco-msgs');
-  const d = document.createElement('div');
-  d.className = 'eco-bubble bot';
-  d.id = 'eco-typing';
-  d.innerHTML = '<span class="eco-dot"></span><span class="eco-dot"></span><span class="eco-dot"></span>';
-  msgs.appendChild(d);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-async function ecoSend(){
-  if(ecoBusy) return;
-  const inp = document.getElementById('eco-input');
-  const text = inp.value.trim();
-  if(!text) return;
-  inp.value = '';
-  ecoPush('user', text);
-  ecoHistory.push({ role:'user', parts:[{ text }] });
-
-  ecoBusy = true;
-  document.getElementById('eco-send-btn').disabled = true;
-  ecoTyping();
-
-  const systemPrompt = `You are EcoBot, the helpful AI assistant for E/CYCLE India — India's e-waste recycling platform. ${currentUser ? 'The current user is ' + currentUser.name + ' with ' + currentUser.points + ' points and ' + (currentUser.totalDevices||0) + ' devices recycled.' : ''} Answer questions about e-waste recycling, scheduling pickups, reward points, and environmental impact. Be friendly, concise (2-3 sentences), and eco-positive. If asked something unrelated, gently redirect to e-waste topics.`;
-
-  try {
-    const body = {
-      system_instruction: { parts:[{ text: systemPrompt }] },
-      contents: ecoHistory,
-      generationConfig: { maxOutputTokens: 300, temperature: 0.7 }
-    };
-    const res = await fetch(GEMINI_URL + GEMINI_KEY, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const data = await res.json();
-    const typing = document.getElementById('eco-typing');
-    if(typing) typing.remove();
-
-    if(data.error){
-      ecoPush('bot', '⚠️ ' + (data.error.message || 'API error. Check your key.'), true);
-    } else {
-      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, no response received.';
-      ecoPush('bot', reply);
-      ecoHistory.push({ role:'model', parts:[{ text: reply }] });
-      // keep history trimmed to last 10 turns to stay within context limits
-      if(ecoHistory.length > 20) ecoHistory.splice(0, 2);
-    }
-  } catch(e) {
-    const typing = document.getElementById('eco-typing');
-    if(typing) typing.remove();
-    ecoPush('bot', '⚠️ Network error. Please check your internet connection and try again.', true);
-  }
-
-  ecoBusy = false;
-  document.getElementById('eco-send-btn').disabled = false;
-  document.getElementById('eco-input').focus();
-}
 // ── INIT ──
 renderNav('home');
 renderAuthForm();
