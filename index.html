@@ -351,7 +351,8 @@ footer.no-gap{margin-top:0;}
 .marquee-group{display:flex;gap:24px;padding-right:24px;flex-shrink:0;}
 .marquee-chip{white-space:nowrap;padding:8px 18px;border:1px solid var(--border);border-radius:20px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);background:var(--card);flex-shrink:0;}
 
-@media(min-width:860px){#auth-left-panel{display:flex!important;}#auth-mobile-logo{display:none!important;}}
+
+
 .footer-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
 
 /* ── SCROLLBAR ── */
@@ -668,42 +669,24 @@ footer.no-gap{margin-top:0;}
 
 <!-- ══════════════════ AUTH ══════════════════ -->
 <div id="view-auth" class="view">
-  <div style="min-height:calc(100vh - 60px);display:flex;align-items:stretch">
+  <div style="min-height:calc(100vh - 68px);display:flex;align-items:center;justify-content:center;padding:40px 20px;position:relative;">
 
-    <!-- Left panel — branding -->
-    <div style="flex:1;display:none;background:linear-gradient(160deg,#040c05 0%,#071a09 60%,#0a2410 100%);border-right:1px solid var(--border);padding:60px 48px;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden" id="auth-left-panel">
-      <div style="position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:.4;pointer-events:none"></div>
-      <div style="position:absolute;bottom:-80px;left:-80px;width:340px;height:340px;background:radial-gradient(circle,rgba(57,211,83,.12),transparent 70%);pointer-events:none"></div>
-      <div style="position:relative;z-index:1">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:60px">
-          <div style="width:44px;height:44px;border:2px solid var(--g);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 20px rgba(57,211,83,.3);animation:glow-breathe 3s ease infinite">♻</div>
-          <span class="disp" style="font-size:28px;color:var(--g);letter-spacing:.06em">E/CYCLE INDIA</span>
-        </div>
-        <div class="disp" style="font-size:52px;line-height:1;margin-bottom:20px;color:#e8f5e9">RECYCLE.<br><span style="color:var(--g)">EARN.</span><br>REPEAT.</div>
-        <p style="font-size:14px;color:var(--muted2);line-height:1.8;max-width:320px">Join thousands of responsible Indians turning e-waste into impact. Free doorstep pickup, real-time tracking, and rewards.</p>
+    <!-- Background aura -->
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(57,211,83,.07) 0%,transparent 65%);pointer-events:none"></div>
+
+    <div style="width:100%;max-width:440px;animation:fadeUp .5s ease both;position:relative;z-index:1">
+
+      <!-- Logo -->
+      <div style="text-align:center;margin-bottom:28px">
+        <div style="width:56px;height:56px;border:2px solid var(--g);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 0 30px rgba(57,211,83,.35),inset 0 1px 0 rgba(57,211,83,.3);margin:0 auto 14px;animation:glow-breathe 3s ease infinite;background:linear-gradient(135deg,rgba(57,211,83,.15),rgba(57,211,83,.04))">♻</div>
+        <div class="disp" style="font-size:28px;color:var(--g);letter-spacing:.08em;text-shadow:0 0 24px rgba(57,211,83,.3)">E/CYCLE INDIA</div>
       </div>
-      <div style="position:relative;z-index:1;display:flex;flex-direction:column;gap:16px">
-        ${['🚚 Free doorstep collection','🏅 Earn points & badges','🌍 Track your CO₂ saved','🔒 Certified safe recycling'].map(f=>`
-          <div style="display:flex;align-items:center;gap:12px">
-            <div style="width:6px;height:6px;border-radius:50%;background:var(--g);flex-shrink:0;box-shadow:0 0 8px var(--g)"></div>
-            <span class="mono" style="font-size:11px;color:var(--muted2);letter-spacing:.04em">${f}</span>
-          </div>`).join('')}
-      </div>
-    </div>
 
-    <!-- Right panel — form -->
-    <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px">
-      <div style="width:100%;max-width:420px;animation:fadeUp .5s ease both">
-
-        <!-- Logo (mobile only) -->
-        <div style="text-align:center;margin-bottom:32px" id="auth-mobile-logo">
-          <div style="width:52px;height:52px;border:2px solid var(--g);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 0 24px rgba(57,211,83,.3);margin:0 auto 14px;animation:glow-breathe 3s ease infinite">♻</div>
-          <div class="disp" style="font-size:32px;color:var(--g);letter-spacing:.06em">E/CYCLE INDIA</div>
-        </div>
-
-        <!-- Card -->
-        <div style="background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:36px;box-shadow:0 0 80px rgba(57,211,83,.07),0 24px 60px rgba(0,0,0,.5)">
-          <div style="text-align:center;margin-bottom:28px">
+      <!-- Card -->
+      <div style="background:linear-gradient(160deg,var(--card2) 0%,var(--card) 100%);border:1px solid var(--border2);border-radius:18px;padding:36px;box-shadow:0 0 80px rgba(57,211,83,.08),0 24px 60px rgba(0,0,0,.55);position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(57,211,83,.07),transparent 60%);pointer-events:none"></div>
+        <div style="position:relative;z-index:1">
+          <div style="text-align:center;margin-bottom:24px">
             <div class="disp" style="font-size:38px;color:var(--g);margin-bottom:4px;text-shadow:0 0 20px rgba(57,211,83,.3)" id="auth-title">WELCOME BACK</div>
             <p class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.08em" id="auth-sub">Sign in to track your impact</p>
           </div>
@@ -716,9 +699,8 @@ footer.no-gap{margin-top:0;}
 
           <div id="auth-form"></div>
 
-
-          <div style="text-align:center;margin-top:12px">
-            <span class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.06em;opacity:.35;cursor:pointer;" onclick="showView('admin')">Admin Panel →</span>
+          <div style="text-align:center;margin-top:14px">
+            <span class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.06em;opacity:.3;cursor:pointer;" onclick="showView('admin')">Admin Panel →</span>
           </div>
         </div>
       </div>
@@ -1103,8 +1085,9 @@ function showView(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   const el=document.getElementById('view-'+v);
   if(el){el.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
-  document.querySelector('footer').classList.toggle('no-gap',v==='leaderboard');
-  document.querySelector('footer').style.display=v==='leaderboard'?'none':'';
+  const hideFooter=['leaderboard','auth','admin'];
+  document.querySelector('footer').classList.toggle('no-gap',hideFooter.includes(v));
+  document.querySelector('footer').style.display=hideFooter.includes(v)?'none':'';
   renderNav(v);
   if(v==='home')renderHome();
   if(v==='dashboard'&&currentUser)renderDashboard();
