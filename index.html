@@ -71,15 +71,20 @@ label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);le
 .scan-line{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(57,211,83,.4),transparent);animation:scan 8s linear infinite;pointer-events:none;z-index:1;}
 
 /* ── NAVIGATION ── */
-nav{position:sticky;top:0;z-index:500;background:rgba(4,12,5,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:60px;display:flex;align-items:center;}
+nav{position:sticky;top:0;z-index:500;background:rgba(4,12,5,.88);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid var(--border);height:64px;display:flex;align-items:center;}
+nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(57,211,83,.4),transparent);pointer-events:none;}
 .nav-inner{max-width:1140px;margin:0 auto;padding:0 28px;width:100%;display:flex;align-items:center;justify-content:space-between;}
 .nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer;}
-.nav-logo-icon{width:32px;height:32px;border:1.5px solid var(--g);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:16px;animation:glow-breathe 3s ease infinite;}
-.nav-links{display:flex;align-items:center;gap:8px;}
-.nav-link{font-family:'IBM Plex Mono',monospace;font-size:11px;cursor:pointer;color:var(--muted);letter-spacing:.06em;transition:color .2s;padding:6px 10px;border-radius:3px;}
-.nav-link:hover{color:var(--g);background:var(--glow);}
-.nav-link.active{color:var(--g);background:rgba(57,211,83,.08);}
-.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--g);animation:pulse 2s infinite;flex-shrink:0;}
+.nav-logo-icon{width:36px;height:36px;border:1.5px solid var(--g);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;animation:glow-breathe 3s ease infinite;background:rgba(57,211,83,.06);box-shadow:0 0 16px rgba(57,211,83,.15);}
+.nav-logo-text{display:flex;flex-direction:column;gap:1px;}
+.nav-logo-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--g);letter-spacing:.08em;line-height:1;}
+.nav-logo-sub{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.2em;}
+.nav-links{display:flex;align-items:center;gap:4px;}
+.nav-link{font-family:'IBM Plex Mono',monospace;font-size:11px;cursor:pointer;color:var(--muted);letter-spacing:.06em;transition:all .2s;padding:7px 12px;border-radius:6px;position:relative;}
+.nav-link:hover{color:var(--g);background:rgba(57,211,83,.07);}
+.nav-link.active{color:var(--g);background:rgba(57,211,83,.1);}
+.nav-link.active::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:16px;height:2px;background:var(--g);border-radius:2px;box-shadow:0 0 6px var(--g);}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--g);animation:pulse 2s infinite;flex-shrink:0;box-shadow:0 0 8px var(--g);}
 
 /* ── VIEWS ── */
 .view{display:none;position:relative;z-index:1;}.view.active{display:block;}
@@ -114,8 +119,8 @@ nav{position:sticky;top:0;z-index:500;background:rgba(4,12,5,.92);backdrop-filte
 
 /* ── TABS ── */
 .tab-row{display:flex;gap:0;border:1px solid var(--border);border-radius:3px;overflow:hidden;margin-bottom:26px;}
-.tab-btn{flex:1;padding:11px;background:transparent;border:none;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
-.tab-btn.active{background:var(--glow2);color:var(--g);}
+.tab-btn{flex:1;padding:11px;background:transparent;border:none;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .25s;}
+.tab-btn.active{background:var(--g);color:#040c05;font-weight:700;box-shadow:0 0 16px rgba(57,211,83,.3);}
 
 /* ── FILTER CHIPS ── */
 .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px;}
@@ -149,7 +154,64 @@ nav{position:sticky;top:0;z-index:500;background:rgba(4,12,5,.92);backdrop-filte
 .quiz-opt.correct{border-color:var(--g);background:rgba(57,211,83,.12);color:var(--g);}
 .quiz-opt.wrong{border-color:var(--danger);background:rgba(239,83,80,.1);color:var(--danger);}
 
-/* ── DEVICE CARDS ── */
+/* ── UI ENHANCEMENTS ── */
+
+/* Glowing tag */
+.tag{background:rgba(57,211,83,.08);box-shadow:0 0 12px rgba(57,211,83,.08);}
+
+/* Cards */
+.card{border-radius:10px;}
+.card-glow:hover{box-shadow:0 0 40px rgba(57,211,83,.15),0 8px 32px rgba(0,0,0,.5);transform:translateY(-4px);}
+
+/* Step cards */
+.step-card{position:relative;overflow:hidden;border-radius:12px;padding:28px 22px;}
+.step-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(57,211,83,.06),transparent 60%);pointer-events:none;}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--g);opacity:.18;line-height:1;margin-bottom:10px;letter-spacing:-.02em;}
+.step-icon{font-size:28px;margin-bottom:12px;display:block;}
+
+/* Buttons */
+.btn{border-radius:5px;letter-spacing:.06em;}
+.btn-g{background:linear-gradient(135deg,#39d353,#1db340);box-shadow:0 2px 20px rgba(57,211,83,.3);}
+.btn-g:hover{background:linear-gradient(135deg,#45e060,#25c24a);box-shadow:0 6px 32px rgba(57,211,83,.5);transform:translateY(-2px);}
+
+/* Nav */
+.nav-link.active{border-bottom:2px solid var(--g);border-radius:0;}
+
+/* Impact strip */
+.impact-strip{display:flex;gap:0;margin-top:48px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--card);}
+.impact-item{flex:1;padding:20px 16px;text-align:center;border-right:1px solid var(--border);position:relative;}
+.impact-item:last-child{border-right:none;}
+.impact-item::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(57,211,83,.06),transparent 70%);pointer-events:none;}
+.impact-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--g);line-height:1;letter-spacing:.02em;}
+.impact-lbl{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--muted);margin-top:6px;letter-spacing:.12em;}
+
+/* Hero */
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,10vw,130px);line-height:.95;letter-spacing:-.01em;color:#e8f5e9;}
+.hero-title .accent{color:var(--g);text-shadow:0 0 60px rgba(57,211,83,.4);}
+.hero-subtitle{font-size:16px;color:var(--muted2);line-height:1.7;max-width:520px;margin:20px 0 32px;}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;}
+
+/* Section headers */
+.section-header{margin-bottom:48px;}
+.section-header .tag{margin-bottom:16px;}
+
+/* Feed cards */
+.feed-card{border-radius:10px;transition:all .25s;}
+.feed-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.4);}
+
+/* Quiz box */
+#quiz-box{border-radius:12px;box-shadow:0 0 40px rgba(57,211,83,.06);}
+
+/* Estimator */
+.est-card-inner{border-radius:14px !important;}
+#est-result{border-radius:10px !important;}
+
+/* Divider glow */
+.glow-divider{height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent);margin:0;opacity:.4;}
+
+/* Footer */
+footer{background:var(--dark2);}
+
 .dev-card{padding:16px 10px;border:1px solid var(--border);border-radius:5px;cursor:pointer;text-align:center;transition:all .2s;}
 .dev-card:hover,.dev-card.active{border-color:var(--g);background:var(--glow2);}
 .dev-card svg{color:var(--muted);transition:color .2s;}
@@ -199,7 +261,9 @@ nav{position:sticky;top:0;z-index:500;background:rgba(4,12,5,.92);backdrop-filte
 .marquee-chip{white-space:nowrap;padding:8px 18px;border:1px solid var(--border);border-radius:20px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);background:var(--card);flex-shrink:0;}
 
 /* ── FOOTER ── */
-footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
+footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:100px;}
+footer.no-gap{margin-top:0;}
+@media(min-width:860px){#auth-left-panel{display:flex!important;}#auth-mobile-logo{display:none!important;}}
 .footer-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
 
 /* ── SCROLLBAR ── */
@@ -400,6 +464,7 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
     </div>
   </div>
 
+  <div class="glow-divider"></div>
   <!-- MARQUEE -->
   <div class="marquee-wrap" style="padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--dark2)">
     <div class="marquee-track" id="marquee-track">
@@ -425,21 +490,25 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
       <p class="mono" style="font-size:11px;color:var(--muted);margin-bottom:44px;letter-spacing:.06em">Four simple steps to a cleaner planet</p>
       <div class="grid4">
         <div class="card card-glow step-card">
+          <span class="step-icon">🆕</span>
           <div class="step-num">01</div>
           <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">Register</div>
           <div style="font-size:13px;color:var(--muted);line-height:1.7">Create your free account in under a minute.</div>
         </div>
         <div class="card card-glow step-card">
+          <span class="step-icon">📦</span>
           <div class="step-num">02</div>
           <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">Submit</div>
           <div style="font-size:13px;color:var(--muted);line-height:1.7">Log your e-waste and schedule a free doorstep pickup.</div>
         </div>
         <div class="card card-glow step-card">
+          <span class="step-icon">🚚</span>
           <div class="step-num">03</div>
           <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">We Collect</div>
           <div style="font-size:13px;color:var(--muted);line-height:1.7">Certified agents come to your door within 24 hours.</div>
         </div>
         <div class="card card-glow step-card">
+          <span class="step-icon">🏅</span>
           <div class="step-num">04</div>
           <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">Earn Points</div>
           <div style="font-size:13px;color:var(--muted);line-height:1.7">Earn reward points, badges, and an impact certificate.</div>
@@ -478,13 +547,15 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
   </div>
 
   <!-- QUIZ -->
-  <div class="section">
+  <div class="section" style="padding-bottom:0;padding-top:40px">
     <div class="container">
-      <div style="max-width:600px;margin:0 auto">
-        <div class="tag" style="display:block;text-align:center;margin-bottom:20px">🧠 Test Your Knowledge</div>
-        <h2 class="disp" style="font-size:52px;margin-bottom:12px;text-align:center">E-WASTE QUIZ</h2>
-        <p class="mono" style="font-size:11px;color:var(--muted);margin-bottom:36px;text-align:center;letter-spacing:.06em">How much do you know about electronic waste?</p>
-        <div class="card" id="quiz-box" style="padding:32px;border-color:var(--border2)"></div>
+      <div style="max-width:640px;margin:0 auto">
+        <div style="text-align:center;margin-bottom:32px">
+          <div class="tag" style="display:inline-block;margin-bottom:14px">🧠 Test Your Knowledge</div>
+          <h2 class="disp" style="font-size:58px;margin-bottom:8px;background:linear-gradient(135deg,#e8f5e9,var(--g));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">E-WASTE QUIZ</h2>
+          <p class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.1em">HOW MUCH DO YOU KNOW ABOUT ELECTRONIC WASTE?</p>
+        </div>
+        <div id="quiz-box" style="background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:36px;box-shadow:0 0 60px rgba(57,211,83,.08),0 20px 60px rgba(0,0,0,.4)"></div>
       </div>
     </div>
   </div>
@@ -492,21 +563,59 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
 
 <!-- ══════════════════ AUTH ══════════════════ -->
 <div id="view-auth" class="view">
-  <div style="max-width:440px;margin:80px auto;padding:0 24px">
-    <div class="card anim" style="padding:36px;border-color:var(--border2);box-shadow:0 0 60px rgba(57,211,83,.07)">
-      <div style="text-align:center;margin-bottom:24px">
-        <div style="font-size:36px;margin-bottom:8px">♻</div>
-        <div class="disp" style="font-size:40px;color:var(--g);margin-bottom:4px" id="auth-title">WELCOME BACK</div>
-        <p class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.08em" id="auth-sub">Sign in to track your impact</p>
+  <div style="min-height:calc(100vh - 60px);display:flex;align-items:stretch">
+
+    <!-- Left panel — branding -->
+    <div style="flex:1;display:none;background:linear-gradient(160deg,#040c05 0%,#071a09 60%,#0a2410 100%);border-right:1px solid var(--border);padding:60px 48px;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden" id="auth-left-panel">
+      <div style="position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:.4;pointer-events:none"></div>
+      <div style="position:absolute;bottom:-80px;left:-80px;width:340px;height:340px;background:radial-gradient(circle,rgba(57,211,83,.12),transparent 70%);pointer-events:none"></div>
+      <div style="position:relative;z-index:1">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:60px">
+          <div style="width:44px;height:44px;border:2px solid var(--g);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 20px rgba(57,211,83,.3);animation:glow-breathe 3s ease infinite">♻</div>
+          <span class="disp" style="font-size:28px;color:var(--g);letter-spacing:.06em">E/CYCLE INDIA</span>
+        </div>
+        <div class="disp" style="font-size:52px;line-height:1;margin-bottom:20px;color:#e8f5e9">RECYCLE.<br><span style="color:var(--g)">EARN.</span><br>REPEAT.</div>
+        <p style="font-size:14px;color:var(--muted2);line-height:1.8;max-width:320px">Join thousands of responsible Indians turning e-waste into impact. Free doorstep pickup, real-time tracking, and rewards.</p>
       </div>
-      <div class="tab-row">
-        <button class="tab-btn active" onclick="switchTab('login')">Login</button>
-        <button class="tab-btn" onclick="switchTab('register')">Register</button>
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;gap:16px">
+        ${['🚚 Free doorstep collection','🏅 Earn points & badges','🌍 Track your CO₂ saved','🔒 Certified safe recycling'].map(f=>`
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--g);flex-shrink:0;box-shadow:0 0 8px var(--g)"></div>
+            <span class="mono" style="font-size:11px;color:var(--muted2);letter-spacing:.04em">${f}</span>
+          </div>`).join('')}
       </div>
-      <div id="auth-form"></div>
-      <p class="mono" style="font-size:9px;color:var(--muted);margin-top:20px;text-align:center;letter-spacing:.06em;opacity:.7">Passwords stored locally · Demo purposes only</p>
-      <div style="text-align:center;margin-top:14px">
-        <span class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.06em;opacity:.5;cursor:pointer;" onclick="showView('admin')">Admin Panel →</span>
+    </div>
+
+    <!-- Right panel — form -->
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px">
+      <div style="width:100%;max-width:420px;animation:fadeUp .5s ease both">
+
+        <!-- Logo (mobile only) -->
+        <div style="text-align:center;margin-bottom:32px" id="auth-mobile-logo">
+          <div style="width:52px;height:52px;border:2px solid var(--g);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 0 24px rgba(57,211,83,.3);margin:0 auto 14px;animation:glow-breathe 3s ease infinite">♻</div>
+          <div class="disp" style="font-size:32px;color:var(--g);letter-spacing:.06em">E/CYCLE INDIA</div>
+        </div>
+
+        <!-- Card -->
+        <div style="background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:36px;box-shadow:0 0 80px rgba(57,211,83,.07),0 24px 60px rgba(0,0,0,.5)">
+          <div style="text-align:center;margin-bottom:28px">
+            <div class="disp" style="font-size:38px;color:var(--g);margin-bottom:4px;text-shadow:0 0 20px rgba(57,211,83,.3)" id="auth-title">WELCOME BACK</div>
+            <p class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.08em" id="auth-sub">Sign in to track your impact</p>
+          </div>
+
+          <!-- Tabs -->
+          <div style="display:flex;background:var(--dark2);border:1px solid var(--border);border-radius:8px;padding:4px;gap:4px;margin-bottom:28px">
+            <button class="tab-btn active" onclick="switchTab('login')" style="flex:1;border-radius:6px;padding:10px">Sign In</button>
+            <button class="tab-btn" onclick="switchTab('register')" style="flex:1;border-radius:6px;padding:10px">Register</button>
+          </div>
+
+          <div id="auth-form"></div>
+
+
+          <div style="text-align:center;margin-top:12px">
+            <span class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.06em;opacity:.35;cursor:pointer;" onclick="showView('admin')">Admin Panel →</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -514,26 +623,40 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
 
 <!-- ══════════════════ DASHBOARD ══════════════════ -->
 <div id="view-dashboard" class="view">
-  <div style="max-width:1140px;margin:0 auto;padding:44px 28px" id="dash-inner">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;flex-wrap:wrap;gap:18px">
-      <div>
-        <div class="tag">📊 Dashboard</div>
-        <h2 class="disp" style="font-size:54px;line-height:.9" id="dash-greeting">HELLO!</h2>
-        <div class="mono" style="font-size:10px;color:var(--muted);margin-top:8px;letter-spacing:.08em" id="dash-since"></div>
+  <div style="max-width:1140px;margin:0 auto;padding:48px 28px" id="dash-inner">
+
+    <!-- Header banner -->
+    <div style="background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);border:1px solid var(--border2);border-radius:16px;padding:32px 36px;margin-bottom:28px;position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 0% 50%,rgba(57,211,83,.09),transparent 60%);pointer-events:none"></div>
+      <div style="position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(57,211,83,.06),transparent 70%);pointer-events:none"></div>
+      <div style="position:relative;z-index:1">
+        <div class="tag" style="margin-bottom:10px">📊 Dashboard</div>
+        <h2 class="disp" style="font-size:52px;line-height:.95;text-shadow:0 0 40px rgba(57,211,83,.15)" id="dash-greeting">HELLO!</h2>
+        <div class="mono" style="font-size:10px;color:var(--muted);margin-top:10px;letter-spacing:.08em" id="dash-since"></div>
       </div>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap" class="btn-bar-mobile">
-        <button class="btn btn-ghost" onclick="showView('track')">📦 My Pickups</button>
-        <button class="btn btn-g" onclick="showView('submit')">Schedule Pickup</button>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:relative;z-index:1" class="btn-bar-mobile">
+        <button class="btn btn-ghost" onclick="showView('track')" style="gap:8px">📦 My Pickups</button>
+        <button class="btn btn-g" onclick="showView('submit')" style="gap:8px;padding:12px 24px">＋ Schedule Pickup</button>
       </div>
     </div>
-    <div class="grid4" style="margin-bottom:36px" id="dash-stats"></div>
+
+    <!-- Stats grid -->
+    <div class="grid4" style="margin-bottom:28px" id="dash-stats"></div>
+
+    <!-- Content -->
     <div class="grid2" style="gap:24px">
-      <div>
-        <h3 class="disp" style="font-size:30px;margin-bottom:18px">RECENT PICKUPS</h3>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+          <span style="font-size:18px">📋</span>
+          <h3 class="disp" style="font-size:26px">RECENT PICKUPS</h3>
+        </div>
         <div id="dash-pickups"></div>
       </div>
-      <div>
-        <h3 class="disp" style="font-size:30px;margin-bottom:18px">YOUR BADGES</h3>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+          <span style="font-size:18px">🏅</span>
+          <h3 class="disp" style="font-size:26px">YOUR BADGES</h3>
+        </div>
         <div class="grid3" id="dash-badges" style="gap:12px"></div>
       </div>
     </div>
@@ -542,35 +665,46 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
 
 <!-- ══════════════════ SUBMIT ══════════════════ -->
 <div id="view-submit" class="view">
-  <div style="max-width:720px;margin:44px auto;padding:0 28px">
+  <div style="max-width:740px;margin:0 auto;padding:44px 28px">
+
+    <!-- Success state -->
     <div id="submit-done" style="display:none;text-align:center;padding:80px 0" class="anim">
-      <div style="font-size:64px;margin-bottom:16px">✅</div>
-      <div class="disp" style="font-size:52px;color:var(--g);margin-bottom:10px">PICKUP BOOKED!</div>
-      <div class="mono" style="font-size:12px;color:var(--g);margin-bottom:6px;letter-spacing:.1em" id="submit-id"></div>
-      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:28px;max-width:420px;margin-left:auto;margin-right:auto" id="submit-msg"></p>
-      <button class="btn btn-o" onclick="resetSubmit()">Submit Another Device</button>
+      <div style="width:90px;height:90px;background:rgba(57,211,83,.12);border:2px solid var(--g);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 24px;box-shadow:0 0 40px rgba(57,211,83,.25)">✅</div>
+      <div class="disp" style="font-size:56px;color:var(--g);margin-bottom:10px;text-shadow:0 0 30px rgba(57,211,83,.3)">PICKUP BOOKED!</div>
+      <div class="mono" style="font-size:12px;color:var(--g);margin-bottom:8px;letter-spacing:.1em" id="submit-id"></div>
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:32px;max-width:420px;margin-left:auto;margin-right:auto" id="submit-msg"></p>
+      <button class="btn btn-o" onclick="resetSubmit()" style="padding:13px 28px">Submit Another Device</button>
     </div>
+
+    <!-- Form -->
     <div id="submit-form-wrap">
-      <div style="margin-bottom:18px;display:flex;gap:10px">
+      <div style="margin-bottom:20px">
         <button class="btn btn-ghost" onclick="showView('dashboard')" style="font-size:11px;padding:8px 18px">← Dashboard</button>
       </div>
-      <div class="tag">🚚 New Request</div>
-      <h2 class="disp" style="font-size:56px;margin-bottom:8px">SCHEDULE PICKUP</h2>
-      <p class="mono" style="font-size:10px;color:var(--muted);margin-bottom:36px;letter-spacing:.06em">Free doorstep collection · Certified recycling</p>
-      <div class="card" style="padding:32px;border-color:var(--border2)">
+
+      <!-- Header -->
+      <div style="background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);border:1px solid var(--border2);border-radius:14px;padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(57,211,83,.08),transparent 60%);pointer-events:none"></div>
+        <div class="tag" style="position:relative">🚚 New Request</div>
+        <h2 class="disp" style="font-size:52px;margin-bottom:6px;position:relative">SCHEDULE PICKUP</h2>
+        <p class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.08em;position:relative">Free doorstep collection · Certified recycling · 24hr response</p>
+      </div>
+
+      <!-- Form card -->
+      <div style="background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:32px;box-shadow:0 0 40px rgba(57,211,83,.05)">
         <div class="grid2">
           <div class="fg" style="grid-column:1/-1">
             <label>Device Type</label>
             <select id="f-device" onchange="updateEstPts()">
               <option value="">Select your device…</option>
-              <option value="smartphone" data-pts="50">📱 Smartphone (+50 pts)</option>
+              <option value="smartphone" data-pts="50">📲 Smartphone (+50 pts)</option>
               <option value="laptop" data-pts="120">💻 Laptop (+120 pts)</option>
-              <option value="tablet" data-pts="80">📟 Tablet (+80 pts)</option>
+              <option value="tablet" data-pts="80">📱 Tablet (+80 pts)</option>
               <option value="tv" data-pts="150">📺 Television (+150 pts)</option>
-              <option value="battery" data-pts="60">🔋 Battery / UPS (+60 pts)</option>
+              <option value="battery" data-pts="60">⚡ Battery / UPS (+60 pts)</option>
               <option value="printer" data-pts="100">🖨️ Printer (+100 pts)</option>
               <option value="ac" data-pts="200">❄️ Air Conditioner (+200 pts)</option>
-              <option value="other" data-pts="40">🔌 Other Electronics (+40 pts)</option>
+              <option value="other" data-pts="40">⚙️ Other Electronics (+40 pts)</option>
             </select>
           </div>
           <div class="fg"><label>Quantity</label><input type="number" id="f-qty" value="1" min="1" max="50" oninput="updateEstPts()"/></div>
@@ -579,8 +713,7 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
           <div class="fg"><label>City</label><input id="f-city" placeholder="e.g. Greater Noida"/></div>
           <div class="fg"><label>Notes (optional)</label><input id="f-notes" placeholder="Any special instructions…"/></div>
         </div>
-
-        <button class="btn btn-g" style="width:100%;padding:15px;font-size:13px;margin-top:8px" id="submit-btn" onclick="submitPickup()">Confirm Pickup Request →</button>
+        <button class="btn btn-g" style="width:100%;padding:16px;font-size:13px;margin-top:8px;border-radius:8px;letter-spacing:.08em" id="submit-btn" onclick="submitPickup()">Confirm Pickup Request →</button>
       </div>
     </div>
   </div>
@@ -588,31 +721,38 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
 
 <!-- ══════════════════ TRACKER ══════════════════ -->
 <div id="view-track" class="view">
-  <div style="max-width:940px;margin:44px auto;padding:0 28px">
-    <div style="margin-bottom:18px;display:flex;gap:10px">
+  <div style="max-width:960px;margin:0 auto;padding:44px 28px">
+
+    <div style="margin-bottom:20px">
       <button class="btn btn-ghost" onclick="showView('dashboard')" style="font-size:11px;padding:8px 18px">← Dashboard</button>
     </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;flex-wrap:wrap;gap:14px">
-      <div>
-        <div class="tag">📦 My Pickups</div>
-        <h2 class="disp" style="font-size:52px">PICKUP TRACKER</h2>
+
+    <!-- Header banner -->
+    <div style="background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);border:1px solid var(--border2);border-radius:16px;padding:28px 32px;margin-bottom:28px;position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 100% 50%,rgba(57,211,83,.08),transparent 60%);pointer-events:none"></div>
+      <div style="position:relative;z-index:1">
+        <div class="tag" style="margin-bottom:10px">📦 My Pickups</div>
+        <h2 class="disp" style="font-size:50px;line-height:.95">PICKUP TRACKER</h2>
       </div>
-      <div style="display:flex;gap:10px" class="btn-bar-mobile">
-        <button class="btn btn-g" onclick="showView('submit')">My Pickup</button>
+      <div style="display:flex;gap:10px;position:relative;z-index:1" class="btn-bar-mobile">
+        <button class="btn btn-g" onclick="showView('submit')" style="padding:12px 22px">＋ New Pickup</button>
         <button class="btn btn-ghost" onclick="loadTrack()">↻ Refresh</button>
       </div>
     </div>
-    <div class="chip-row" id="track-chips"></div>
+
+    <div class="chip-row" id="track-chips" style="margin-bottom:20px"></div>
     <div id="track-list"></div>
   </div>
 </div>
 
 <!-- ══════════════════ LEADERBOARD ══════════════════ -->
 <div id="view-leaderboard" class="view">
-  <div style="max-width:720px;margin:44px auto;padding:0 28px">
-    <div class="tag">🏆 Community</div>
-    <h2 class="disp" style="font-size:56px;margin-bottom:8px">LEADERBOARD</h2>
-    <p class="mono" style="font-size:10px;color:var(--muted);margin-bottom:36px;letter-spacing:.08em">Rankings update when pickups are marked complete.</p>
+  <div style="max-width:760px;margin:44px auto 0;padding:0 28px">
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="tag" style="display:inline-block;margin-bottom:14px">🏆 Community Rankings</div>
+      <h2 class="disp" style="font-size:64px;margin-bottom:6px;letter-spacing:.02em">LEADERBOARD</h2>
+      <p class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.1em">RANKINGS UPDATE WHEN PICKUPS ARE MARKED COMPLETE</p>
+    </div>
     <div id="lb-list"></div>
   </div>
 </div>
@@ -816,6 +956,8 @@ function showView(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   const el=document.getElementById('view-'+v);
   if(el){el.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+  document.querySelector('footer').classList.toggle('no-gap',v==='leaderboard');
+  document.querySelector('footer').style.display=v==='leaderboard'?'none':'';
   renderNav(v);
   if(v==='home')renderHome();
   if(v==='dashboard'&&currentUser)renderDashboard();
@@ -948,52 +1090,72 @@ function renderQuiz(){
   if(!box)return;
   if(quizIdx>=QUIZ.length){
     const perfect=quizScore===QUIZ.length;
+    const pct=Math.round((quizScore/QUIZ.length)*100);
+    const emoji=perfect?'🏆':quizScore>=QUIZ.length/2?'🌿':'📚';
+    const msg=perfect?'Perfect Score! You\'re an E-Waste Expert!':quizScore>=QUIZ.length/2?'Great job! Keep learning!':'Keep learning to become an eco-champion!';
     const easterEgg=perfect?`
-      <div style="margin:28px auto 0;max-width:280px;animation:fadeUp .6s ease .3s both">
-        <div style="border:1px solid var(--border2);border-radius:8px;padding:20px;background:var(--card2);position:relative;overflow:hidden">
-          <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(57,211,83,.07),transparent 70%);pointer-events:none"></div>
+      <div style="margin:24px auto 0;max-width:280px;animation:fadeUp .6s ease .4s both">
+        <div style="border:1px solid var(--border2);border-radius:12px;padding:20px;background:var(--card2);position:relative;overflow:hidden">
+          <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(57,211,83,.1),transparent 70%);pointer-events:none"></div>
           <div class="mono" style="font-size:9px;color:var(--g);letter-spacing:.18em;margin-bottom:10px;text-align:center">⚡ SECRET UNLOCKED ⚡</div>
-          <div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:14px;line-height:1.5">You cracked the quiz. Your reward awaits.<br><span class="mono" style="font-size:10px;color:var(--muted2)">Scan to claim it 👇</span></div>
-          <div style="background:#fff;border-radius:6px;padding:10px;display:flex;justify-content:center;align-items:center">
+          <div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:14px;line-height:1.6">You cracked the quiz. Your reward awaits.<br><span class="mono" style="font-size:10px;color:var(--muted2)">Scan to claim it 👇</span></div>
+          <div style="background:#fff;border-radius:8px;padding:10px;display:flex;justify-content:center;align-items:center">
             <div id="easter-qr"></div>
           </div>
-
         </div>
       </div>`:''
-    box.innerHTML=`<div style="text-align:center;padding:20px">
-      <div style="font-size:48px;margin-bottom:12px">${perfect?'🏆':quizScore>=QUIZ.length/2?'🌿':'📚'}</div>
-      <div class="disp" style="font-size:44px;color:var(--g);margin-bottom:8px">${quizScore}/${QUIZ.length}</div>
-      <div style="color:var(--muted);font-size:14px;margin-bottom:20px">${perfect?'Perfect! You\'re an e-waste expert!':quizScore>=QUIZ.length/2?'Great job! Keep learning!':'Keep learning to become an eco-champion!'}</div>
-      <button class="btn btn-o" onclick="quizIdx=0;quizScore=0;renderQuiz()">Try Again</button>
-      ${easterEgg}
-    </div>`;
+    box.innerHTML=`
+      <div style="text-align:center;padding:10px 0">
+        <div style="font-size:64px;margin-bottom:16px;animation:fadeUp .4s ease both">${emoji}</div>
+        <div style="width:100%;height:6px;background:var(--dark2);border-radius:3px;margin-bottom:20px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--gdim),var(--g));border-radius:3px;transition:width 1s ease;animation:scoreBar 1s ease forwards"></div>
+        </div>
+        <div class="disp" style="font-size:72px;color:var(--g);line-height:1;text-shadow:0 0 30px rgba(57,211,83,.4);animation:fadeUp .4s ease .1s both">${quizScore}<span style="font-size:36px;color:var(--muted)">/${QUIZ.length}</span></div>
+        <div class="mono" style="font-size:10px;color:var(--g);letter-spacing:.1em;margin:6px 0 4px">${pct}% CORRECT</div>
+        <div style="color:var(--muted2);font-size:14px;margin:10px 0 24px;animation:fadeUp .4s ease .2s both">${msg}</div>
+        <button class="btn btn-g" style="padding:13px 32px;font-size:12px" onclick="quizIdx=0;quizScore=0;renderQuiz()">↺ Try Again</button>
+        ${easterEgg}
+      </div>`;
     if(perfect){
-      new QRCode(document.getElementById('easter-qr'),{
-        text:'https://media.tenor.com/znx_AntI870AAAAM/gorilla-middle-finger.gif',
-        width:200,height:200,
-        colorDark:'#040c05',colorLight:'#ffffff',
-        correctLevel:QRCode.CorrectLevel.H
-      });
+      setTimeout(()=>{
+        const el=document.getElementById('easter-qr');
+        if(el) new QRCode(el,{text:'https://media.tenor.com/znx_AntI870AAAAM/gorilla-middle-finger.gif',width:200,height:200,colorDark:'#040c05',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});
+      },500);
     }
     return;
   }
   const q=QUIZ[quizIdx];
+  const pct=Math.round((quizIdx/QUIZ.length)*100);
+  const letters=['A','B','C','D'];
   box.innerHTML=`
-    <div class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.1em;margin-bottom:16px">QUESTION ${quizIdx+1} OF ${QUIZ.length}</div>
-    <div style="font-weight:600;font-size:15px;line-height:1.5;margin-bottom:20px">${q.q}</div>
-    ${q.opts.map((o,i)=>`<div class="quiz-opt" onclick="answerQuiz(${i},this)">${o}</div>`).join('')}`;
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.12em">QUESTION ${quizIdx+1} <span style="color:var(--border2)">/ ${QUIZ.length}</span></div>
+      <div class="mono" style="font-size:9px;color:var(--g);letter-spacing:.08em">${quizScore} correct</div>
+    </div>
+    <div style="width:100%;height:4px;background:var(--dark2);border-radius:2px;margin-bottom:24px;overflow:hidden">
+      <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--gdim),var(--g));border-radius:2px;transition:width .5s ease"></div>
+    </div>
+    <div style="font-weight:600;font-size:17px;line-height:1.55;margin-bottom:24px;color:#e8f5e9">${q.q}</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      ${q.opts.map((o,i)=>`
+        <div class="quiz-opt" onclick="answerQuiz(${i},this)" style="display:flex;align-items:center;gap:14px;padding:14px 18px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s;background:var(--dark2)">
+          <span class="mono" style="font-size:11px;font-weight:700;color:var(--g);background:rgba(57,211,83,.1);border:1px solid var(--border2);border-radius:4px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${letters[i]}</span>
+          <span style="font-size:14px;line-height:1.4">${o}</span>
+        </div>`).join('')}
+    </div>`;
 }
 function answerQuiz(i,el){
   const q=QUIZ[quizIdx];
   document.querySelectorAll('.quiz-opt').forEach(o=>o.onclick=null);
-  el.classList.add(i===q.ans?'correct':'wrong');
-  if(i!==q.ans)document.querySelectorAll('.quiz-opt')[q.ans].classList.add('correct');
+  const opts=document.querySelectorAll('.quiz-opt');
+  opts[i].style.cssText+='border-color:'+(i===q.ans?'var(--g)':'var(--danger)')+';background:'+(i===q.ans?'rgba(57,211,83,.12)':'rgba(239,83,80,.1)')+';color:'+(i===q.ans?'var(--g)':'var(--danger)');
+  if(i!==q.ans) opts[q.ans].style.cssText+='border-color:var(--g);background:rgba(57,211,83,.12);color:var(--g)';
   if(i===q.ans)quizScore++;
   const fact=document.createElement('div');
-  fact.style.cssText='font-size:12px;color:var(--muted);margin-top:12px;padding:10px 14px;background:rgba(255,255,255,.04);border-radius:4px;line-height:1.5;border-left:2px solid var(--g)';
-  fact.textContent='💡 '+q.fact;
+  fact.style.cssText='font-size:12px;color:var(--muted2);margin-top:16px;padding:12px 16px;background:rgba(57,211,83,.05);border-radius:8px;line-height:1.6;border-left:3px solid var(--g);animation:fadeUp .3s ease';
+  fact.innerHTML='💡 <span style="color:var(--muted)">'+q.fact+'</span>';
   document.getElementById('quiz-box').appendChild(fact);
-  setTimeout(()=>{quizIdx++;renderQuiz();},2000);
+  setTimeout(()=>{quizIdx++;renderQuiz();},2200);
 }
 
 // ── AUTH ──
@@ -1185,30 +1347,77 @@ function setTrackFilter(f){trackFilter=f;loadTrack();}
 // ── LEADERBOARD ──
 function loadLeaderboard(){
   const lb=getLB().sort((a,b)=>b.points-a.points);
-  const medals=['🥇','🥈','🥉'];
   const list=document.getElementById('lb-list');
   if(lb.length===0){
-    list.innerHTML=`<div class="card" style="text-align:center;padding:60px">
-      <div style="font-size:40px;margin-bottom:10px">🏆</div>
-      <div class="mono" style="font-size:11px;color:var(--muted);letter-spacing:.06em">No rankings yet. Complete a pickup to appear here!</div>
+    list.innerHTML=`<div class="card" style="text-align:center;padding:80px 40px">
+      <div style="font-size:56px;margin-bottom:14px">🏆</div>
+      <div class="disp" style="font-size:28px;margin-bottom:8px">NO RANKINGS YET</div>
+      <div class="mono" style="font-size:11px;color:var(--muted);letter-spacing:.06em">Complete a pickup to appear here!</div>
     </div>`;return;
   }
-  list.innerHTML=lb.map((e,i)=>{
+
+  // ── Podium for top 3 ──
+  const podiumOrder=[1,0,2]; // silver(rank2) left, gold(rank1) center, bronze(rank3) right
+  const podiumColors=['#FFD700','#C0C0C0','#CD7F32'];
+  const podiumGlow=['rgba(255,215,0,.45)','rgba(192,192,192,.35)','rgba(205,127,50,.3)'];
+  const podiumBg=['rgba(255,215,0,.1)','rgba(192,192,192,.08)','rgba(205,127,50,.07)'];
+  const podiumH=['110px','80px','60px'];
+  const podiumLabel=['🥇','🥈','🥉'];
+  const podiumRingAnim=['gold-pulse','silver-pulse','bronze-pulse'];
+
+  let podiumHTML='';
+  if(lb.length>=1){
+    podiumHTML=`
+    <style>
+      @keyframes gold-pulse{0%,100%{box-shadow:0 0 18px 4px rgba(255,215,0,.5),0 0 40px 8px rgba(255,215,0,.2)}50%{box-shadow:0 0 28px 8px rgba(255,215,0,.8),0 0 60px 16px rgba(255,215,0,.35)}}
+      @keyframes silver-pulse{0%,100%{box-shadow:0 0 14px 3px rgba(192,192,192,.4),0 0 30px 6px rgba(192,192,192,.15)}50%{box-shadow:0 0 22px 6px rgba(192,192,192,.65),0 0 50px 12px rgba(192,192,192,.25)}}
+      @keyframes bronze-pulse{0%,100%{box-shadow:0 0 12px 2px rgba(205,127,50,.35),0 0 25px 5px rgba(205,127,50,.12)}50%{box-shadow:0 0 20px 5px rgba(205,127,50,.55),0 0 40px 10px rgba(205,127,50,.22)}}
+      .podium-avatar{animation-duration:2.2s;animation-iteration-count:infinite;animation-timing-function:ease-in-out;}
+    </style>
+    <div style="display:flex;align-items:flex-end;justify-content:center;gap:10px;margin-bottom:36px">
+      ${podiumOrder.map(idx=>{
+        const e=lb[idx];if(!e)return'';
+        const isMe=currentUser&&e.email===currentUser.email;
+        const col=podiumColors[idx];
+        const glow=podiumGlow[idx];
+        const bg=podiumBg[idx];
+        const anim=podiumRingAnim[idx];
+        return `<div style="flex:1;max-width:200px;text-align:center">
+          <div style="margin-bottom:12px">
+            <div class="podium-avatar" style="width:62px;height:62px;border-radius:50%;background:${bg};border:2.5px solid ${col};display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:${col};margin:0 auto 8px;animation-name:${anim}">
+              ${(e.name||'?')[0].toUpperCase()}
+            </div>
+            <div style="font-weight:700;font-size:14px;color:${col};text-shadow:0 0 12px ${col}88;margin-bottom:3px">${e.name}</div>
+            <div class="mono" style="font-size:9px;color:${col};opacity:.65;letter-spacing:.05em"></div>
+          </div>
+          <div style="background:linear-gradient(180deg,${col}20,${col}08);border:1px solid ${col};border-bottom:none;border-radius:6px 6px 0 0;height:${podiumH[idx]};display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 6px;box-shadow:0 -6px 28px ${glow}">
+            <div style="font-size:24px">${podiumLabel[idx]}</div>
+            <div class="disp" style="font-size:24px;color:${col};line-height:1;text-shadow:0 0 10px ${col}99">${(e.points||0).toLocaleString()}</div>
+            <div class="mono" style="font-size:7px;color:${col};opacity:.75;letter-spacing:.12em">PTS</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  // ── Rest of list ──
+  const restHTML=lb.slice(3).map((e,i)=>{
+    const rank=i+4;
     const isMe=currentUser&&e.email===currentUser.email;
-    const isTop=i<3;
-    return `<div class="card lb-row" style="margin-bottom:10px;border-color:${isMe?'var(--g)':isTop&&i===0?'gold':i===1?'silver':i===2?'#cd7f32':'var(--border)'};background:${isMe?'var(--glow)':'var(--card)'}">
-      <div class="disp" style="font-size:28px;width:44px;text-align:center;flex-shrink:0">${i<3?medals[i]:'<span style="color:var(--muted);font-size:18px">#'+(i+1)+'</span>'}</div>
-      <div class="lb-avatar" style="border-color:${i===0?'gold':i===1?'silver':i===2?'#cd7f32':'var(--border)'};${i<3?'box-shadow:0 0 12px rgba(57,211,83,.3)':''}">${(e.name||'?')[0].toUpperCase()}</div>
+    return `<div style="display:flex;align-items:center;gap:14px;padding:14px 20px;border:1px solid ${isMe?'var(--g)':'var(--border)'};border-radius:6px;margin-bottom:8px;background:${isMe?'var(--glow)':'var(--card)'};transition:all .2s">
+      <div class="mono" style="font-size:13px;color:var(--muted);width:28px;text-align:center;font-weight:600">#${rank}</div>
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--dark2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--g);font-weight:600;flex-shrink:0">${(e.name||'?')[0].toUpperCase()}</div>
       <div style="flex:1">
-        <div style="font-weight:700;font-size:15px">${e.name} ${isMe?'<span class="mono" style="font-size:9px;color:var(--g);border:1px solid var(--g);padding:2px 6px;border-radius:2px">YOU</span>':''}</div>
-        <div class="mono" style="font-size:9px;color:var(--muted);margin-top:3px;letter-spacing:.06em">${e.totalDevices||0} device${(e.totalDevices||0)!==1?'s':''} recycled</div>
+        <div style="font-weight:600;font-size:14px">${e.name}</div>
       </div>
-      <div>
-        <div class="disp" style="font-size:36px;color:${i===0?'gold':i===1?'silver':i===2?'#cd7f32':'var(--g)'}">${(e.points||0).toLocaleString()}</div>
-        <div class="mono" style="font-size:8px;color:var(--muted);text-align:right;letter-spacing:.08em">POINTS</div>
+      <div style="text-align:right">
+        <div class="disp" style="font-size:26px;color:var(--g)">${(e.points||0).toLocaleString()}</div>
+        <div class="mono" style="font-size:8px;color:var(--muted);letter-spacing:.08em">POINTS</div>
       </div>
     </div>`;
   }).join('');
+
+  list.innerHTML=podiumHTML+restHTML;
 }
 
 // ── ADMIN ──
