@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>E/CYCLE INDIA — E-Waste Management</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
@@ -188,10 +189,12 @@ nav{position:sticky;top:0;z-index:500;background:rgba(4,12,5,.92);backdrop-filte
 .impact-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.12em;margin-top:4px;}
 
 /* ── TESTIMONIAL STRIPE ── */
-.marquee-wrap{overflow:hidden;position:relative;}
-.marquee-track{display:flex;gap:24px;animation:marqueeScroll 30s linear infinite;}
-@keyframes marqueeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.marquee-chip{white-space:nowrap;padding:8px 18px;border:1px solid var(--border);border-radius:20px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);background:var(--card);}
+.marquee-wrap{overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);}
+.marquee-track{display:flex;width:max-content;will-change:transform;animation:marqueeScroll 50s linear infinite;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(0);}
+.marquee-wrap:hover .marquee-track{animation-play-state:paused;}
+@keyframes marqueeScroll{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+.marquee-group{display:flex;gap:24px;padding-right:24px;flex-shrink:0;}
+.marquee-chip{white-space:nowrap;padding:8px 18px;border:1px solid var(--border);border-radius:20px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);background:var(--card);flex-shrink:0;}
 
 /* ── FOOTER ── */
 footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
@@ -495,6 +498,9 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
       </div>
       <div id="auth-form"></div>
       <p class="mono" style="font-size:9px;color:var(--muted);margin-top:20px;text-align:center;letter-spacing:.06em;opacity:.7">Passwords stored locally · Demo purposes only</p>
+      <div style="text-align:center;margin-top:14px">
+        <span class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.06em;opacity:.5;cursor:pointer;" onclick="showView('admin')">Admin Panel →</span>
+      </div>
     </div>
   </div>
 </div>
@@ -510,7 +516,7 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
       </div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap" class="btn-bar-mobile">
         <button class="btn btn-ghost" onclick="showView('track')">📦 My Pickups</button>
-        <button class="btn btn-g" onclick="showView('submit')">+ New Pickup</button>
+        <button class="btn btn-g" onclick="showView('submit')">Schedule Pickup</button>
       </div>
     </div>
     <div class="grid4" style="margin-bottom:36px" id="dash-stats"></div>
@@ -538,8 +544,8 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
       <button class="btn btn-o" onclick="resetSubmit()">Submit Another Device</button>
     </div>
     <div id="submit-form-wrap">
-      <div style="margin-bottom:18px">
-        <button class="btn btn-ghost" onclick="showView('home')" style="font-size:11px;padding:8px 18px">← Return to Home</button>
+      <div style="margin-bottom:18px;display:flex;gap:10px">
+        <button class="btn btn-ghost" onclick="showView('dashboard')" style="font-size:11px;padding:8px 18px">← Dashboard</button>
       </div>
       <div class="tag">🚚 New Request</div>
       <h2 class="disp" style="font-size:56px;margin-bottom:8px">SCHEDULE PICKUP</h2>
@@ -566,13 +572,7 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
           <div class="fg"><label>City</label><input id="f-city" placeholder="e.g. Greater Noida"/></div>
           <div class="fg"><label>Notes (optional)</label><input id="f-notes" placeholder="Any special instructions…"/></div>
         </div>
-        <div id="est-pts-row" style="display:none;margin-top:4px;background:rgba(57,211,83,.08);border:1px solid var(--border2);border-radius:5px;padding:16px 22px;display:flex;justify-content:space-between;align-items:center;margin-bottom:22px">
-          <div>
-            <div class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.08em">Estimated reward for this pickup</div>
-            <div style="font-size:12px;color:var(--muted2);margin-top:2px">Points credited on completion</div>
-          </div>
-          <div class="disp" style="font-size:36px;color:var(--g)" id="est-pts-val">+0 pts</div>
-        </div>
+
         <button class="btn btn-g" style="width:100%;padding:15px;font-size:13px;margin-top:8px" id="submit-btn" onclick="submitPickup()">Confirm Pickup Request →</button>
       </div>
     </div>
@@ -582,13 +582,16 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
 <!-- ══════════════════ TRACKER ══════════════════ -->
 <div id="view-track" class="view">
   <div style="max-width:940px;margin:44px auto;padding:0 28px">
+    <div style="margin-bottom:18px;display:flex;gap:10px">
+      <button class="btn btn-ghost" onclick="showView('dashboard')" style="font-size:11px;padding:8px 18px">← Dashboard</button>
+    </div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;flex-wrap:wrap;gap:14px">
       <div>
         <div class="tag">📦 My Pickups</div>
         <h2 class="disp" style="font-size:52px">PICKUP TRACKER</h2>
       </div>
       <div style="display:flex;gap:10px" class="btn-bar-mobile">
-        <button class="btn btn-g" onclick="showView('submit')">+ New Pickup</button>
+        <button class="btn btn-g" onclick="showView('submit')">My Pickup</button>
         <button class="btn btn-ghost" onclick="loadTrack()">↻ Refresh</button>
       </div>
     </div>
@@ -642,7 +645,7 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
       <span class="disp" style="font-size:18px;color:var(--g)">E/CYCLE INDIA</span>
     </div>
     <span class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.08em">Certified E-Waste Recycling · © 2026 · Made for a greener India</span>
-    <span class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.06em;opacity:.6">Admin: <span style="cursor:pointer;color:var(--muted)" onclick="showView('admin')">Panel →</span></span>
+
   </div>
 </footer>
 
@@ -702,7 +705,7 @@ const QUIZ=[
   {q:"How many phones are discarded globally each year?",opts:["500M","1.2B","2.5B","5.3B"],ans:2,fact:"Approximately 2.5 billion phones are discarded yearly."},
   {q:"What is the fastest growing waste stream worldwide?",opts:["Plastic waste","E-waste","Food waste","Paper waste"],ans:1,fact:"E-waste is the world's fastest growing waste stream."}
 ];
-const MARQUEE_ITEMS=["♻ 53 Million Tonnes of E-Waste Generated Yearly","🌱 Recycling Saves Critical Rare Earth Metals","🔋 Proper Disposal Prevents Toxic Leaching","⚡ One Recycled Phone Saves Enough Energy to Charge 3,500 Phones","🌍 India Is The 5th Largest E-Waste Producer","💎 Gold, Silver & Copper Are Recoverable From Old Electronics","📱 78% of Metals in Phones Can Be Reclaimed","🔌 E-Waste Contains 60+ Elements From The Periodic Table"];
+const MARQUEE_ITEMS=["♻ 53 Million Tonnes of E-Waste Generated Yearly","🌱 Recycling Saves Critical Rare Earth Metals","🔋 Proper Disposal Prevents Toxic Leaching","⚡ One Recycled Phone Saves Enough Energy to Charge 3,500 Phones","🌍 India Is The 5th Largest E-Waste Producer","💎 Gold, Silver & Copper Are Recoverable From Old Electronics","📱 78% of Metals in Phones Can Be Reclaimed","🔌 E-Waste Contains 60+ Elements From The Periodic Table","☠ E-Waste Accounts For 70% of Toxic Waste in Landfills","🖥 Only 12.5% of E-Waste Is Currently Recycled in India","🪫 A Single Battery Can Contaminate 600,000 Litres of Water","🏭 E-Waste Recycling Creates 6× More Jobs Than Landfilling","🔬 Smartphones Contain Lithium, Cobalt & Palladium","🌡 Burning E-Waste Releases Cancer-Causing Dioxins","📺 CRT Monitors Contain Up To 4 kg of Lead","💡 Recycling 1 Million Laptops Saves Energy Equal to 3,500 Homes","🇮🇳 India Generates 3.2 Million Tonnes of E-Waste Annually","🛰 Rare Metals In E-Waste Are Used in Space Technology"];
 
 // ── STORAGE ──
 function lsGet(k){try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}
@@ -818,7 +821,7 @@ function renderNav(active){
   const links=document.getElementById('nav-links');
   const mobileMenu=document.getElementById('mobile-menu');
   const base=currentUser
-    ?[['home','Home'],['dashboard','Dashboard'],['submit','+ Pickup'],['track','Track'],['leaderboard','Rankings']]
+    ?[['home','Home'],['dashboard','Dashboard'],['submit','Schedule Pickup'],['track','Track'],['leaderboard','Rankings']]
     :[['home','Home'],['leaderboard','Rankings'],['auth','Sign In']];
   const linksHtml=base.map(([v,l])=>`<div class="nav-link ${active===v?'active':''}" onclick="showView('${v}')">${l}</div>`).join('');
   const logoutHtml=currentUser?`<div class="nav-link" onclick="logout()" style="color:var(--danger);">Log Out</div>`:'';
@@ -889,11 +892,11 @@ function renderHome(){
     }
   }
 
-  // Marquee
+  // Marquee — two identical groups; animation scrolls exactly -50% (one group width) = perfect seamless loop
   const mt=document.getElementById('marquee-track');
   if(mt){
-    const items=[...MARQUEE_ITEMS,...MARQUEE_ITEMS].map(t=>`<div class="marquee-chip">${t}</div>`).join('');
-    mt.innerHTML=items;
+    const group=MARQUEE_ITEMS.map(t=>`<div class="marquee-chip">${t}</div>`).join('');
+    mt.innerHTML=`<div class="marquee-group" aria-hidden="false">${group}</div><div class="marquee-group" aria-hidden="true">${group}</div>`;
   }
 
   // Estimator devices
@@ -927,7 +930,7 @@ function runEstimate(){
   const lo=Math.round(dev.vlo*mult);const hi=Math.round(dev.vhi*mult);
   const res=document.getElementById('est-result');
   document.getElementById('est-val').textContent=`₹${lo.toLocaleString()}–${hi.toLocaleString()}`;
-  document.getElementById('est-note').textContent=`${dev.label} in ${estCond} condition · ${dev.kg} kg · ${dev.pts} reward points`;
+  document.getElementById('est-note').textContent=`${dev.label} in ${estCond} condition`;
   res.style.display='block';
 }
 
@@ -937,12 +940,35 @@ function renderQuiz(){
   const box=document.getElementById('quiz-box');
   if(!box)return;
   if(quizIdx>=QUIZ.length){
+    const perfect=quizScore===QUIZ.length;
+    const easterEgg=perfect?`
+      <div style="margin:28px auto 0;max-width:280px;animation:fadeUp .6s ease .3s both">
+        <div style="border:1px solid var(--border2);border-radius:8px;padding:20px;background:var(--card2);position:relative;overflow:hidden">
+          <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(57,211,83,.07),transparent 70%);pointer-events:none"></div>
+          <div class="mono" style="font-size:9px;color:var(--g);letter-spacing:.18em;margin-bottom:10px;text-align:center">⚡ SECRET UNLOCKED ⚡</div>
+          <div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:14px;line-height:1.5">You cracked the quiz. Your reward awaits.<br><span class="mono" style="font-size:10px;color:var(--muted2)">Scan to claim it 👇</span></div>
+          <div style="background:#fff;border-radius:6px;padding:10px;display:flex;justify-content:center;align-items:center">
+            <div id="easter-qr"></div>
+          </div>
+
+        </div>
+      </div>`:''
     box.innerHTML=`<div style="text-align:center;padding:20px">
-      <div style="font-size:48px;margin-bottom:12px">${quizScore===QUIZ.length?'🏆':quizScore>=QUIZ.length/2?'🌿':'📚'}</div>
+      <div style="font-size:48px;margin-bottom:12px">${perfect?'🏆':quizScore>=QUIZ.length/2?'🌿':'📚'}</div>
       <div class="disp" style="font-size:44px;color:var(--g);margin-bottom:8px">${quizScore}/${QUIZ.length}</div>
-      <div style="color:var(--muted);font-size:14px;margin-bottom:20px">${quizScore===QUIZ.length?'Perfect! You\'re an e-waste expert!':quizScore>=QUIZ.length/2?'Great job! Keep learning!':'Keep learning to become an eco-champion!'}</div>
+      <div style="color:var(--muted);font-size:14px;margin-bottom:20px">${perfect?'Perfect! You\'re an e-waste expert!':quizScore>=QUIZ.length/2?'Great job! Keep learning!':'Keep learning to become an eco-champion!'}</div>
       <button class="btn btn-o" onclick="quizIdx=0;quizScore=0;renderQuiz()">Try Again</button>
-    </div>`;return;
+      ${easterEgg}
+    </div>`;
+    if(perfect){
+      new QRCode(document.getElementById('easter-qr'),{
+        text:'https://media.tenor.com/znx_AntI870AAAAM/gorilla-middle-finger.gif',
+        width:200,height:200,
+        colorDark:'#040c05',colorLight:'#ffffff',
+        correctLevel:QRCode.CorrectLevel.H
+      });
+    }
+    return;
   }
   const q=QUIZ[quizIdx];
   box.innerHTML=`
