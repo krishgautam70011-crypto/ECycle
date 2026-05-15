@@ -152,6 +152,8 @@ nav{position:sticky;top:0;z-index:500;background:rgba(4,12,5,.92);backdrop-filte
 /* ── DEVICE CARDS ── */
 .dev-card{padding:16px 10px;border:1px solid var(--border);border-radius:5px;cursor:pointer;text-align:center;transition:all .2s;}
 .dev-card:hover,.dev-card.active{border-color:var(--g);background:var(--glow2);}
+.dev-card svg{color:var(--muted);transition:color .2s;}
+.dev-card:hover svg,.dev-card.active svg{color:var(--g);}
 .dev-card.active .dev-lbl{color:var(--g);}
 .dev-lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-top:5px;letter-spacing:.06em;}
 
@@ -293,11 +295,16 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
   .chip{font-size:9px;padding:6px 12px;}
 
   /* Condition row stacks */
-  .cond-row{flex-wrap:wrap;}
-  .cond-btn{flex:1 1 calc(50% - 8px);}
+  .cond-row{flex-wrap:wrap;gap:8px;}
+  .cond-btn{flex:1 1 calc(50% - 8px);padding:11px 4px;font-size:11px;}
 
   /* Device estimator grid */
-  #est-devices{grid-template-columns:repeat(4,1fr);}
+  #est-devices{grid-template-columns:repeat(4,1fr);gap:8px;}
+
+  /* Estimator card */
+  .est-card-inner{padding:20px !important;}
+  #est-val{font-size:40px !important;}
+  #est-result{padding:16px !important;}
 
   /* Admin status buttons */
   .status-action{font-size:9px;padding:4px 8px;}
@@ -444,8 +451,8 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
   <!-- DEVICE ESTIMATOR -->
   <div class="section section-alt">
     <div class="container">
-      <div style="max-width:700px;margin:0 auto">
-        <div class="card" style="padding:36px;border-color:var(--border2);box-shadow:0 0 60px rgba(57,211,83,.06)">
+      <div style="max-width:700px;margin:0 auto;width:100%">
+        <div class="card est-card-inner" style="padding:36px;border-color:var(--border2);box-shadow:0 0 60px rgba(57,211,83,.06)">
           <div class="tag">💡 Device Estimator</div>
           <h3 class="disp" style="font-size:36px;margin-bottom:8px">What's Your E-Waste Worth?</h3>
           <p class="mono" style="font-size:10px;color:var(--muted);margin-bottom:28px;letter-spacing:.06em">Select a device and condition to get an instant recycling credit estimate</p>
@@ -679,18 +686,18 @@ footer{border-top:1px solid var(--border);padding:32px 28px;margin-top:80px;}
 
 // ── DATA ──
 const DEVICES=[
-  {id:"smartphone",label:"Smartphone",pts:50,kg:.18,icon:"📱",vlo:600,vhi:4500},
-  {id:"laptop",label:"Laptop",pts:120,kg:2.1,icon:"💻",vlo:1800,vhi:14000},
-  {id:"tablet",label:"Tablet",pts:80,kg:.65,icon:"📟",vlo:800,vhi:6500},
-  {id:"tv",label:"Television",pts:150,kg:8.5,icon:"📺",vlo:600,vhi:5000},
-  {id:"battery",label:"Battery/UPS",pts:60,kg:1.2,icon:"🔋",vlo:400,vhi:2000},
-  {id:"printer",label:"Printer",pts:100,kg:3.8,icon:"🖨️",vlo:400,vhi:2500},
-  {id:"ac",label:"AC Unit",pts:200,kg:12,icon:"❄️",vlo:2000,vhi:9000},
-  {id:"other",label:"Other",pts:40,kg:1,icon:"🔌",vlo:200,vhi:1500}
+  {id:"smartphone",label:"Smartphone",pts:50,kg:.18,icon:"📲",vlo:1200,vhi:6000},
+  {id:"laptop",label:"Laptop",pts:120,kg:2.1,icon:"💻",vlo:3500,vhi:18000},
+  {id:"tablet",label:"Tablet",pts:80,kg:.65,icon:`<svg width="20" height="27" viewBox="0 0 20 27" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.9" y="0.9" width="18.2" height="25.2" rx="2.8" stroke="currentColor" stroke-width="1.8"/><rect x="3.5" y="3.5" width="13" height="17.5" rx="1" fill="currentColor" opacity="0.13"/><rect x="3.5" y="3.5" width="13" height="17.5" rx="1" stroke="currentColor" stroke-width="1.1"/><circle cx="10" cy="24" r="1.3" fill="currentColor"/><circle cx="10" cy="2.3" r="0.7" fill="currentColor" opacity="0.5"/></svg>`,vlo:1500,vhi:9000},
+  {id:"tv",label:"Television",pts:150,kg:8.5,icon:"📺",vlo:1000,vhi:7000},
+  {id:"battery",label:"Battery/UPS",pts:60,kg:1.2,icon:"⚡",vlo:800,vhi:3500},
+  {id:"printer",label:"Printer",pts:100,kg:3.8,icon:"🖨️",vlo:500,vhi:3000},
+  {id:"ac",label:"AC Unit",pts:200,kg:12,icon:"❄️",vlo:4000,vhi:15000},
+  {id:"other",label:"Other",pts:40,kg:1,icon:"⚙️",vlo:300,vhi:2000}
 ];
 const STATUS_FLOW=["Pending","Confirmed","Picked Up","Processing","Completed"];
 const STATUS_COLOR={Pending:"#ffb300",Confirmed:"#29b6f6","Picked Up":"#ab47bc",Processing:"#ff7043",Completed:"#39d353"};
-const COND_MULT={excellent:1.3,good:1,fair:.7,broken:.3};
+const COND_MULT={excellent:1.3,good:1,fair:.65,broken:.25};
 const BADGES=[
   {emoji:"🌱",name:"First Drop",desc:"Submit your first pickup",check:u=>u.totalPickups>=1},
   {emoji:"⚡",name:"Power Saver",desc:"Recycle 3+ devices",check:u=>u.totalDevices>=3},
