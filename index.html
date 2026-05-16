@@ -10,8 +10,8 @@
 <style>
 /* ── RESET & BASE ── */
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;}
-body{background:#040c05;color:#e8f5e9;font-family:'Outfit',sans-serif;min-height:100vh;cursor:default;overflow-x:hidden;line-height:1.6;}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;height:100%;}
+body{background:#040c05;color:#e8f5e9;font-family:'Outfit',sans-serif;min-height:100vh;cursor:default;overflow-x:hidden;overflow-y:auto;line-height:1.6;-webkit-overflow-scrolling:touch;}
 input,textarea,select{cursor:text;user-select:text;-webkit-user-select:text;}
 button,[onclick]{cursor:pointer;user-select:none;-webkit-user-select:none;}
 *{-webkit-tap-highlight-color:transparent;}
@@ -45,7 +45,7 @@ button,[onclick]{cursor:pointer;user-select:none;-webkit-user-select:none;}
 .btn-danger{background:transparent;color:var(--danger);border:1px solid rgba(239,83,80,.4);}.btn-danger:hover{background:rgba(239,83,80,.1);transform:translateY(-1px);}
 
 /* ── FORMS ── */
-input,select,textarea{background:rgba(255,255,255,.04);border:1px solid var(--border);color:#e8f5e9;font-family:'Outfit',sans-serif;font-size:14px;padding:12px 16px;border-radius:8px;outline:none;width:100%;transition:border-color .25s cubic-bezier(.22,1,.36,1),box-shadow .25s cubic-bezier(.22,1,.36,1),background .25s;-webkit-appearance:none;}
+input,select,textarea{background:rgba(255,255,255,.04);border:1px solid var(--border);color:#e8f5e9;font-family:'Outfit',sans-serif;font-size:16px;padding:12px 16px;border-radius:8px;outline:none;width:100%;transition:border-color .25s cubic-bezier(.22,1,.36,1),box-shadow .25s cubic-bezier(.22,1,.36,1),background .25s;-webkit-appearance:none;}
 input:focus,select:focus,textarea:focus{border-color:var(--g);box-shadow:0 0 0 4px rgba(57,211,83,.1);background:rgba(57,211,83,.03);}
 input:hover:not(:focus),select:hover:not(:focus),textarea:hover:not(:focus){border-color:rgba(57,211,83,.3);}
 select option{background:#0b1c0d;}
@@ -414,7 +414,6 @@ footer.no-gap{margin-top:0;}
 
   /* Cards & forms */
   .card{padding:18px;}
-  input,select,textarea{font-size:16px;} /* prevents iOS zoom */
 
   /* Submit form grid */
   #view-submit .grid2{grid-template-columns:1fr;}
@@ -802,15 +801,15 @@ input:focus,select:focus,textarea:focus{
 .auth-corner-br{bottom:14px;right:14px;border-bottom:2px solid var(--g);border-right:2px solid var(--g);border-radius:0 0 4px 0;animation-delay:.3s;}
 
 /* Auth orb containment */
-#view-auth{overflow-x:hidden;}
-.auth-orb{position:fixed;border-radius:50%;pointer-events:none;filter:blur(60px);z-index:0;}
+#view-auth{overflow:hidden;position:relative;}
+.auth-orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(60px);z-index:0;}
 .auth-orb-1{width:380px;height:380px;background:radial-gradient(circle,rgba(57,211,83,.12),transparent 70%);top:-100px;left:-80px;animation:authOrbDrift1 16s ease-in-out infinite;}
 .auth-orb-2{width:300px;height:300px;background:radial-gradient(circle,rgba(0,229,255,.07),transparent 70%);bottom:-80px;right:-60px;animation:authOrbDrift2 20s ease-in-out infinite;}
 .auth-orb-3{width:200px;height:200px;background:radial-gradient(circle,rgba(57,211,83,.08),transparent 70%);top:50%;right:-40px;animation:authOrbDrift3 12s ease-in-out infinite;}
 
 /* Grid background */
 .auth-grid-bg{
-  position:fixed;inset:0;
+  position:absolute;inset:0;
   opacity:.025;
   background-image:linear-gradient(var(--g) 1px,transparent 1px),linear-gradient(90deg,var(--g) 1px,transparent 1px);
   background-size:36px 36px;
@@ -895,6 +894,7 @@ input:focus,select:focus,textarea:focus{
 /* Override old tab-btn inside auth */
 #view-auth .tab-btn{display:none;}
 
+
 /* ── Auth card responsive ── */
 @media(max-width:750px){
   .auth-card{padding:28px 22px 24px;}
@@ -906,6 +906,75 @@ input:focus,select:focus,textarea:focus{
   .auth-title-text{font-size:32px!important;}
   #view-auth [style*="padding:40px 20px"]{padding:20px 14px!important;}
   .auth-tab{font-size:10px;padding:9px 6px;}
+}
+
+/* ══════════════════════════════════════
+   SCHEDULE PICKUP PAGE
+══════════════════════════════════════ */
+.submit-page-wrap{max-width:1100px;margin:0 auto;padding:36px 28px 60px;}
+.submit-topbar{margin-bottom:20px;}
+.submit-header{background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);border:1px solid var(--border2);border-radius:18px;padding:32px 36px;margin-bottom:28px;position:relative;overflow:hidden;}
+.submit-header-title{font-size:clamp(38px,6vw,64px);margin-bottom:4px;}
+.submit-steps-pills{display:flex;align-items:center;gap:0;margin-top:22px;}
+.step-pill{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 10px;border:1px solid var(--border);border-radius:20px;background:transparent;transition:all .3s cubic-bezier(.22,1,.36,1);}
+.step-pill.active{border-color:var(--g);background:rgba(57,211,83,.1);}
+.step-pill.done{border-color:rgba(57,211,83,.4);background:rgba(57,211,83,.06);}
+.step-pill-num{width:20px;height:20px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;transition:background .3s,color .3s;color:var(--muted);}
+.step-pill.active .step-pill-num{background:var(--g);color:#040c05;}
+.step-pill.done .step-pill-num{background:rgba(57,211,83,.3);color:var(--g);}
+.step-pill-lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;color:var(--muted);transition:color .3s;}
+.step-pill.active .step-pill-lbl,.step-pill.done .step-pill-lbl{color:var(--g);}
+.step-pill-line{flex:1;height:1px;background:var(--border);min-width:16px;max-width:40px;margin:0 4px;}
+.submit-body{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start;}
+.submit-form-col{display:flex;flex-direction:column;gap:16px;}
+.submit-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 26px;transition:border-color .3s;}
+.submit-section:focus-within{border-color:rgba(57,211,83,.3);}
+.submit-section-label{display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:20px;}
+.submit-sec-num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--g);opacity:.5;line-height:1;}
+.submit-row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.qty-stepper{display:flex;align-items:center;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.03);height:50px;transition:border-color .25s;}
+.qty-stepper:focus-within{border-color:var(--g);}
+.qty-btn{width:50px;height:100%;background:rgba(57,211,83,.06);border:none;color:var(--g);font-size:22px;cursor:pointer;transition:background .2s,transform .15s;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:0;}
+.qty-btn:first-child{border-radius:9px 0 0 9px;}
+.qty-btn:last-child{border-radius:0 9px 9px 0;}
+.qty-btn:hover{background:rgba(57,211,83,.14);}
+.qty-btn:active{transform:scale(.92);}
+.qty-input{flex:1;text-align:center;font-size:18px;font-weight:700;border:none;background:transparent;color:#e8f5e9;padding:0;width:100%;outline:none;-moz-appearance:textfield;}
+.qty-input::-webkit-outer-spin-button,.qty-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.photo-drop{border:2px dashed var(--border);border-radius:14px;padding:24px 16px;text-align:center;cursor:pointer;transition:border-color .25s,background .25s;}
+.photo-drop:hover{border-color:var(--border2);background:rgba(255,255,255,.02);}
+.photo-placeholder{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.photo-icon{font-size:32px;}
+.photo-preview-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.photo-preview-img{max-width:100%;max-height:180px;border-radius:10px;object-fit:contain;}
+.photo-preview-bar{display:flex;align-items:center;gap:10px;}
+.pts-estimate-card{display:flex;justify-content:space-between;align-items:center;background:rgba(57,211,83,.06);border:1px solid rgba(57,211,83,.2);border-radius:12px;padding:16px 20px;margin-top:4px;}
+.submit-cta-btn{width:100%;padding:16px;font-size:13px;border-radius:10px;letter-spacing:.08em;margin-top:4px;justify-content:center;display:none;}
+.submit-cta-btn-desk{width:100%;padding:15px;font-size:12px;border-radius:10px;letter-spacing:.08em;margin-top:16px;justify-content:center;}
+.submit-sidebar{position:sticky;top:88px;}
+.submit-sidebar-inner{background:var(--card2);border:1px solid var(--border2);border-radius:18px;padding:24px;box-shadow:0 0 60px rgba(57,211,83,.06);}
+.summary-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.sum-icon{font-size:16px;flex-shrink:0;margin-top:2px;}
+.sum-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;}
+.sum-val{font-size:13px;color:var(--text);font-weight:500;}
+.sum-divider{height:1px;background:var(--border);margin:8px 0;}
+.summary-pts-card{background:rgba(57,211,83,.07);border:1px solid rgba(57,211,83,.2);border-radius:12px;padding:16px;text-align:center;margin:12px 0;}
+
+@media(max-width:860px){
+  .submit-page-wrap{padding:20px 16px 48px;}
+  .submit-header{padding:20px 20px;}
+  .submit-body{grid-template-columns:1fr;}
+  .submit-sidebar{position:static;}
+  .submit-sidebar-inner{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;}
+  .summary-pts-card{grid-column:1/-1;}
+  .submit-cta-btn-desk{display:none!important;}
+  .submit-cta-btn{display:flex;}
+  .submit-row2{grid-template-columns:1fr;}
+  .step-pill-lbl{display:none;}
+  .step-pill{padding:6px 8px;}
+}
+@media(max-width:480px){
+  .submit-sidebar-inner{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -1102,7 +1171,7 @@ input:focus,select:focus,textarea:focus{
     <div class="auth-orb auth-orb-3"></div>
 
     <!-- Floating particles -->
-    <canvas id="auth-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:0;width:100%;height:100%"></canvas>
+    <canvas id="auth-canvas" style="position:absolute;inset:0;pointer-events:none;z-index:0;width:100%;height:100%"></canvas>
 
     <!-- Grid overlay -->
     <div class="auth-grid-bg"></div>
@@ -1210,57 +1279,212 @@ input:focus,select:focus,textarea:focus{
 
 <!-- ══════════════════ SUBMIT ══════════════════ -->
 <div id="view-submit" class="view">
-  <div style="max-width:740px;margin:0 auto;padding:44px 28px">
+  <div class="submit-page-wrap">
 
     <!-- Success state -->
-    <div id="submit-done" style="display:none;text-align:center;padding:80px 0" class="anim">
+    <div id="submit-done" style="display:none;text-align:center;padding:80px 20px;max-width:520px;margin:0 auto" class="anim">
       <div style="width:90px;height:90px;background:rgba(57,211,83,.12);border:2px solid var(--g);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 24px;box-shadow:0 0 40px rgba(57,211,83,.25)">✅</div>
       <div class="disp" style="font-size:56px;color:var(--g);margin-bottom:10px;text-shadow:0 0 30px rgba(57,211,83,.3)">PICKUP BOOKED!</div>
       <div class="mono" style="font-size:12px;color:var(--g);margin-bottom:8px;letter-spacing:.1em" id="submit-id"></div>
-      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:32px;max-width:420px;margin-left:auto;margin-right:auto" id="submit-msg"></p>
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:32px" id="submit-msg"></p>
       <button class="btn btn-o" onclick="resetSubmit()" style="padding:13px 28px">Submit Another Device</button>
     </div>
 
     <!-- Form -->
     <div id="submit-form-wrap">
-      <div style="margin-bottom:20px">
+
+      <!-- Top bar -->
+      <div class="submit-topbar">
         <button class="btn btn-ghost" onclick="showView('dashboard')" style="font-size:11px;padding:8px 18px">← Dashboard</button>
       </div>
 
-      <!-- Header -->
-      <div style="background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);border:1px solid var(--border2);border-radius:14px;padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden">
-        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(57,211,83,.08),transparent 60%);pointer-events:none"></div>
-        <div class="tag" style="position:relative">🚚 New Request</div>
-        <h2 class="disp" style="font-size:52px;margin-bottom:6px;position:relative">SCHEDULE PICKUP</h2>
-        <p class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.08em;position:relative">Free doorstep collection · Certified recycling · 24hr response</p>
+      <!-- Page header -->
+      <div class="submit-header">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 80% 0%,rgba(57,211,83,.1),transparent 60%);pointer-events:none"></div>
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 0% 100%,rgba(0,229,255,.04),transparent 50%);pointer-events:none"></div>
+        <div style="position:relative;z-index:1">
+          <div class="tag">🚚 New Request</div>
+          <h2 class="disp submit-header-title">SCHEDULE PICKUP</h2>
+          <p class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.08em;margin-top:4px">Free doorstep collection · Certified recycling · 24hr response</p>
+          <!-- Progress pills -->
+          <div class="submit-steps-pills">
+            <div class="step-pill active" id="spill-1"><span class="step-pill-num">1</span><span class="step-pill-lbl">Device</span></div>
+            <div class="step-pill-line"></div>
+            <div class="step-pill" id="spill-2"><span class="step-pill-num">2</span><span class="step-pill-lbl">Details</span></div>
+            <div class="step-pill-line"></div>
+            <div class="step-pill" id="spill-3"><span class="step-pill-num">3</span><span class="step-pill-lbl">Location</span></div>
+          </div>
+        </div>
       </div>
 
-      <!-- Form card -->
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:32px;box-shadow:0 0 40px rgba(57,211,83,.05)">
-        <div class="grid2">
-          <div class="fg" style="grid-column:1/-1">
-            <label>Device Type</label>
-            <select id="f-device" onchange="updateEstPts()">
-              <option value="">Select your device…</option>
-              <option value="smartphone" data-pts="50">📲 Smartphone (+50 pts)</option>
-              <option value="laptop" data-pts="120">💻 Laptop (+120 pts)</option>
-              <option value="tablet" data-pts="80">📱 Tablet (+80 pts)</option>
-              <option value="tv" data-pts="150">📺 Television (+150 pts)</option>
-              <option value="battery" data-pts="60">⚡ Battery / UPS (+60 pts)</option>
-              <option value="printer" data-pts="100">🖨️ Printer (+100 pts)</option>
-              <option value="ac" data-pts="200">❄️ Air Conditioner (+200 pts)</option>
-              <option value="other" data-pts="40">⚙️ Other Electronics (+40 pts)</option>
-            </select>
+      <!-- Two-column layout: form left, summary right -->
+      <div class="submit-body">
+
+        <!-- LEFT: Form sections -->
+        <div class="submit-form-col">
+
+          <!-- § 1 Device -->
+          <div class="submit-section">
+            <div class="submit-section-label"><span class="submit-sec-num">01</span> Device Info</div>
+
+            <div class="fg">
+              <label>Device Type</label>
+              <select id="f-device" onchange="updateEstPts();updateBrandList();updateStepPills(1)">
+                <option value="">Select your device…</option>
+                <option value="smartphone" data-pts="50">📲 Smartphone (+50 pts)</option>
+                <option value="laptop" data-pts="120">💻 Laptop (+120 pts)</option>
+                <option value="tablet" data-pts="80">📱 Tablet (+80 pts)</option>
+                <option value="tv" data-pts="150">📺 Television (+150 pts)</option>
+                <option value="battery" data-pts="60">⚡ Battery / UPS (+60 pts)</option>
+                <option value="printer" data-pts="100">🖨️ Printer (+100 pts)</option>
+                <option value="ac" data-pts="200">❄️ Air Conditioner (+200 pts)</option>
+                <option value="other" data-pts="40">⚙️ Other Electronics (+40 pts)</option>
+              </select>
+            </div>
+
+            <div class="submit-row2" id="fg-brand-model" style="display:none">
+              <div class="fg" id="fg-brand">
+                <label>Brand</label>
+                <select id="f-brand" onchange="updateModelList()">
+                  <option value="">Select brand…</option>
+                </select>
+              </div>
+              <div class="fg" id="fg-model">
+                <label>Model Name / Number</label>
+                <input type="text" id="f-model" inputmode="text" placeholder="e.g. iPhone 13…" autocomplete="off" spellcheck="false"/>
+              </div>
+            </div>
+
+            <div class="fg">
+              <label>Quantity</label>
+              <div class="qty-stepper">
+                <button type="button" class="qty-btn" onclick="stepQty(-1)">−</button>
+                <input type="number" id="f-qty" class="qty-input" value="1" min="1" max="50" oninput="updateEstPts();syncSummary()"/>
+                <button type="button" class="qty-btn" onclick="stepQty(1)">+</button>
+              </div>
+            </div>
+
+            <!-- Photo upload -->
+            <div class="fg" id="fg-photo" style="display:none">
+              <label>Device Photo <span style="font-family:'Outfit',sans-serif;color:var(--muted);font-size:11px;text-transform:none;letter-spacing:0">(optional)</span></label>
+              <div id="photo-drop" onclick="document.getElementById('f-photo').click()" class="photo-drop">
+                <input type="file" id="f-photo" accept="image/*" capture="environment" style="display:none" onchange="handlePhotoChange(event)"/>
+                <div id="photo-placeholder" class="photo-placeholder">
+                  <div class="photo-icon">📷</div>
+                  <div class="mono" style="font-size:11px;color:var(--muted);letter-spacing:.06em">TAP TO CAPTURE / UPLOAD</div>
+                  <div class="mono" style="font-size:9px;color:var(--muted);opacity:.45;margin-top:3px">JPG · PNG · WEBP · Max 10MB</div>
+                </div>
+                <div id="photo-preview" class="photo-preview-wrap" style="display:none">
+                  <img id="photo-img" src="" alt="Device" class="photo-preview-img"/>
+                  <div class="photo-preview-bar">
+                    <span class="mono" style="font-size:10px;color:var(--g);letter-spacing:.06em">✓ PHOTO ADDED</span>
+                    <button type="button" onclick="event.stopPropagation();clearPhoto()" class="btn btn-ghost" style="padding:4px 12px;font-size:9px;border-radius:6px">REMOVE</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Points estimate -->
+            <div id="est-pts-row" style="display:none">
+              <div class="pts-estimate-card">
+                <div>
+                  <div class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.1em">ESTIMATED REWARD</div>
+                  <div class="disp" style="font-size:36px;color:var(--g)" id="est-pts-val">0 pts</div>
+                </div>
+                <div style="text-align:right">
+                  <div class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.08em">EST. WEIGHT</div>
+                  <div class="mono" style="font-size:14px;color:var(--muted2)" id="est-kg-val">0 kg</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="fg"><label>Quantity</label><input type="number" id="f-qty" value="1" min="1" max="50" oninput="updateEstPts()"/></div>
-          <div class="fg"><label>Phone Number</label><input type="tel" id="f-phone" placeholder="+91 98765 43210"/></div>
-          <div class="fg" style="grid-column:1/-1"><label>Pickup Address</label><textarea id="f-address" rows="2" placeholder="House/Flat no., Street, Locality"></textarea></div>
-          <div class="fg"><label>City</label><input id="f-city" placeholder="e.g. Greater Noida"/></div>
-          <div class="fg"><label>Notes (optional)</label><input id="f-notes" placeholder="Any special instructions…"/></div>
+
+          <!-- § 2 Contact -->
+          <div class="submit-section" id="submit-sec-2">
+            <div class="submit-section-label"><span class="submit-sec-num">02</span> Contact Details</div>
+            <div class="fg">
+              <label>Phone Number</label>
+              <input type="tel" inputmode="numeric" autocomplete="tel" id="f-phone" placeholder="+91 98765 43210" pattern="[0-9+\s\-()]*" oninput="updateStepPills(2)"/>
+            </div>
+          </div>
+
+          <!-- § 3 Location -->
+          <div class="submit-section" id="submit-sec-3">
+            <div class="submit-section-label"><span class="submit-sec-num">03</span> Pickup Location</div>
+            <div class="fg">
+              <label>Address</label>
+              <textarea id="f-address" rows="2" inputmode="text" autocomplete="street-address" placeholder="House/Flat no., Street, Locality" oninput="updateStepPills(3)"></textarea>
+            </div>
+            <div class="submit-row2">
+              <div class="fg">
+                <label>City</label>
+                <input type="text" inputmode="text" autocomplete="address-level2" id="f-city" placeholder="e.g. Greater Noida"/>
+              </div>
+              <div class="fg">
+                <label>Notes <span style="font-family:'Outfit',sans-serif;text-transform:none;letter-spacing:0;font-size:11px">(optional)</span></label>
+                <input type="text" inputmode="text" id="f-notes" placeholder="Special instructions…"/>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit button (mobile: shows here) -->
+          <button class="btn btn-g submit-cta-btn" id="submit-btn" onclick="submitPickup()">
+            Confirm Pickup Request →
+          </button>
+
+        </div><!-- /form col -->
+
+        <!-- RIGHT: Summary sidebar -->
+        <div class="submit-sidebar">
+          <div class="submit-sidebar-inner">
+            <div class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.12em;margin-bottom:16px">BOOKING SUMMARY</div>
+
+            <div class="summary-row" id="sum-device">
+              <span class="sum-icon">📦</span>
+              <div><div class="sum-label">Device</div><div class="sum-val" id="sum-device-val">—</div></div>
+            </div>
+            <div class="summary-row" id="sum-brand-row" style="display:none">
+              <span class="sum-icon">🏷</span>
+              <div><div class="sum-label">Brand / Model</div><div class="sum-val" id="sum-brand-val">—</div></div>
+            </div>
+            <div class="summary-row">
+              <span class="sum-icon">🔢</span>
+              <div><div class="sum-label">Quantity</div><div class="sum-val" id="sum-qty-val">1</div></div>
+            </div>
+            <div class="summary-row" id="sum-photo-row" style="display:none">
+              <span class="sum-icon">📷</span>
+              <div style="width:100%">
+                <div class="sum-label">Photo</div>
+                <img id="sum-photo-img" src="" style="width:100%;max-height:100px;object-fit:cover;border-radius:8px;margin-top:6px;border:1px solid var(--border)"/>
+              </div>
+            </div>
+            <div class="sum-divider"></div>
+            <div class="summary-row">
+              <span class="sum-icon">📍</span>
+              <div><div class="sum-label">Location</div><div class="sum-val" id="sum-city-val">—</div></div>
+            </div>
+            <div class="summary-row">
+              <span class="sum-icon">📞</span>
+              <div><div class="sum-label">Phone</div><div class="sum-val" id="sum-phone-val">—</div></div>
+            </div>
+            <div class="sum-divider"></div>
+            <div class="summary-pts-card">
+              <div class="mono" style="font-size:9px;color:var(--muted);letter-spacing:.1em">YOU EARN</div>
+              <div class="disp" style="font-size:48px;color:var(--g);line-height:1" id="sum-pts">0</div>
+              <div class="mono" style="font-size:10px;color:var(--muted)">POINTS</div>
+            </div>
+
+            <!-- Submit button (desktop: shows in sidebar) -->
+            <button class="btn btn-g submit-cta-btn-desk" id="submit-btn-desk" onclick="submitPickup()">
+              Confirm Pickup →
+            </button>
+
+            <div class="mono" style="font-size:9px;color:var(--muted);text-align:center;margin-top:12px;letter-spacing:.04em;opacity:.6">🔒 Free pickup · No hidden charges</div>
+          </div>
         </div>
-        <button class="btn btn-g" style="width:100%;padding:16px;font-size:13px;margin-top:8px;border-radius:8px;letter-spacing:.08em" id="submit-btn" onclick="submitPickup()">Confirm Pickup Request →</button>
-      </div>
-    </div>
+
+      </div><!-- /submit-body -->
+    </div><!-- /submit-form-wrap -->
   </div>
 </div>
 
@@ -1477,7 +1701,7 @@ function dbGetPickups(email){return lsGet('pickups:'+email)||[];}
 function dbSubmitPickup(user,form){
   const dev=DEVICES.find(d=>d.id===form.device)||DEVICES[7];
   const qty=parseInt(form.qty)||1;
-  const entry={id:uid(),userId:user.email,userName:user.name,device:form.device,deviceLabel:dev.label,qty,address:form.address,city:form.city,phone:form.phone,notes:form.notes,status:'Pending',pts:dev.pts*qty,kgEstimate:dev.kg*qty,createdAt:now(),updatedAt:now()};
+  const entry={id:uid(),userId:user.email,userName:user.name,device:form.device,deviceLabel:dev.label,brand:form.brand||'',model:form.model||'',photo:form.photo||null,qty,address:form.address,city:form.city,phone:form.phone,notes:form.notes,status:'Pending',pts:dev.pts*qty,kgEstimate:dev.kg*qty,createdAt:now(),updatedAt:now()};
   const pickups=dbGetPickups(user.email);pickups.unshift(entry);lsSet('pickups:'+user.email,pickups);
   const feed=getFeed();feed.unshift({id:entry.id,userName:user.name,deviceLabel:dev.label,city:form.city,createdAt:now()});lsSet('ecycle-feed',feed.slice(0,30));
   return{ok:true,entry};
@@ -1771,16 +1995,16 @@ function renderAuthForm(){
   const el=document.getElementById('auth-form');if(!el)return;
   if(authTab==='register'){
     el.innerHTML=`
-      <div class="fg"><label>Full Name</label><input id="af-name" placeholder="Your name" /></div>
-      <div class="fg"><label>Email</label><input id="af-email" type="email" placeholder="you@example.com" /></div>
-      <div class="fg"><label>Password</label><input id="af-pass" type="password" placeholder="Min 6 characters" /></div>
-      <div class="fg"><label>Confirm Password</label><input id="af-conf" type="password" placeholder="Repeat password" /></div>
+      <div class="fg"><label>Full Name</label><input id="af-name" type="text" inputmode="text" autocomplete="name" autocapitalize="words" spellcheck="false" placeholder="Your name" /></div>
+      <div class="fg"><label>Email</label><input id="af-email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" /></div>
+      <div class="fg"><label>Password</label><input id="af-pass" type="password" autocomplete="new-password" autocapitalize="none" placeholder="Min 6 characters" /></div>
+      <div class="fg"><label>Confirm Password</label><input id="af-conf" type="password" autocomplete="new-password" autocapitalize="none" placeholder="Repeat password" /></div>
       <div id="auth-err" style="display:none;color:var(--danger);font-family:'IBM Plex Mono',monospace;font-size:11px;margin-bottom:12px;padding:10px;background:rgba(239,83,80,.08);border-radius:3px;border-left:2px solid var(--danger)"></div>
       <button class="btn btn-g" style="width:100%;padding:13px" onclick="doAuth()">Create Account →</button>`;
   } else {
     el.innerHTML=`
-      <div class="fg"><label>Email</label><input id="af-email" type="email" placeholder="you@example.com" /></div>
-      <div class="fg"><label>Password</label><input id="af-pass" type="password" placeholder="Your password" onkeydown="if(event.key==='Enter')doAuth()" /></div>
+      <div class="fg"><label>Email</label><input id="af-email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" /></div>
+      <div class="fg"><label>Password</label><input id="af-pass" type="password" autocomplete="current-password" autocapitalize="none" placeholder="Your password" onkeydown="if(event.key==='Enter')doAuth()" /></div>
       <div id="auth-err" style="display:none;color:var(--danger);font-family:'IBM Plex Mono',monospace;font-size:11px;margin-bottom:12px;padding:10px;background:rgba(239,83,80,.08);border-radius:3px;border-left:2px solid var(--danger)"></div>
       <button class="btn btn-g" style="width:100%;padding:13px" onclick="doAuth()">Sign In →</button>`;
   }
@@ -1872,10 +2096,175 @@ function updateEstPts(){
   if(pts>0){row.style.display='flex';val.textContent='+'+pts*qty+' pts';}
   else row.style.display='none';
 }
+// ── DEVICE BRANDS BY TYPE ──
+const BRANDS={
+  smartphone:["Apple","Samsung","OnePlus","Xiaomi","Realme","Vivo","OPPO","Motorola","Nokia","Google","Nothing","ASUS ROG","iQOO","Other"],
+  laptop:["Apple","Dell","HP","Lenovo","ASUS","Acer","Microsoft","MSI","Razer","Samsung","LG","Toshiba","Other"],
+  tablet:["Apple","Samsung","Xiaomi","Lenovo","Amazon","Huawei","OnePlus","Realme","Other"],
+  tv:["Samsung","LG","Sony","Mi / Xiaomi","OnePlus","Realme","Vu","TCL","Panasonic","Haier","Thomson","Other"],
+  battery:["APC","Luminous","Microtek","Okaya","Exide","Amaron","Su-Kam","Other"],
+  printer:["HP","Canon","Epson","Brother","Xerox","Ricoh","Samsung","Other"],
+  ac:["Daikin","Voltas","LG","Samsung","Hitachi","Blue Star","Panasonic","Godrej","Carrier","Whirlpool","Other"],
+  other:["Other / Unknown"]
+};
+
+let devicePhotoBase64=null;
+
+function stepQty(d){
+  const el=document.getElementById('f-qty');
+  let v=Math.max(1,Math.min(50,(parseInt(el.value)||1)+d));
+  el.value=v;
+  updateEstPts();
+  syncSummary();
+}
+
+function updateStepPills(step){
+  if(step>=1){
+    document.getElementById('spill-1').classList.add('done');
+    document.getElementById('spill-2').classList.add('active');
+  }
+  if(step>=2){
+    document.getElementById('spill-2').classList.add('done');
+    document.getElementById('spill-3').classList.add('active');
+  }
+  if(step>=3) document.getElementById('spill-3').classList.add('done');
+}
+
+function syncSummary(){
+  const devSel=document.getElementById('f-device');
+  const devOpt=devSel.options[devSel.selectedIndex];
+  const devLabel=devOpt&&devOpt.value?devOpt.text.replace(/\s*\(.*\)/,'').trim():'—';
+  document.getElementById('sum-device-val').textContent=devLabel;
+
+  const brand=(document.getElementById('f-brand')||{}).value||'';
+  const model=(document.getElementById('f-model')||{}).value||'';
+  const brandRow=document.getElementById('sum-brand-row');
+  if(brand||model){
+    brandRow.style.display='flex';
+    document.getElementById('sum-brand-val').textContent=[brand,model].filter(Boolean).join(' · ')||'—';
+  } else {
+    brandRow.style.display='none';
+  }
+
+  const qty=parseInt((document.getElementById('f-qty')||{}).value)||1;
+  document.getElementById('sum-qty-val').textContent=qty+'× unit'+(qty>1?'s':'');
+
+  const city=(document.getElementById('f-city')||{}).value.trim();
+  const addr=(document.getElementById('f-address')||{}).value.trim();
+  document.getElementById('sum-city-val').textContent=city||(addr?addr.split(',')[0]:'—');
+
+  const phone=(document.getElementById('f-phone')||{}).value.trim();
+  document.getElementById('sum-phone-val').textContent=phone||'—';
+
+  // photo
+  const photoRow=document.getElementById('sum-photo-row');
+  if(devicePhotoBase64){
+    photoRow.style.display='flex';
+    document.getElementById('sum-photo-img').src=devicePhotoBase64;
+  } else {
+    photoRow.style.display='none';
+  }
+
+  // pts
+  const dev=DEVICES.find(d=>d.id===(devSel.value||''));
+  const pts=dev?dev.pts*qty:0;
+  document.getElementById('sum-pts').textContent=pts;
+}
+
+// wire live sync to all fields
+document.addEventListener('input',e=>{
+  if(['f-device','f-brand','f-model','f-qty','f-phone','f-city','f-address'].includes(e.target.id)) syncSummary();
+});
+document.addEventListener('change',e=>{
+  if(['f-device','f-brand'].includes(e.target.id)) syncSummary();
+});
+
+function updateBrandList(){
+  const type=document.getElementById('f-device').value;
+  const show=!!type;
+  const wrapper=document.getElementById('fg-brand-model');
+  if(wrapper){wrapper.style.display=show?'grid':'none';wrapper.style.gridTemplateColumns='1fr 1fr';wrapper.style.gap='14px';}
+  const photoEl=document.getElementById('fg-photo');
+  if(photoEl){photoEl.style.display=show?'block':'none';if(show)photoEl.style.animation='revealUp .35s cubic-bezier(.22,1,.36,1) both';}
+  const sel=document.getElementById('f-brand');
+  sel.innerHTML='<option value="">Select brand…</option>';
+  if(type&&BRANDS[type]){
+    BRANDS[type].forEach(b=>{const o=document.createElement('option');o.value=b;o.textContent=b;sel.appendChild(o);});
+  }
+  document.getElementById('f-model').value='';
+  syncSummary();
+}
+
+function updateModelList(){
+  const brand=document.getElementById('f-brand').value;
+  const modelInput=document.getElementById('f-model');
+  if(brand==='Other'||brand==='Other / Unknown'){
+    modelInput.placeholder='Describe the device…';
+  } else if(brand){
+    modelInput.placeholder=`e.g. ${getBrandModelHint(document.getElementById('f-device').value,brand)}`;
+  }
+}
+
+function getBrandModelHint(type,brand){
+  const hints={
+    'Apple':{'smartphone':'iPhone 15 Pro','laptop':'MacBook Air M2','tablet':'iPad Pro 12.9'},
+    'Samsung':{'smartphone':'Galaxy S24 Ultra','laptop':'Galaxy Book 3','tv':'65" QLED Q80C'},
+    'OnePlus':{'smartphone':'OnePlus 12','laptop':'OnePlus Pad'},
+    'Xiaomi':{'smartphone':'14 Pro','tv':'43" A Pro'},
+    'Dell':{'laptop':'XPS 15 9530'},
+    'HP':{'laptop':'Pavilion 15','printer':'LaserJet Pro M404n'},
+    'Lenovo':{'laptop':'ThinkPad X1 Carbon'},
+    'LG':{'tv':'C3 OLED 55"','ac':'1.5 Ton 5 Star'},
+    'Sony':{'tv':'Bravia XR A95L'},
+    'Daikin':{'ac':'1 Ton Inverter'},
+  };
+  return (hints[brand]&&hints[brand][type])||'Model name or number';
+}
+
+function handlePhotoChange(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  if(file.size>10*1024*1024){showToast('Photo too large (max 10MB)','error');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    devicePhotoBase64=ev.target.result;
+    document.getElementById('photo-img').src=devicePhotoBase64;
+    document.getElementById('photo-placeholder').style.display='none';
+    document.getElementById('photo-preview').style.display='flex';
+    document.getElementById('photo-drop').style.borderColor='var(--g)';
+    document.getElementById('photo-drop').style.background='rgba(57,211,83,.04)';
+    syncSummary();
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearPhoto(){
+  devicePhotoBase64=null;
+  document.getElementById('f-photo').value='';
+  document.getElementById('photo-img').src='';
+  document.getElementById('photo-placeholder').style.display='flex';
+  document.getElementById('photo-preview').style.display='none';
+  document.getElementById('photo-drop').style.borderColor='';
+  document.getElementById('photo-drop').style.background='';
+  syncSummary();
+}
+
+// photo drop hover
+document.addEventListener('DOMContentLoaded',()=>{
+  const drop=document.getElementById('photo-drop');
+  if(drop){
+    drop.addEventListener('mouseenter',()=>{drop.style.borderColor='var(--border2)';drop.style.background='rgba(255,255,255,.02)';});
+    drop.addEventListener('mouseleave',()=>{if(!devicePhotoBase64){drop.style.borderColor='';drop.style.background='';}});
+  }
+});
+
 function submitPickup(){
   if(!currentUser){showView('auth');return;}
   const form={
     device:document.getElementById('f-device').value,
+    brand:(document.getElementById('f-brand')||{}).value||'',
+    model:(document.getElementById('f-model')||{}).value.trim(),
+    photo:devicePhotoBase64||null,
     qty:document.getElementById('f-qty').value,
     phone:document.getElementById('f-phone').value.trim(),
     address:document.getElementById('f-address').value.trim(),
@@ -1898,12 +2287,14 @@ function submitPickup(){
   },700);
 }
 function resetSubmit(){
-  ['f-device','f-phone','f-city','f-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f-device','f-phone','f-city','f-notes','f-brand','f-model'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('f-qty').value='1';
   document.getElementById('f-address').value='';
   document.getElementById('est-pts-row').style.display='none';
   document.getElementById('submit-done').style.display='none';
   document.getElementById('submit-form-wrap').style.display='block';
+  ['fg-brand-model','fg-photo'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+  clearPhoto();
 }
 
 // ── TRACKER ──
@@ -1924,11 +2315,13 @@ function loadTrack(){
     }).join('');
     return `<div class="card" style="margin-bottom:14px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px">
-        <div style="flex:1">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap">
+        ${p.photo?`<div style="flex-shrink:0"><img src="${p.photo}" alt="Device" style="width:72px;height:72px;object-fit:cover;border-radius:10px;border:1px solid var(--border)"/></div>`:''}
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;flex-wrap:wrap">
             <span style="font-weight:700;font-size:16px">${p.qty}× ${p.deviceLabel}</span>
             <span class="status-badge" style="color:${STATUS_COLOR[p.status]};background:${STATUS_COLOR[p.status]}18">${p.status}</span>
           </div>
+          ${(p.brand||p.model)?`<div class="mono" style="font-size:10px;color:var(--g);letter-spacing:.06em;margin-bottom:4px">${[p.brand,p.model].filter(Boolean).join(' · ')}</div>`:''}
           <div class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.06em">#${p.id} · ${p.address}, ${p.city}</div>
           <div class="mono" style="font-size:9px;color:var(--muted);margin-top:4px">Submitted ${fmtDate(p.createdAt)} · Updated ${fmtDate(p.updatedAt)}</div>
         </div>
@@ -2373,7 +2766,11 @@ if(currentUser)showView('dashboard');
       c._init=true;
       const ctx=c.getContext('2d');
       let W,H,pts=[];
-      function resize(){W=c.width=c.offsetWidth||window.innerWidth;H=c.height=c.offsetHeight||window.innerHeight;}
+      function resize(){
+        const view=document.getElementById('view-auth');
+        W=c.width=view?view.offsetWidth:window.innerWidth;
+        H=c.height=view?view.offsetHeight:window.innerHeight;
+      }
       resize();window.addEventListener('resize',resize);
       for(let i=0;i<28;i++) pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18,r:Math.random()*1.4+.3,o:Math.random()*.3+.05});
       function draw(){
