@@ -128,29 +128,126 @@ nav.scrolled .nav-logo-icon{width:34px;height:34px;font-size:16px;}
 .nav-link-logout:hover{background:rgba(239,83,80,.08);border-color:rgba(239,83,80,.4);}
 .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--g);animation:pulse 2s infinite;flex-shrink:0;box-shadow:0 0 10px rgba(57,211,83,.8);}
 
-/* ── VIEWS — CROSSFADE TRANSITION ENGINE ── */
-@keyframes vEnter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@keyframes vExit {from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(-7px)}}
+/* ══════════════════════════════════════════════
+   CINEMATIC VIEW TRANSITION ENGINE
+   3-layer system: exit wipe → green flash → enter
+══════════════════════════════════════════════ */
+
+/* -- Enter: slide up + fade with spring easing -- */
+/* ════════════════════════════════════════
+   MORPH TRANSITION ENGINE
+   Technique: a full-screen panel sweeps in from left → pauses at
+   full cover → content swaps → panel sweeps out to right.
+   Only opacity + transform animate → GPU-composited, zero jank.
+════════════════════════════════════════ */
+
+/* ── Enter: new view rises from below while fading in ── */
+@keyframes vEnter{
+  0%  {opacity:0;transform:translateY(18px);}
+  50% {opacity:1;}
+  100%{opacity:1;transform:translateY(0);}
+}
+/* ── Exit: shrinks up and fades ── */
+@keyframes vExit{
+  0%  {opacity:1;transform:translateY(0) scale(1);}
+  100%{opacity:0;transform:translateY(-8px) scale(1.006);}
+}
+
+/* ── Morph wipe: full-screen panel ── */
+@keyframes morphIn{
+  0%  {transform:translateX(-100%);}
+  100%{transform:translateX(0%);}
+}
+@keyframes morphOut{
+  0%  {transform:translateX(0%);}
+  100%{transform:translateX(100%);}
+}
+/* ── Top progress streak ── */
+@keyframes streakRun{
+  0%  {transform:scaleX(0);transform-origin:left;opacity:1;}
+  50% {transform:scaleX(1);transform-origin:left;opacity:1;}
+  51% {transform-origin:right;}
+  100%{transform:scaleX(0);transform-origin:right;opacity:.5;}
+}
+
+/* Morph panel */
+#view-curtain{
+  position:fixed;inset:0;z-index:9997;pointer-events:none;
+  transform:translateX(-100%);
+  background:linear-gradient(
+    108deg,
+    rgba(4,14,6,1) 0%,
+    rgba(8,26,12,1) 38%,
+    rgba(12,36,16,1) 50%,
+    rgba(6,20,9,1) 62%,
+    rgba(4,12,5,1) 100%
+  );
+  will-change:transform;
+}
+/* Green shimmer on leading edge */
+#view-curtain::before{
+  content:'';position:absolute;top:0;right:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,transparent 0%,var(--g) 30%,rgba(100,255,130,.9) 50%,var(--g) 70%,transparent 100%);
+  box-shadow:0 0 32px 8px rgba(57,211,83,.6),0 0 80px 20px rgba(57,211,83,.25);
+  opacity:0;transition:opacity .06s;
+}
+/* Grid texture on panel */
+#view-curtain::after{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(57,211,83,.025) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(57,211,83,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+#view-curtain.phase-in{
+  animation:morphIn .28s cubic-bezier(.65,0,.35,1) forwards;
+}
+#view-curtain.phase-in::before{opacity:1;}
+#view-curtain.phase-out{
+  animation:morphOut .28s cubic-bezier(.65,0,.35,1) forwards;
+}
+/* Trailing edge shimmer on exit */
+#view-curtain.phase-out::before{
+  right:auto;left:0;
+  box-shadow:0 0 32px 8px rgba(57,211,83,.5),0 0 80px 20px rgba(57,211,83,.2);
+  opacity:1;
+}
+
+/* Top streak */
+#view-curtain-streak{
+  position:fixed;top:0;left:0;right:0;height:2px;z-index:9998;
+  pointer-events:none;transform:scaleX(0);transform-origin:left;
+  background:linear-gradient(90deg,transparent,var(--g),rgba(100,255,130,.95),var(--g),transparent);
+  box-shadow:0 0 16px rgba(57,211,83,.9),0 0 40px rgba(57,211,83,.4);
+  will-change:transform,opacity;opacity:0;
+}
+#view-curtain-streak.firing{
+  animation:streakRun .56s cubic-bezier(.65,0,.35,1) forwards;
+}
+
+#view-flash{
+  position:fixed;inset:0;z-index:9996;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse at 50% 48%,rgba(57,211,83,.055) 0%,transparent 55%);
+  transition:opacity .1s ease;
+}
+#view-flash.active{opacity:1;}
 
 .view{
   display:none;position:relative;z-index:1;
   will-change:opacity,transform;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  transform:translateZ(0);
 }
 .view.active{
   display:block;
-  animation:vEnter .26s cubic-bezier(.22,1,.36,1) both;
+  animation:vEnter .36s cubic-bezier(.22,1,.36,1) both;
 }
 .view.exiting{
   display:block;
-  animation:vExit .16s ease forwards;
+  animation:vExit .18s cubic-bezier(.4,0,1,1) forwards;
   pointer-events:none;
   position:absolute;top:0;left:0;right:0;z-index:2;
 }
 
-/* ── PAGE FLASH (kept for compat, inert) ── */
-#page-flash{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:0;}
+#page-flash{position:fixed;inset:0;z-index:9995;pointer-events:none;opacity:0;}
 
 /* ── LAYOUT ── */
 .container{max-width:1140px;margin:0 auto;padding:0 28px;}
@@ -1494,10 +1591,10 @@ input:focus,select:focus,textarea:focus{
 }
 
 /* ══════════════════════════════════════════════════════
-   ABOUT PAGE — PREMIUM REDESIGN
+   ABOUT PAGE — CINEMATIC PREMIUM REDESIGN
 ══════════════════════════════════════════════════════ */
 
-/* ── Hero ── */
+/* ── Keyframes ── */
 @keyframes aboutTitleGlitch{
   0%,94%,100%{opacity:1;text-shadow:none;transform:skewX(0)}
   95%{opacity:.9;text-shadow:3px 0 0 rgba(57,211,83,.8),-2px 0 0 rgba(0,229,255,.7);transform:skewX(-1.5deg)}
@@ -1525,16 +1622,47 @@ input:focus,select:focus,textarea:focus{
 @keyframes aboutTeamBorder{
   0%{background-position:0% 50%}100%{background-position:200% 50%}
 }
+@keyframes aboutDataStream{
+  0%{transform:translateY(-100%);opacity:0;}
+  10%{opacity:.7;}
+  90%{opacity:.7;}
+  100%{transform:translateY(120%);opacity:0;}
+}
+@keyframes aboutPipeFlow{
+  0%{background-position:0% 50%}
+  100%{background-position:200% 50%}
+}
+@keyframes aboutTimelineDot{
+  0%,100%{box-shadow:0 0 0 0 rgba(57,211,83,.6),0 0 16px rgba(57,211,83,.3)}
+  50%{box-shadow:0 0 0 8px rgba(57,211,83,0),0 0 30px rgba(57,211,83,.5)}
+}
+@keyframes aboutCounterIn{
+  from{opacity:0;transform:scale(.6) translateY(14px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+@keyframes aboutLineGrow{
+  from{width:0;}to{width:100%;}
+}
 
+/* ── Hero ── */
 .about-hero{
   position:relative;overflow:hidden;
-  padding:72px 0 56px;
+  padding:72px 0 64px;
   background:linear-gradient(160deg,rgba(4,14,6,1) 0%,rgba(6,24,10,1) 50%,rgba(4,12,5,1) 100%);
 }
 .about-hero::after{
   content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,var(--g) 35%,rgba(100,255,130,.8) 50%,var(--g) 65%,transparent);
   opacity:.5;
+}
+
+/* Data stream columns in hero bg */
+.about-data-streams{
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;opacity:.07;
+}
+.about-data-col{
+  position:absolute;top:0;width:1px;background:linear-gradient(180deg,transparent,var(--g),transparent);
+  animation:aboutDataStream linear infinite;
 }
 
 /* Layered background */
@@ -1579,7 +1707,7 @@ input:focus,select:focus,textarea:focus{
 }
 
 /* Chips */
-.about-hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+.about-hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px;}
 .about-chip{
   font-family:'IBM Plex Mono',monospace;font-size:10px;
   color:var(--g);letter-spacing:.1em;
@@ -1591,10 +1719,14 @@ input:focus,select:focus,textarea:focus{
 .about-chip:hover{background:rgba(57,211,83,.14);box-shadow:0 0 16px rgba(57,211,83,.18);transform:translateY(-2px);}
 
 /* Hero mini stats */
-.about-hero-stats{display:flex;gap:24px;flex-wrap:wrap;}
-.about-hero-stat{text-align:left;}
-.about-hero-stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--g);line-height:1;letter-spacing:.04em;text-shadow:0 0 20px rgba(57,211,83,.4);}
-.about-hero-stat-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:2px;}
+.about-hero-stats{display:flex;gap:28px;flex-wrap:wrap;margin-top:4px;}
+.about-hero-stat{text-align:left;position:relative;padding-left:14px;}
+.about-hero-stat::before{
+  content:'';position:absolute;left:0;top:4px;bottom:4px;width:2px;
+  background:linear-gradient(180deg,var(--g),transparent);border-radius:2px;
+}
+.about-hero-stat-val{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--g);line-height:1;letter-spacing:.04em;text-shadow:0 0 24px rgba(57,211,83,.5);}
+.about-hero-stat-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:3px;}
 
 /* ── Section standard overrides ── */
 #view-about .section{padding:56px 0;}
@@ -1696,6 +1828,73 @@ input:focus,select:focus,textarea:focus{
 }
 .about-diff-card:hover .about-diff-icon-wrap{box-shadow:0 0 24px rgba(57,211,83,.25);transform:scale(1.08);}
 
+/* ══ TIMELINE SECTION ══ */
+.about-timeline-wrap{position:relative;padding:0 0 8px;}
+
+/* central spine */
+.about-timeline-spine{
+  position:absolute;left:50%;top:0;bottom:0;width:1px;
+  transform:translateX(-50%);
+  background:linear-gradient(180deg,transparent,var(--g) 8%,var(--g) 92%,transparent);
+  opacity:.22;
+}
+.about-timeline-spine-flow{
+  position:absolute;left:50%;top:0;bottom:0;width:1px;
+  transform:translateX(-50%);
+  background:linear-gradient(180deg,transparent,var(--g),rgba(57,211,83,.6),transparent);
+  background-size:100% 40%;
+  animation:aboutPipeFlow 3s linear infinite;
+  opacity:.55;
+}
+
+.about-tl-item{
+  display:grid;grid-template-columns:1fr 48px 1fr;
+  gap:0 20px;margin-bottom:40px;align-items:start;
+}
+.about-tl-item:last-child{margin-bottom:0;}
+
+/* content left / right */
+.about-tl-left{text-align:right;padding-right:10px;}
+.about-tl-right{text-align:left;padding-left:10px;}
+.about-tl-empty{} /* placeholder */
+
+/* alternating layout — even rows flip */
+.about-tl-item:nth-child(even) .about-tl-left{order:3;text-align:left;padding-left:10px;padding-right:0;}
+.about-tl-item:nth-child(even) .about-tl-center{order:2;}
+.about-tl-item:nth-child(even) .about-tl-right{order:1;text-align:right;padding-right:10px;padding-left:0;}
+
+/* central dot */
+.about-tl-center{
+  display:flex;flex-direction:column;align-items:center;gap:0;
+}
+.about-tl-dot{
+  width:14px;height:14px;border-radius:50%;
+  background:var(--g);border:2px solid rgba(57,211,83,.4);
+  box-shadow:0 0 0 4px rgba(57,211,83,.12);
+  animation:aboutTimelineDot 2.8s ease-in-out infinite;
+  flex-shrink:0;margin-top:8px;z-index:1;
+}
+.about-tl-year{
+  font-family:'Bebas Neue',sans-serif;font-size:11px;color:var(--g);
+  letter-spacing:.12em;margin-top:6px;opacity:.7;text-align:center;
+}
+
+/* card */
+.about-tl-card{
+  background:linear-gradient(145deg,rgba(11,28,13,.96),rgba(8,15,9,1));
+  border:1px solid var(--border);border-radius:14px;
+  padding:18px 20px;position:relative;overflow:hidden;
+  transition:border-color .3s,transform .3s,box-shadow .3s;
+}
+.about-tl-card:hover{border-color:var(--border2);transform:scale(1.02);box-shadow:0 0 28px rgba(57,211,83,.1),0 8px 28px rgba(0,0,0,.4);}
+.about-tl-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,var(--g),transparent);opacity:.3;
+}
+.about-tl-icon{font-size:22px;margin-bottom:8px;display:block;}
+.about-tl-title{font-weight:700;font-size:15px;color:#e8f5e9;margin-bottom:5px;}
+.about-tl-desc{font-size:12px;color:var(--muted);line-height:1.65;}
+
 /* ── Team ── */
 .about-team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
 .about-team-card{
@@ -1734,6 +1933,44 @@ input:focus,select:focus,textarea:focus{
   border-radius:4px;padding:4px 10px;display:inline-block;margin-bottom:12px;
 }
 .about-team-desc{font-size:12px;color:var(--muted);line-height:1.65;}
+
+/* ── Tech Stack / Process rail ── */
+.about-process-rail{
+  display:flex;align-items:stretch;gap:0;
+  overflow-x:auto;padding:4px 0 16px;
+  scrollbar-width:none;
+}
+.about-process-rail::-webkit-scrollbar{display:none;}
+.about-process-step{
+  flex:1;min-width:140px;
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;
+}
+/* connector line between steps */
+.about-process-step:not(:last-child)::after{
+  content:'';position:absolute;top:24px;left:50%;right:-50%;height:1px;
+  background:linear-gradient(90deg,var(--g),rgba(57,211,83,.2));
+  background-size:200% auto;
+  animation:aboutPipeFlow 2.5s linear infinite;
+  opacity:.4;z-index:0;
+}
+.about-process-node{
+  width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(57,211,83,.18),rgba(57,211,83,.04));
+  border:1.5px solid rgba(57,211,83,.5);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;position:relative;z-index:1;
+  box-shadow:0 0 20px rgba(57,211,83,.15);
+  transition:box-shadow .3s,transform .3s;
+  margin-bottom:12px;
+}
+.about-process-step:hover .about-process-node{box-shadow:0 0 32px rgba(57,211,83,.35);transform:scale(1.1);}
+.about-process-lbl{
+  font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--muted2);
+  letter-spacing:.06em;text-align:center;line-height:1.4;
+  transition:color .2s;
+}
+.about-process-step:hover .about-process-lbl{color:var(--g);}
 
 /* ── Contact / CTA ── */
 .about-cta-wrap{
@@ -1778,6 +2015,14 @@ input:focus,select:focus,textarea:focus{
   .about-diff-grid{grid-template-columns:repeat(2,1fr);}
   .about-team-grid{grid-template-columns:repeat(3,1fr);}
   .about-hero-stats{gap:16px;}
+  /* Timeline collapses to single column */
+  .about-tl-item{grid-template-columns:40px 1fr;gap:0 14px;}
+  .about-tl-item:nth-child(even) .about-tl-left,
+  .about-tl-item .about-tl-left{display:none;}
+  .about-tl-item:nth-child(even) .about-tl-right{order:3;text-align:left;padding-left:10px;padding-right:0;}
+  .about-tl-item:nth-child(even) .about-tl-center{order:1;}
+  .about-tl-center,.about-tl-dot{margin-top:0;}
+  .about-timeline-spine,.about-timeline-spine-flow{left:20px;}
 }
 @media(max-width:750px){
   .about-hero{padding:48px 0 36px;}
@@ -1845,6 +2090,11 @@ button:focus-visible{outline-offset:4px;}
 <div class="hero-glow"></div>
 <div class="scan-line"></div>
 <div id="page-flash"></div>
+
+<!-- VIEW TRANSITION LAYER -->
+<div id="view-curtain"></div>
+<div id="view-curtain-streak"></div>
+<div id="view-flash"></div>
 
 <!-- TOAST -->
 <div id="toast"></div>
@@ -2720,7 +2970,7 @@ button:focus-visible{outline-offset:4px;}
         <div>
           <div class="footer-col-title">Recycle</div>
           <div class="footer-col-link" onclick="showView('track')">Track Status</div>
-          <div class="footer-col-link" onclick="showView('dashboard')">My Dashboard</div>
+          <div class="footer-col-link" onclick="showView('about')">About Us</div>
           <div class="footer-col-link" onclick="showView('submit')">Book Pickup</div>
         </div>
 
@@ -2911,12 +3161,20 @@ function closeMobileMenu(){
   document.getElementById('nav-hamburger').classList.remove('open');
 }
 
-// ── NAVIGATION ──
-/* ── CROSSFADE VIEW ENGINE ──
-   Exit (160ms) and Enter (260ms) start on the SAME frame.
-   Render is called BEFORE animation so content is ready instantly.
-   Lock only lasts 160ms (exit duration) so rapid nav still works.  */
+// ── MORPH TRANSITION ENGINE ──
+/* ════════════════════════════════════════════════════════
+   Timeline (total ~560ms):
+     0ms   – streak fires (560ms full run)
+     0ms   – panel sweeps IN from left  (280ms, cubic ease)
+     260ms – content swaps (panel fully covers screen)
+     280ms – panel sweeps OUT to right  (280ms, cubic ease)
+     lock releases at ~580ms
+════════════════════════════════════════════════════════ */
+const _curtain  = document.getElementById('view-curtain');
+const _streak   = document.getElementById('view-curtain-streak');
+const _flash    = document.getElementById('view-flash');
 let _viewTransitioning = false;
+
 function showView(v){
   if(_viewTransitioning) return;
 
@@ -2931,7 +3189,7 @@ function showView(v){
   const hideFooter=['leaderboard','auth','admin'];
   const footerEl = document.querySelector('footer');
 
-  // ── Render content NOW (before animation) so it's paint-ready ──
+  // Pre-render before panel covers screen
   if(v==='home') renderHome();
   if(v==='dashboard' && currentUser) renderDashboard();
   if(v==='track' && currentUser) loadTrack();
@@ -2949,25 +3207,44 @@ function showView(v){
 
   _viewTransitioning = true;
 
-  // ── Step 1: exit current view (floats above via z-index:2) ──
-  currentEl.classList.remove('active');
-  currentEl.classList.add('exiting');
+  // 1 — streak + panel sweep IN
+  _streak.classList.remove('firing');
+  void _streak.offsetWidth;
+  _streak.classList.add('firing');
 
-  // ── Step 2: enter next view on the very next frame (true crossfade) ──
-  nextEl.style.display = 'block';
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{
-      nextEl.classList.add('active');
-      try{ window.scrollTo({top:0,behavior:'instant'}); }catch(e){ window.scrollTo(0,0); }
-    });
-  });
+  _curtain.classList.remove('phase-in','phase-out');
+  void _curtain.offsetWidth;
+  _curtain.classList.add('phase-in');
 
-  // ── Step 3: cleanup exiting view after its 160ms animation ──
+  // 2 — at full cover: swap content
   setTimeout(()=>{
-    currentEl.classList.remove('exiting');
+    currentEl.classList.remove('active','exiting');
     currentEl.style.display = 'none';
-    _viewTransitioning = false;
-  }, 170);
+
+    nextEl.style.display = 'block';
+    try{ window.scrollTo({top:0,behavior:'instant'}); }catch(e){ window.scrollTo(0,0); }
+
+    // flash
+    _flash.classList.add('active');
+    setTimeout(()=>_flash.classList.remove('active'), 110);
+
+    // 3 — panel sweeps OUT, new view enters
+    _curtain.classList.remove('phase-in');
+    void _curtain.offsetWidth;
+    _curtain.classList.add('phase-out');
+
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      nextEl.classList.add('active');
+    }));
+
+    // cleanup
+    setTimeout(()=>{
+      _curtain.classList.remove('phase-out');
+      _streak.classList.remove('firing');
+      _viewTransitioning = false;
+    }, 300);
+
+  }, 260);
 }
 
 function renderNav(active){
