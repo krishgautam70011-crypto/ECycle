@@ -30,6 +30,23 @@ button,[onclick]{cursor:pointer;user-select:none;-webkit-user-select:none;touch-
   --accent1:#00e5ff;--accent2:#69ff47;
 }
 
+/* ── CUSTOM SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--dark2);}
+::-webkit-scrollbar-thumb{background:var(--gdim);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--g);}
+*{scrollbar-width:thin;scrollbar-color:var(--gdim) var(--dark2);}
+
+/* ── TEXT SELECTION ── */
+::selection{background:rgba(57,211,83,.25);color:#e8f5e9;}
+::-moz-selection{background:rgba(57,211,83,.25);color:#e8f5e9;}
+
+/* ── REDUCED MOTION ── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
+  .scan-line,.hero-grid,.hero-glow{display:none;}
+}
+
 /* ── TYPOGRAPHY HELPERS ── */
 .mono{font-family:'IBM Plex Mono',monospace;}
 .disp{font-family:'Bebas Neue',sans-serif;letter-spacing:.03em;}
@@ -79,12 +96,14 @@ label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);le
 
 /* ── NAVIGATION ── */
 @keyframes nav-border-flow{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-nav{position:sticky;top:0;z-index:500;background:linear-gradient(135deg,rgba(2,10,4,.97) 0%,rgba(4,14,8,.97) 30%,rgba(6,26,9,.96) 60%,rgba(4,18,6,.97) 100%);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border-bottom:1px solid transparent;height:68px;display:flex;align-items:center;box-shadow:0 8px 40px rgba(0,0,0,.6),0 0 80px rgba(57,211,83,.04);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);}
+nav{position:sticky;top:0;z-index:500;background:linear-gradient(135deg,rgba(2,10,4,.97) 0%,rgba(4,14,8,.97) 30%,rgba(6,26,9,.96) 60%,rgba(4,18,6,.97) 100%);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border-bottom:1px solid transparent;height:68px;display:flex;align-items:center;box-shadow:0 8px 40px rgba(0,0,0,.6),0 0 80px rgba(57,211,83,.04);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);transition:height .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,background .3s ease;}
+nav.scrolled{height:54px;background:linear-gradient(135deg,rgba(2,10,4,.99) 0%,rgba(4,14,8,.99) 100%);box-shadow:0 4px 24px rgba(0,0,0,.8),0 0 40px rgba(57,211,83,.06);}
 nav::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -30%,rgba(57,211,83,.18) 0%,rgba(57,211,83,.06) 40%,transparent 70%);pointer-events:none;z-index:1;}
 nav::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g) 35%,rgba(100,255,130,.9) 50%,var(--g) 65%,transparent);background-size:200% auto;animation:nav-border-flow 6s linear infinite;pointer-events:none;opacity:.75;}
 .nav-inner{max-width:1140px;margin:0 auto;padding:0 28px;width:100%;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;}
 .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;}
-.nav-logo-icon{width:40px;height:40px;border:1.5px solid rgba(57,211,83,.6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;animation:glow-breathe 3s ease infinite;background:linear-gradient(135deg,rgba(57,211,83,.12),rgba(57,211,83,.04));box-shadow:0 0 20px rgba(57,211,83,.2),inset 0 1px 0 rgba(57,211,83,.2);flex-shrink:0;}
+.nav-logo-icon{width:40px;height:40px;border:1.5px solid rgba(57,211,83,.6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;animation:glow-breathe 3s ease infinite;background:linear-gradient(135deg,rgba(57,211,83,.12),rgba(57,211,83,.04));box-shadow:0 0 20px rgba(57,211,83,.2),inset 0 1px 0 rgba(57,211,83,.2);flex-shrink:0;transition:width .3s,height .3s,font-size .3s;}
+nav.scrolled .nav-logo-icon{width:34px;height:34px;font-size:16px;}
 .nav-logo-icon,
 .auth-logo-icon,
 .footer-brand-icon{font-style:normal;}
@@ -109,40 +128,29 @@ nav::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;ba
 .nav-link-logout:hover{background:rgba(239,83,80,.08);border-color:rgba(239,83,80,.4);}
 .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--g);animation:pulse 2s infinite;flex-shrink:0;box-shadow:0 0 10px rgba(57,211,83,.8);}
 
-/* ── VIEWS ── */
-/* ── VIEWS — SMOOTH TRANSITION ENGINE ── */
-@keyframes viewEnterUp   {from{opacity:0;transform:translateY(22px)}  to{opacity:1;transform:translateY(0)}}
-@keyframes viewEnterDown {from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)}}
-@keyframes viewExitUp    {from{opacity:1;transform:translateY(0)}     to{opacity:0;transform:translateY(-14px)}}
-@keyframes viewExitDown  {from{opacity:1;transform:translateY(0)}     to{opacity:0;transform:translateY(14px)}}
-@keyframes viewEnterFade {from{opacity:0;transform:scale(.985)}       to{opacity:1;transform:scale(1)}}
-@keyframes viewExitFade  {from{opacity:1;transform:scale(1)}          to{opacity:0;transform:scale(1.01)}}
+/* ── VIEWS — CROSSFADE TRANSITION ENGINE ── */
+@keyframes vEnter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes vExit {from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(-7px)}}
 
 .view{
   display:none;position:relative;z-index:1;
   will-change:opacity,transform;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  transform:translateZ(0);
 }
 .view.active{
   display:block;
-  animation:viewEnterUp .42s cubic-bezier(.22,1,.36,1) both;
+  animation:vEnter .26s cubic-bezier(.22,1,.36,1) both;
 }
 .view.exiting{
   display:block;
-  animation:viewExitFade .22s cubic-bezier(.4,0,1,1) both;
+  animation:vExit .16s ease forwards;
   pointer-events:none;
-  position:absolute;top:0;left:0;right:0;
+  position:absolute;top:0;left:0;right:0;z-index:2;
 }
 
-/* ── PAGE TRANSITION FLASH OVERLAY ── */
-#page-flash{
-  position:fixed;inset:0;z-index:9998;
-  pointer-events:none;
-  background:radial-gradient(ellipse at 50% 40%,rgba(57,211,83,.07) 0%,transparent 70%);
-  opacity:0;
-  transition:opacity .18s ease;
-}
-#page-flash.firing{opacity:1;}
+/* ── PAGE FLASH (kept for compat, inert) ── */
+#page-flash{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:0;}
 
 /* ── LAYOUT ── */
 .container{max-width:1140px;margin:0 auto;padding:0 28px;}
@@ -184,7 +192,9 @@ nav::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;ba
 .chip:hover:not(.active){border-color:var(--border2);color:var(--muted2);transform:translateY(-1px);}
 
 /* ── TOAST ── */
-#toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);padding:13px 26px;border-radius:10px;font-family:'IBM Plex Mono',monospace;font-size:12px;z-index:9999;display:none;white-space:nowrap;letter-spacing:.04em;backdrop-filter:blur(12px);}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(12px) scale(.95)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+@keyframes toastOut{from{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}to{opacity:0;transform:translateX(-50%) translateY(10px) scale(.96)}}
+#toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);padding:13px 26px;border-radius:10px;font-family:'IBM Plex Mono',monospace;font-size:12px;z-index:9999;white-space:nowrap;letter-spacing:.04em;backdrop-filter:blur(12px);pointer-events:none;opacity:0;}
 
 
 /* ── CAPACITY BAR ── */
@@ -853,8 +863,8 @@ input,select,textarea{
 .nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
 .nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
 
-.mobile-menu{display:none;position:fixed;top:68px;left:0;right:0;background:rgba(4,12,5,.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);-moz-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:499;padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));flex-direction:column;gap:4px;animation:fadeIn .2s ease;}
-.mobile-menu.open{display:flex;}
+.mobile-menu{display:flex;position:fixed;top:68px;left:0;right:0;background:rgba(4,12,5,.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);-moz-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:499;padding:0 16px;padding-bottom:0;flex-direction:column;gap:4px;max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.22,1,.36,1),padding .38s cubic-bezier(.22,1,.36,1),opacity .25s ease;opacity:0;}
+.mobile-menu.open{max-height:420px;padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));opacity:1;}
 .mobile-menu .nav-link{font-size:13px;padding:12px 16px;border-radius:4px;display:block;text-align:left;width:100%;letter-spacing:.06em;}
 
 /* ── RESPONSIVE ── */
@@ -942,7 +952,7 @@ input,select,textarea{
   footer{padding:24px 16px;}
 
   /* Toast */
-  #toast{max-width:calc(100vw - 32px);white-space:normal;text-align:center;font-size:11px;}
+  #toast{max-width:calc(100vw - 32px);white-space:normal;text-align:center;font-size:11px;bottom:20px;}
 
   /* Tab row */
   .tab-btn{font-size:10px;padding:10px 6px;}
@@ -1483,190 +1493,348 @@ input:focus,select:focus,textarea:focus{
   .submit-sidebar-inner{grid-template-columns:1fr;}
 }
 
-/* ══════════════════════════════════════════
-   ABOUT PAGE STYLES — compact & responsive
-══════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════
+   ABOUT PAGE — PREMIUM REDESIGN
+══════════════════════════════════════════════════════ */
 
-/* Hero */
+/* ── Hero ── */
+@keyframes aboutTitleGlitch{
+  0%,94%,100%{opacity:1;text-shadow:none;transform:skewX(0)}
+  95%{opacity:.9;text-shadow:3px 0 0 rgba(57,211,83,.8),-2px 0 0 rgba(0,229,255,.7);transform:skewX(-1.5deg)}
+  97%{opacity:.95;text-shadow:-2px 0 0 rgba(57,211,83,.6),2px 0 0 rgba(0,229,255,.5);transform:skewX(1deg)}
+}
+@keyframes aboutAccentShimmer{
+  0%,100%{background-position:200% center}
+  50%{background-position:-200% center}
+}
+@keyframes aboutOrbDrift{
+  0%,100%{transform:translate(0,0) scale(1)}
+  40%{transform:translate(30px,-40px) scale(1.06)}
+  70%{transform:translate(-20px,25px) scale(.96)}
+}
+@keyframes aboutScanPulse{
+  0%,100%{opacity:0;transform:scaleX(0)}50%{opacity:1;transform:scaleX(1)}
+}
+@keyframes aboutStatCount{
+  from{opacity:0;transform:translateY(10px) scale(.85)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes aboutRingPulse{
+  0%,100%{transform:scale(1);opacity:.35}50%{transform:scale(1.25);opacity:0}
+}
+@keyframes aboutTeamBorder{
+  0%{background-position:0% 50%}100%{background-position:200% 50%}
+}
+
 .about-hero{
   position:relative;overflow:hidden;
-  padding:44px 0 36px;
-  background:linear-gradient(180deg,rgba(6,22,8,1) 0%,var(--dark) 100%);
+  padding:72px 0 56px;
+  background:linear-gradient(160deg,rgba(4,14,6,1) 0%,rgba(6,24,10,1) 50%,rgba(4,12,5,1) 100%);
 }
+.about-hero::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--g) 35%,rgba(100,255,130,.8) 50%,var(--g) 65%,transparent);
+  opacity:.5;
+}
+
+/* Layered background */
 .about-hero-glow{
-  position:absolute;inset:0;
-  background:radial-gradient(ellipse at 20% 50%,rgba(57,211,83,.12) 0%,transparent 55%),
-             radial-gradient(ellipse at 80% 20%,rgba(0,229,255,.05) 0%,transparent 45%);
-  pointer-events:none;
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 15% 55%,rgba(57,211,83,.14) 0%,transparent 50%),
+    radial-gradient(ellipse at 85% 15%,rgba(0,229,255,.07) 0%,transparent 45%),
+    radial-gradient(ellipse at 70% 85%,rgba(57,211,83,.06) 0%,transparent 40%);
 }
 .about-hero-grid{
   position:absolute;inset:0;opacity:.03;
   background-image:linear-gradient(var(--g) 1px,transparent 1px),linear-gradient(90deg,var(--g) 1px,transparent 1px);
-  background-size:44px 44px;pointer-events:none;
+  background-size:52px 52px;pointer-events:none;
 }
+/* Floating orbs */
+.about-orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(60px);}
+.about-orb-1{width:400px;height:400px;top:-80px;right:-80px;background:radial-gradient(circle,rgba(57,211,83,.09),transparent 70%);animation:aboutOrbDrift 18s ease-in-out infinite;}
+.about-orb-2{width:280px;height:280px;bottom:-40px;left:-40px;background:radial-gradient(circle,rgba(0,229,255,.06),transparent 70%);animation:aboutOrbDrift 14s 3s ease-in-out infinite reverse;}
+
+/* Eyebrow */
+.about-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.about-eyebrow-line{flex:1;height:1px;background:linear-gradient(90deg,var(--g),transparent);max-width:80px;opacity:.4;}
+
+/* Title */
 .about-hero-title{
-  font-size:clamp(44px,7vw,82px);
-  line-height:.92;margin-bottom:12px;color:#e8f5e9;
+  font-size:clamp(52px,8.5vw,110px);
+  line-height:.9;margin-bottom:18px;color:#e8f5e9;
+  animation:aboutTitleGlitch 8s ease-in-out infinite;
 }
 .about-accent{
-  background:linear-gradient(135deg,var(--g),var(--accent2));
+  display:inline-block;
+  background:linear-gradient(90deg,var(--g),var(--accent2),var(--g));
+  background-size:200%;
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:aboutAccentShimmer 4s linear infinite;
+  filter:drop-shadow(0 0 30px rgba(57,211,83,.35));
 }
 .about-hero-sub{
-  font-size:14px;color:var(--muted2);max-width:520px;
-  line-height:1.7;margin-bottom:18px;
+  font-size:15px;color:var(--muted2);max-width:560px;
+  line-height:1.75;margin-bottom:24px;
 }
-.about-hero-chips{display:flex;gap:8px;flex-wrap:wrap;}
+
+/* Chips */
+.about-hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
 .about-chip{
   font-family:'IBM Plex Mono',monospace;font-size:10px;
-  color:var(--g);letter-spacing:.08em;
+  color:var(--g);letter-spacing:.1em;
   border:1px solid var(--border2);border-radius:20px;
-  padding:5px 12px;background:rgba(57,211,83,.06);
-  transition:background .2s,border-color .2s,transform .2s;
-  white-space:nowrap;
+  padding:6px 14px;background:rgba(57,211,83,.06);
+  transition:background .25s,border-color .25s,transform .25s,box-shadow .25s;
+  white-space:nowrap;cursor:default;
 }
-.about-chip:hover{background:rgba(57,211,83,.12);transform:translateY(-1px);}
+.about-chip:hover{background:rgba(57,211,83,.14);box-shadow:0 0 16px rgba(57,211,83,.18);transform:translateY(-2px);}
 
-/* Mission / Vision */
-.about-mv-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.about-mv-card{padding:22px;position:relative;overflow:hidden;}
+/* Hero mini stats */
+.about-hero-stats{display:flex;gap:24px;flex-wrap:wrap;}
+.about-hero-stat{text-align:left;}
+.about-hero-stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--g);line-height:1;letter-spacing:.04em;text-shadow:0 0 20px rgba(57,211,83,.4);}
+.about-hero-stat-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:2px;}
+
+/* ── Section standard overrides ── */
+#view-about .section{padding:56px 0;}
+#view-about .section-alt{padding:56px 0;}
+
+/* ── Mission / Vision ── */
+.about-mv-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.about-mv-card{
+  padding:30px 28px;position:relative;overflow:hidden;
+  background:linear-gradient(145deg,rgba(11,28,13,.95),rgba(8,15,9,1));
+  border-radius:16px !important;
+  border-left:3px solid var(--g) !important;
+  transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s;
+}
+.about-mv-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 24px rgba(57,211,83,.1);}
 .about-mv-card::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(circle at 0% 0%,rgba(57,211,83,.07),transparent 60%);
+  background:radial-gradient(circle at 0% 0%,rgba(57,211,83,.09),transparent 55%);
   pointer-events:none;
 }
-.about-mv-icon{font-size:28px;margin-bottom:8px;display:block;}
+.about-mv-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,var(--g),transparent);opacity:.3;
+}
+.about-mv-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(57,211,83,.18),rgba(57,211,83,.05));
+  border:1px solid rgba(57,211,83,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:16px;
+  box-shadow:0 0 20px rgba(57,211,83,.12);
+}
 .about-mv-label{
-  font-size:9px;color:var(--g);letter-spacing:.18em;
-  text-transform:uppercase;margin-bottom:6px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;color:var(--g);letter-spacing:.2em;
+  text-transform:uppercase;margin-bottom:8px;
 }
 
-/* Stats grid — 4 cols desktop */
-.about-impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+/* ── Stats / Numbers ── */
+.about-impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
 .about-impact-card{
-  text-align:center;padding:18px 10px;
+  text-align:center;padding:24px 14px;
   position:relative;overflow:hidden;
+  background:linear-gradient(145deg,rgba(11,28,13,.9),rgba(8,18,10,1));
+  border-radius:14px !important;
+  transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s,border-color .3s;
 }
+.about-impact-card:hover{transform:translateY(-4px) scale(1.02);border-color:var(--border2) !important;box-shadow:0 0 32px rgba(57,211,83,.14),0 8px 28px rgba(0,0,0,.4);}
 .about-impact-card::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(circle at 50% 0%,rgba(57,211,83,.08),transparent 70%);
+  background:radial-gradient(circle at 50% -10%,rgba(57,211,83,.1),transparent 65%);
   pointer-events:none;
 }
+.about-impact-card::after{
+  content:'';position:absolute;top:0;left:20%;right:20%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--g),transparent);
+  border-radius:2px;opacity:.5;
+}
 .about-impact-num{
-  font-size:clamp(26px,3.8vw,42px);color:var(--g);
-  line-height:1;margin-bottom:7px;
-  text-shadow:0 0 24px rgba(57,211,83,.3);
+  font-size:clamp(28px,3.5vw,46px);color:var(--g);
+  line-height:1;margin-bottom:10px;
+  text-shadow:0 0 30px rgba(57,211,83,.5);
+  display:block;
 }
-.about-impact-lbl{font-size:10.5px;color:var(--muted);line-height:1.5;letter-spacing:.03em;}
+.about-impact-num.revealed{animation:aboutStatCount .55s cubic-bezier(.22,1,.36,1) both;}
+.about-impact-lbl{font-size:10.5px;color:var(--muted);line-height:1.55;letter-spacing:.02em;}
 .about-src{
-  display:block;margin-top:4px;
+  display:block;margin-top:6px;
   font-family:'IBM Plex Mono',monospace;font-size:8px;
-  color:rgba(57,211,83,.45);letter-spacing:.05em;
+  color:rgba(57,211,83,.5);letter-spacing:.06em;
 }
 
-/* Differentiators */
-.about-diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-.about-diff-card{padding:20px;transition:transform .3s,border-color .3s,box-shadow .3s;}
-.about-diff-card:hover{transform:translateY(-3px);border-color:var(--border2);box-shadow:0 8px 24px rgba(0,0,0,.4),0 0 16px rgba(57,211,83,.07);}
-.about-diff-icon{font-size:24px;margin-bottom:8px;display:block;}
-
-/* Team */
-.about-team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-.about-team-card{padding:22px 16px;text-align:center;transition:transform .3s,border-color .3s;}
-.about-team-card:hover{transform:translateY(-3px);border-color:var(--border2);}
-.about-avatar{
-  width:52px;height:52px;border-radius:50%;
-  background:linear-gradient(135deg,rgba(57,211,83,.2),rgba(57,211,83,.06));
-  border:2px solid var(--border2);
+/* ── Differentiators (step-card style) ── */
+.about-diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.about-diff-card{
+  padding:26px 22px;position:relative;overflow:hidden;border-radius:14px !important;
+  background:linear-gradient(145deg,rgba(11,28,13,.95),rgba(8,15,9,1));
+  transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s,border-color .3s;
+}
+.about-diff-card:hover{transform:translateY(-6px) scale(1.01);border-color:var(--border2) !important;box-shadow:0 0 36px rgba(57,211,83,.12),0 12px 36px rgba(0,0,0,.5);}
+.about-diff-card::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 20% 20%,rgba(57,211,83,.06),transparent 60%);
+  pointer-events:none;
+}
+.about-diff-num{
+  font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--g);
+  opacity:.14;line-height:1;margin-bottom:12px;letter-spacing:-.02em;
+  transition:opacity .3s;
+}
+.about-diff-card:hover .about-diff-num{opacity:.22;}
+.about-diff-icon-wrap{
+  width:44px;height:44px;border-radius:10px;margin-bottom:14px;
+  background:linear-gradient(135deg,rgba(57,211,83,.15),rgba(57,211,83,.04));
+  border:1px solid rgba(57,211,83,.22);
   display:flex;align-items:center;justify-content:center;
-  font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--g);
-  margin:0 auto 12px;
-  box-shadow:0 0 16px rgba(57,211,83,.15);
-  transition:box-shadow .3s,transform .3s;
+  font-size:22px;transition:box-shadow .3s,transform .3s;
+  box-shadow:0 0 14px rgba(57,211,83,.1);
 }
-.about-team-card:hover .about-avatar{box-shadow:0 0 26px rgba(57,211,83,.3);transform:scale(1.06);}
+.about-diff-card:hover .about-diff-icon-wrap{box-shadow:0 0 24px rgba(57,211,83,.25);transform:scale(1.08);}
 
-/* Role badge */
-.about-role-badge{
-  font-size:8.5px;color:var(--g);letter-spacing:.12em;
-  text-transform:uppercase;
-  background:rgba(57,211,83,.08);
-  border:1px solid rgba(57,211,83,.2);
-  border-radius:4px;padding:3px 9px;
-  display:inline-block;margin-top:4px;
+/* ── Team ── */
+.about-team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.about-team-card{
+  padding:32px 20px 24px;text-align:center;
+  position:relative;overflow:hidden;border-radius:16px !important;
+  background:linear-gradient(155deg,rgba(11,28,13,.95),rgba(8,15,9,1));
+  transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s,border-color .3s;
 }
+.about-team-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--g) 40%,var(--g) 60%,transparent);
+  opacity:0;transition:opacity .3s;
+}
+.about-team-card:hover{transform:translateY(-5px);border-color:var(--border2) !important;box-shadow:0 0 40px rgba(57,211,83,.12),0 12px 40px rgba(0,0,0,.5);}
+.about-team-card:hover::before{opacity:.6;}
 
-/* Contact card */
-.about-contact-card{
-  padding:32px 28px;
-  position:relative;overflow:hidden;
-  background:linear-gradient(135deg,var(--card2) 0%,var(--card) 100%);
-  border-color:var(--border2) !important;
-  box-shadow:0 0 40px rgba(57,211,83,.07),0 12px 36px rgba(0,0,0,.4);
+/* Avatar with ring */
+.about-avatar-wrap{position:relative;width:80px;height:80px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;}
+.about-avatar-ring{position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(57,211,83,.3);animation:aboutRingPulse 2.8s ease-in-out infinite;}
+.about-avatar-ring2{position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(57,211,83,.15);animation:aboutRingPulse 2.8s .9s ease-in-out infinite;}
+.about-avatar{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(57,211,83,.25),rgba(57,211,83,.07));
+  border:2px solid rgba(57,211,83,.5);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--g);
+  box-shadow:0 0 24px rgba(57,211,83,.2),inset 0 1px 0 rgba(57,211,83,.2);
+  transition:box-shadow .3s,transform .3s;position:relative;z-index:1;
 }
-.about-contact-glow{
-  position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 0%,rgba(57,211,83,.09) 0%,transparent 60%);
+.about-team-card:hover .about-avatar{box-shadow:0 0 36px rgba(57,211,83,.4);transform:scale(1.05);}
+.about-team-name{font-size:18px;font-weight:700;color:#e8f5e9;margin-bottom:4px;}
+.about-team-title{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  color:var(--g);letter-spacing:.14em;text-transform:uppercase;
+  background:rgba(57,211,83,.08);border:1px solid rgba(57,211,83,.2);
+  border-radius:4px;padding:4px 10px;display:inline-block;margin-bottom:12px;
+}
+.about-team-desc{font-size:12px;color:var(--muted);line-height:1.65;}
+
+/* ── Contact / CTA ── */
+.about-cta-wrap{
+  position:relative;overflow:hidden;border-radius:20px !important;
+  background:linear-gradient(135deg,rgba(11,28,13,1) 0%,rgba(8,18,10,1) 50%,rgba(13,34,18,1) 100%);
+  border:1px solid rgba(57,211,83,.32) !important;
+  box-shadow:0 0 60px rgba(57,211,83,.08),0 24px 60px rgba(0,0,0,.6);
+  padding:56px 40px;
+}
+.about-cta-wrap::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% -10%,rgba(57,211,83,.16) 0%,transparent 55%);
+  pointer-events:none;
+}
+.about-cta-wrap::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--g) 30%,rgba(100,255,130,.9) 50%,var(--g) 70%,transparent);
+  border-radius:2px;
+}
+.about-cta-grid{
+  background-size:48px 48px;
+  position:absolute;inset:0;opacity:.02;
+  background-image:linear-gradient(var(--g) 1px,transparent 1px),linear-gradient(90deg,var(--g) 1px,transparent 1px);
   pointer-events:none;
 }
 .about-contact-items{
-  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;
+  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;
 }
 .about-contact-item{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 14px;
-  border:1px solid var(--border);border-radius:8px;
+  display:flex;align-items:center;gap:10px;
+  padding:10px 18px;
+  border:1px solid var(--border);border-radius:10px;
   background:rgba(57,211,83,.04);
-  transition:border-color .2s,background .2s;
+  transition:border-color .25s,background .25s,transform .25s;
 }
-.about-contact-item:hover{border-color:var(--border2);background:rgba(57,211,83,.08);}
-.about-contact-icon{font-size:16px;}
+.about-contact-item:hover{border-color:var(--border2);background:rgba(57,211,83,.09);transform:translateY(-2px);}
+.about-contact-icon{font-size:18px;}
 
-/* Section spacing override for about — tighter than global .section */
-#view-about .section{padding:28px 0;}
-#view-about .section-alt{padding:28px 0;}
-#view-about [style*="margin-bottom:32px"]{margin-bottom:18px!important;}
-
-/* ── About responsive ── */
+/* ── Responsive ── */
 @media(max-width:900px){
-  .about-impact-grid{grid-template-columns:repeat(4,1fr);}
+  .about-impact-grid{grid-template-columns:repeat(2,1fr);}
   .about-diff-grid{grid-template-columns:repeat(2,1fr);}
   .about-team-grid{grid-template-columns:repeat(3,1fr);}
+  .about-hero-stats{gap:16px;}
 }
 @media(max-width:750px){
-  .about-hero{padding:32px 0 26px;}
-  .about-hero-title{font-size:clamp(36px,11vw,56px);}
-  .about-hero-sub{font-size:13px;margin-bottom:14px;}
+  .about-hero{padding:48px 0 36px;}
+  .about-hero-title{font-size:clamp(44px,13vw,72px);}
+  .about-hero-sub{font-size:13px;}
   .about-mv-grid{grid-template-columns:1fr;}
-  .about-impact-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
-  .about-impact-card{padding:14px 8px;}
-  .about-diff-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
-  .about-diff-card{padding:16px;}
+  .about-impact-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .about-diff-grid{grid-template-columns:1fr;gap:10px;}
   .about-team-grid{grid-template-columns:repeat(3,1fr);gap:10px;}
-  .about-team-card{padding:16px 10px;}
-  .about-avatar{width:44px;height:44px;font-size:17px;}
-  .about-contact-card{padding:22px 16px;}
-  .about-contact-items{flex-direction:column;align-items:stretch;gap:8px;}
-  .about-contact-item{justify-content:center;}
-  #view-about .section{padding:20px 0;}
-  #view-about .section-alt{padding:20px 0;}
+  .about-team-card{padding:22px 12px 18px;}
+  .about-avatar{width:56px;height:56px;font-size:20px;}
+  .about-avatar-wrap{width:64px;height:64px;}
+  .about-cta-wrap{padding:36px 20px;}
+  #view-about .section{padding:36px 0;}
+  #view-about .section-alt{padding:36px 0;}
+  .about-hero-stats{display:none;}
 }
 @media(max-width:480px){
-  .about-hero{padding:24px 0 20px;}
-  .about-hero-title{font-size:clamp(32px,12vw,48px);}
-  .about-impact-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
-  .about-impact-card{padding:12px 6px;}
-  .about-impact-num{font-size:clamp(22px,7vw,32px);}
-  .about-impact-lbl{font-size:9.5px;}
-  .about-diff-grid{grid-template-columns:1fr;gap:8px;}
+  .about-hero-title{font-size:clamp(38px,12vw,58px);}
+  .about-impact-grid{grid-template-columns:repeat(2,1fr);}
+  .about-diff-grid{grid-template-columns:1fr;}
   .about-team-grid{grid-template-columns:repeat(3,1fr);gap:8px;}
-  .about-team-card{padding:14px 8px;}
-  .about-avatar{width:38px;height:38px;font-size:15px;margin-bottom:8px;}
-  .about-hero-chips{gap:6px;}
-  .about-chip{font-size:9px;padding:4px 10px;}
-  #view-about .section{padding:16px 0;}
-  #view-about .section-alt{padding:16px 0;}
+  .about-team-card{padding:18px 8px 14px;}
+  .about-avatar{width:48px;height:48px;font-size:17px;}
+  .about-avatar-wrap{width:56px;height:56px;}
+  .about-avatar-ring,.about-avatar-ring2{display:none;}
+  .about-team-name{font-size:14px;}
+  .about-team-desc{display:none;}
 }
+@media(max-width:750px){
+  .about-contact-items{flex-direction:column;align-items:stretch;gap:8px;}
+  .about-contact-item{justify-content:center;}
+}
+
+/* ── FOCUS VISIBLE RING ── */
+:focus-visible{outline:2px solid rgba(57,211,83,.7);outline-offset:3px;border-radius:4px;}
+button:focus-visible{outline-offset:4px;}
+
+/* ── MOBILE MENU LINK STAGGER ── */
+.mobile-menu .nav-link,.mobile-menu .nav-link-logout{
+  opacity:0;transform:translateX(-14px);
+  transition:opacity .22s ease,transform .22s cubic-bezier(.22,1,.36,1),color .2s,background .2s,border-color .2s;
+}
+.mobile-menu.open .nav-link,.mobile-menu.open .nav-link-logout{opacity:1;transform:translateX(0);}
+.mobile-menu.open .nav-link:nth-child(1){transition-delay:.05s}
+.mobile-menu.open .nav-link:nth-child(2){transition-delay:.10s}
+.mobile-menu.open .nav-link:nth-child(3){transition-delay:.15s}
+.mobile-menu.open .nav-link:nth-child(4){transition-delay:.20s}
+.mobile-menu.open .nav-link:nth-child(5){transition-delay:.25s}
+.mobile-menu.open .nav-link:nth-child(6){transition-delay:.30s}
+.mobile-menu.open .nav-link-logout{transition-delay:.35s}
+
+/* ── INTERACTIVE PRESS STATES ── */
+.btn:active{transform:scale(.95)!important;transition-duration:.08s!important;}
+.chip:active{transform:scale(.95)!important;}
+.quiz-opt:active{transform:translateX(3px) scale(.99)!important;}
+.card-glow:active{transform:translateY(-1px)!important;}
 </style>
 </head>
 <body>
@@ -1857,167 +2025,221 @@ input:focus,select:focus,textarea:focus{
 <div id="view-about" class="view">
   <div class="about-wrap">
 
-    <!-- Hero banner -->
+    <!-- ── HERO ── -->
     <div class="about-hero">
       <div class="about-hero-glow"></div>
       <div class="about-hero-grid"></div>
+      <div class="about-orb about-orb-1"></div>
+      <div class="about-orb about-orb-2"></div>
       <div class="container" style="position:relative;z-index:1">
-        <div class="tag" style="margin-bottom:14px">🌿 Our Mission</div>
+        <div class="about-eyebrow">
+          <div class="pulse-dot"></div>
+          <span class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.16em">INDIA'S PREMIER E-WASTE PLATFORM</span>
+          <div class="about-eyebrow-line"></div>
+        </div>
         <h1 class="disp about-hero-title">BUILDING A<br><span class="about-accent">GREENER</span> INDIA</h1>
         <p class="about-hero-sub">E/CYCLE INDIA is a certified e-waste management platform connecting households and businesses with responsible recyclers — making sustainable disposal effortless, rewarding, and transparent.</p>
         <div class="about-hero-chips">
           <div class="about-chip">🇮🇳 Made in India</div>
           <div class="about-chip">♻ CPCB Compliant</div>
           <div class="about-chip">🔒 Data Secure</div>
+          <div class="about-chip">⚡ 24hr Pickup</div>
+          <div class="about-chip">🏅 Rewards Platform</div>
+        </div>
+        <div class="about-hero-stats">
+          <div class="about-hero-stat">
+            <div class="about-hero-stat-val">13.97L</div>
+            <div class="about-hero-stat-lbl">Tonnes E-Waste / Year</div>
+          </div>
+          <div class="about-hero-stat">
+            <div class="about-hero-stat-val">83%</div>
+            <div class="about-hero-stat-lbl">Recycling Rate FY25</div>
+          </div>
+          <div class="about-hero-stat">
+            <div class="about-hero-stat-val">24hr</div>
+            <div class="about-hero-stat-lbl">Doorstep Response</div>
+          </div>
+          <div class="about-hero-stat">
+            <div class="about-hero-stat-val">#3</div>
+            <div class="about-hero-stat-lbl">World E-Waste Producer</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Mission + Vision -->
+    <div class="glow-divider"></div>
+
+    <!-- ── MISSION + VISION ── -->
     <div class="section">
       <div class="container">
+        <div class="section-header" style="text-align:center">
+          <div class="tag">🎯 Purpose</div>
+          <h2 class="disp" style="font-size:48px;margin-bottom:6px">WHY WE EXIST</h2>
+          <p class="mono" style="font-size:11px;color:var(--muted);letter-spacing:.07em">Driven by data. Built for impact.</p>
+        </div>
         <div class="about-mv-grid">
-          <div class="card about-mv-card">
+          <div class="card about-mv-card" data-reveal="left">
             <div class="about-mv-icon">🎯</div>
             <div class="mono about-mv-label">Our Mission</div>
-            <h3 class="disp" style="font-size:24px;margin-bottom:8px;color:var(--g)">RESPONSIBLE RECYCLING FOR ALL</h3>
-            <p style="font-size:14px;color:var(--muted);line-height:1.8">India generated <strong style="color:var(--text)">13.97 lakh tonnes</strong> of e-waste in FY 2024–25 alone (CPCB). We bridge the gap between e-waste generators and certified recyclers — ensuring every discarded device is handled responsibly, reducing toxic landfill contamination and recovering precious materials back into the supply chain.</p>
+            <h3 class="disp" style="font-size:26px;margin-bottom:10px;color:var(--g)">RESPONSIBLE RECYCLING FOR ALL</h3>
+            <p style="font-size:14px;color:var(--muted);line-height:1.85">India generated <strong style="color:var(--text)">13.97 lakh tonnes</strong> of e-waste in FY 2024–25 alone (CPCB). We bridge the gap between e-waste generators and certified recyclers — ensuring every discarded device is handled responsibly, reducing toxic landfill contamination and recovering precious materials back into the supply chain.</p>
           </div>
-          <div class="card about-mv-card">
+          <div class="card about-mv-card" data-reveal="right">
             <div class="about-mv-icon">🔭</div>
             <div class="mono about-mv-label">Our Vision</div>
-            <h3 class="disp" style="font-size:24px;margin-bottom:8px;color:var(--g)">ZERO E-WASTE TO LANDFILL</h3>
-            <p style="font-size:14px;color:var(--muted);line-height:1.8">NITI Aayog projects India's e-waste will hit <strong style="color:var(--text)">14 million tonnes by 2030</strong>. Through technology, community engagement, and certified recycling partnerships, we're racing to make zero-landfill a reality — one doorstep pickup at a time.</p>
+            <h3 class="disp" style="font-size:26px;margin-bottom:10px;color:var(--g)">ZERO E-WASTE TO LANDFILL</h3>
+            <p style="font-size:14px;color:var(--muted);line-height:1.85">NITI Aayog projects India's e-waste will hit <strong style="color:var(--text)">14 million tonnes by 2030</strong>. Through technology, community engagement, and certified recycling partnerships, we're racing to make zero-landfill a reality — one doorstep pickup at a time.</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Live India E-Waste Facts -->
+    <!-- ── BY THE NUMBERS ── -->
     <div class="section section-alt">
       <div class="container">
-        <div style="text-align:center;margin-bottom:16px">
-          <div class="tag">📊 Live India E-Waste Facts</div>
-          <h2 class="disp" style="font-size:36px;margin-bottom:4px">BY THE NUMBERS</h2>
-          <p class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.07em">Real CPCB & NITI Aayog data · Updated 2024–25</p>
+        <div class="section-header" style="text-align:center">
+          <div class="tag">📊 Real Data</div>
+          <h2 class="disp" style="font-size:48px;margin-bottom:6px">BY THE NUMBERS</h2>
+          <p class="mono" style="font-size:11px;color:var(--muted);letter-spacing:.07em">Live CPCB &amp; NITI Aayog data · Updated 2024–25</p>
         </div>
         <div class="about-impact-grid">
-          <div class="card about-impact-card">
+          <div class="card about-impact-card" data-reveal="up" data-delay="1">
             <div class="about-impact-num disp">13.97L</div>
-            <div class="mono about-impact-lbl">Tonnes of e-waste generated in India in FY 2024–25 · up from 12.54L in FY 2023–24 <span class="about-src">(CPCB, Aug 2025)</span></div>
+            <div class="mono about-impact-lbl">Tonnes of e-waste generated in India FY 2024–25 · up from 12.54L in FY 2023–24<span class="about-src">(CPCB, Aug 2025)</span></div>
           </div>
-          <div class="card about-impact-card">
+          <div class="card about-impact-card" data-reveal="up" data-delay="2">
             <div class="about-impact-num disp">83%</div>
-            <div class="mono about-impact-lbl">E-waste recycling rate achieved in FY 2024–25 · up from just 26% in 2020–21 <span class="about-src">(MoEFCC)</span></div>
+            <div class="mono about-impact-lbl">E-waste recycling rate achieved FY 2024–25 · up from just 26% in 2020–21<span class="about-src">(MoEFCC)</span></div>
           </div>
-          <div class="card about-impact-card">
+          <div class="card about-impact-card" data-reveal="up" data-delay="3">
             <div class="about-impact-num disp">60%+</div>
-            <div class="mono about-impact-lbl">Of e-waste by weight is recoverable metals — gold, copper, aluminium, iron <span class="about-src">(MRAI)</span></div>
+            <div class="mono about-impact-lbl">Of e-waste by weight is recoverable — gold, copper, aluminium, iron<span class="about-src">(MRAI)</span></div>
           </div>
-          <div class="card about-impact-card">
+          <div class="card about-impact-card" data-reveal="up" data-delay="4">
             <div class="about-impact-num disp">₹1.6B</div>
-            <div class="mono about-impact-lbl">India's e-waste recycling market size in 2024, projected to reach ₹2.8B by 2033 <span class="about-src">(IMARC)</span></div>
+            <div class="mono about-impact-lbl">India's e-waste recycling market in 2024, projected ₹2.8B by 2033<span class="about-src">(IMARC)</span></div>
           </div>
-          <div class="card about-impact-card">
+          <div class="card about-impact-card" data-reveal="up" data-delay="1">
             <div class="about-impact-num disp">17%</div>
-            <div class="mono about-impact-lbl">Annual growth rate of e-waste generation in India — fastest among large economies <span class="about-src">(NITI Aayog, 2026)</span></div>
+            <div class="mono about-impact-lbl">Annual growth rate of e-waste generation in India — fastest among large economies<span class="about-src">(NITI Aayog, 2026)</span></div>
           </div>
-          <div class="card about-impact-card">
+          <div class="card about-impact-card" data-reveal="up" data-delay="2">
             <div class="about-impact-num disp">93M</div>
-            <div class="mono about-impact-lbl">Tonnes of CO₂-equivalent emissions avoided globally by formal e-waste management <span class="about-src">(Global E-Waste Monitor 2024)</span></div>
+            <div class="mono about-impact-lbl">Tonnes CO₂-equivalent avoided globally by formal e-waste management<span class="about-src">(Global E-Waste Monitor 2024)</span></div>
           </div>
-          <div class="card about-impact-card">
+          <div class="card about-impact-card" data-reveal="up" data-delay="3">
             <div class="about-impact-num disp">#3</div>
-            <div class="mono about-impact-lbl">India's rank as world's largest e-waste producer, with 163% growth in SCSIT waste from 2010–2022 <span class="about-src">(UNCTAD)</span></div>
+            <div class="mono about-impact-lbl">India's rank as world's largest e-waste producer, 163% growth 2010–2022<span class="about-src">(UNCTAD)</span></div>
           </div>
-          <div class="card about-impact-card">
+          <div class="card about-impact-card" data-reveal="up" data-delay="4">
             <div class="about-impact-num disp">24hr</div>
-            <div class="mono about-impact-lbl">Our guaranteed doorstep pickup response time — across all serviceable cities</div>
+            <div class="mono about-impact-lbl">Our guaranteed doorstep pickup response time across all serviceable cities</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- How we're different -->
+    <!-- ── WHAT SETS US APART ── -->
     <div class="section">
       <div class="container">
-        <div style="text-align:center;margin-bottom:16px">
+        <div class="section-header" style="text-align:center">
           <div class="tag">⚡ Why E/CYCLE</div>
-          <h2 class="disp" style="font-size:36px;margin-bottom:4px">WHAT SETS US APART</h2>
-          <p class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.07em">Built different. Built better.</p>
+          <h2 class="disp" style="font-size:48px;margin-bottom:6px">WHAT SETS US APART</h2>
+          <p class="mono" style="font-size:11px;color:var(--muted);letter-spacing:.07em">Built different. Built better.</p>
         </div>
         <div class="about-diff-grid">
-          <div class="card about-diff-card">
-            <div class="about-diff-icon">🚚</div>
-            <div style="font-weight:700;font-size:16px;margin-bottom:6px">Free Doorstep Pickup</div>
-            <p style="font-size:13px;color:var(--muted);line-height:1.7">No dropping off, no hassle. Our certified agents come to you — home or office — within 24 hours of booking.</p>
+          <div class="card about-diff-card" data-reveal="up" data-delay="1">
+            <div class="about-diff-num">01</div>
+            <div class="about-diff-icon-wrap">🚚</div>
+            <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">Free Doorstep Pickup</div>
+            <p style="font-size:13px;color:var(--muted);line-height:1.75">No dropping off, no hassle. Our certified agents come to you — home or office — within 24 hours of booking.</p>
           </div>
-          <div class="card about-diff-card">
-            <div class="about-diff-icon">🏅</div>
-            <div style="font-weight:700;font-size:16px;margin-bottom:6px">Reward Points System</div>
-            <p style="font-size:13px;color:var(--muted);line-height:1.7">Earn points for every device you recycle. Climb the leaderboard, unlock badges, and get recognised for your environmental contribution.</p>
+          <div class="card about-diff-card" data-reveal="up" data-delay="2">
+            <div class="about-diff-num">02</div>
+            <div class="about-diff-icon-wrap">🏅</div>
+            <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">Reward Points System</div>
+            <p style="font-size:13px;color:var(--muted);line-height:1.75">Earn points for every device you recycle. Climb the leaderboard, unlock badges, and get recognised for your environmental contribution.</p>
           </div>
-          <div class="card about-diff-card">
-            <div class="about-diff-icon">🔍</div>
-            <div style="font-weight:700;font-size:16px;margin-bottom:6px">Full Transparency</div>
-            <p style="font-size:13px;color:var(--muted);line-height:1.7">Track your pickup in real time from Pending to Completed. Every step is logged, visible, and verifiable.</p>
+          <div class="card about-diff-card" data-reveal="up" data-delay="3">
+            <div class="about-diff-num">03</div>
+            <div class="about-diff-icon-wrap">🔍</div>
+            <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">Full Transparency</div>
+            <p style="font-size:13px;color:var(--muted);line-height:1.75">Track your pickup in real time from Pending to Completed. Every step is logged, visible, and verifiable.</p>
           </div>
-          <div class="card about-diff-card">
-            <div class="about-diff-icon">🛡</div>
-            <div style="font-weight:700;font-size:16px;margin-bottom:6px">Certified & Compliant</div>
-            <p style="font-size:13px;color:var(--muted);line-height:1.7">All recycling partners are CPCB-certified and follow E-Waste Management Rules 2022, ensuring your devices are processed legally and safely.</p>
+          <div class="card about-diff-card" data-reveal="up" data-delay="1">
+            <div class="about-diff-num">04</div>
+            <div class="about-diff-icon-wrap">🛡</div>
+            <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">Certified &amp; Compliant</div>
+            <p style="font-size:13px;color:var(--muted);line-height:1.75">All recycling partners are CPCB-certified and follow E-Waste Management Rules 2022, ensuring legal and safe processing.</p>
           </div>
-          <div class="card about-diff-card">
-            <div class="about-diff-icon">📱</div>
-            <div style="font-weight:700;font-size:16px;margin-bottom:6px">Works on Any Device</div>
-            <p style="font-size:13px;color:var(--muted);line-height:1.7">Fully optimised for Android, iOS, and desktop. Schedule a pickup from anywhere, anytime — no app download required.</p>
+          <div class="card about-diff-card" data-reveal="up" data-delay="2">
+            <div class="about-diff-num">05</div>
+            <div class="about-diff-icon-wrap">📱</div>
+            <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">Works on Any Device</div>
+            <p style="font-size:13px;color:var(--muted);line-height:1.75">Fully optimised for Android, iOS, and desktop. Schedule a pickup from anywhere, anytime — no app download required.</p>
           </div>
-          <div class="card about-diff-card">
-            <div class="about-diff-icon">🌱</div>
-            <div style="font-weight:700;font-size:16px;margin-bottom:6px">Real Environmental Impact</div>
-            <p style="font-size:13px;color:var(--muted);line-height:1.7">Every pickup contributes to measurable CO₂ savings and material recovery — with live stats shown directly on our platform.</p>
+          <div class="card about-diff-card" data-reveal="up" data-delay="3">
+            <div class="about-diff-num">06</div>
+            <div class="about-diff-icon-wrap">🌱</div>
+            <div style="font-weight:700;font-size:16px;margin-bottom:8px;color:#e8f5e9">Real Environmental Impact</div>
+            <p style="font-size:13px;color:var(--muted);line-height:1.75">Every pickup contributes to measurable CO₂ savings and material recovery — with live stats shown directly on our platform.</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Team -->
+    <!-- ── TEAM ── -->
     <div class="section section-alt">
       <div class="container">
-        <div style="text-align:center;margin-bottom:16px">
+        <div class="section-header" style="text-align:center">
           <div class="tag">👥 The Team</div>
-          <h2 class="disp" style="font-size:36px;margin-bottom:4px">WHO WE ARE</h2>
-          <p class="mono" style="font-size:10px;color:var(--muted);letter-spacing:.07em">The founders building a cleaner India</p>
+          <h2 class="disp" style="font-size:48px;margin-bottom:6px">WHO WE ARE</h2>
+          <p class="mono" style="font-size:11px;color:var(--muted);letter-spacing:.07em">The founders building a cleaner India</p>
         </div>
         <div class="about-team-grid">
-          <div class="card about-team-card">
-            <div class="about-avatar">KG</div>
-            <div style="font-weight:700;font-size:17px;margin-bottom:3px">Krish Gautam</div>
-            <div class="mono about-role-badge">CO-FOUNDER &amp; CEO</div>
+          <div class="card about-team-card" data-reveal="up" data-delay="1">
+            <div class="about-avatar-wrap">
+              <div class="about-avatar-ring"></div>
+              <div class="about-avatar-ring2"></div>
+              <div class="about-avatar">KG</div>
+            </div>
+            <div class="about-team-name">Krish Gautam</div>
+            <div class="about-team-title">Co-Founder &amp; CEO</div>
+            <p class="about-team-desc">Passionate about building tech for climate. Leading product vision and partnerships across India.</p>
           </div>
-          <div class="card about-team-card">
-            <div class="about-avatar">AV</div>
-            <div style="font-weight:700;font-size:17px;margin-bottom:3px">Abhinav Verma</div>
-            <div class="mono about-role-badge">CO-FOUNDER &amp; CTO</div>
+          <div class="card about-team-card" data-reveal="up" data-delay="2">
+            <div class="about-avatar-wrap">
+              <div class="about-avatar-ring"></div>
+              <div class="about-avatar-ring2"></div>
+              <div class="about-avatar">AV</div>
+            </div>
+            <div class="about-team-name">Abhinav Verma</div>
+            <div class="about-team-title">Co-Founder &amp; CTO</div>
+            <p class="about-team-desc">Full-stack engineer with a love for scalable systems. Building the platform from the ground up.</p>
           </div>
-          <div class="card about-team-card">
-            <div class="about-avatar">KN</div>
-            <div style="font-weight:700;font-size:17px;margin-bottom:3px">Kartikay Nagar</div>
-            <div class="mono about-role-badge">HEAD OF OPERATIONS</div>
+          <div class="card about-team-card" data-reveal="up" data-delay="3">
+            <div class="about-avatar-wrap">
+              <div class="about-avatar-ring"></div>
+              <div class="about-avatar-ring2"></div>
+              <div class="about-avatar">KN</div>
+            </div>
+            <div class="about-team-name">Kartikay Nagar</div>
+            <div class="about-team-title">Head of Operations</div>
+            <p class="about-team-desc">Ensuring every pickup runs on time. Managing logistics, partner networks, and city expansion.</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Contact / CTA -->
+    <!-- ── CTA ── -->
     <div class="section">
       <div class="container">
-        <div class="about-contact-card card">
-          <div class="about-contact-glow"></div>
+        <div class="about-cta-wrap card">
+          <div class="about-cta-grid"></div>
           <div style="position:relative;z-index:1;text-align:center">
-            <div class="tag" style="margin-bottom:14px">📬 Get In Touch</div>
-            <h2 class="disp" style="font-size:34px;margin-bottom:8px">HAVE QUESTIONS?</h2>
-            <p style="font-size:13px;color:var(--muted);line-height:1.7;max-width:440px;margin:0 auto 18px">Whether you're a household, a business, or a recycling partner — we'd love to hear from you.</p>
+            <div class="tag" style="margin-bottom:16px">📬 Get In Touch</div>
+            <h2 class="disp" style="font-size:52px;margin-bottom:10px">HAVE QUESTIONS?</h2>
+            <p style="font-size:14px;color:var(--muted);line-height:1.75;max-width:460px;margin:0 auto 28px">Whether you're a household, a business, or a recycling partner — we'd love to hear from you.</p>
             <div class="about-contact-items">
               <div class="about-contact-item">
                 <span class="about-contact-icon">📧</span>
@@ -2032,9 +2254,10 @@ input:focus,select:focus,textarea:focus{
                 <span class="mono" style="font-size:12px;color:var(--text)">Greater Noida, Uttar Pradesh</span>
               </div>
             </div>
-            <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-              <button class="btn btn-g" onclick="showView('auth')" style="padding:13px 28px">Join the Movement →</button>
-              <button class="btn btn-o" onclick="showView('home')" style="padding:13px 22px">← Back to Home</button>
+            <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+              <button class="btn btn-g" onclick="showView('auth')" style="padding:14px 32px;font-size:13px">Join the Movement →</button>
+              <button class="btn btn-o" onclick="showView('submit')" style="padding:14px 24px;font-size:12px">Schedule Pickup</button>
+              <button class="btn btn-ghost" onclick="showView('home')" style="padding:14px 24px;font-size:12px">← Back to Home</button>
             </div>
           </div>
         </div>
@@ -2656,13 +2879,25 @@ let toastTimer=null;
 function showToast(msg,type='success'){
   const t=document.getElementById('toast');
   t.textContent=msg;
-  t.style.display='block';
   t.style.background=type==='error'?'rgba(239,83,80,.95)':type==='warn'?'rgba(255,179,0,.95)':'rgba(57,211,83,.95)';
   t.style.color=type==='error'?'#fff':'#040c05';
   t.style.border=`1px solid ${type==='error'?'#ef5350':type==='warn'?'#ffb300':'#39d353'}`;
+  t.style.animation='none';
+  void t.offsetWidth; // reflow
+  t.style.animation='toastIn .38s cubic-bezier(.22,1,.36,1) forwards';
   if(toastTimer)clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>{t.style.display='none';},3200);
+  toastTimer=setTimeout(()=>{
+    t.style.animation='toastOut .32s ease forwards';
+  },3200);
 }
+
+// ── NAV SCROLL SHRINK ──
+(function(){
+  const nav=document.querySelector('nav');
+  function onScroll(){nav.classList.toggle('scrolled',window.scrollY>40);}
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+})();
 
 // ── MOBILE MENU ──
 function toggleMobileMenu(){
@@ -2677,27 +2912,26 @@ function closeMobileMenu(){
 }
 
 // ── NAVIGATION ──
-/* ── SMOOTH VIEW TRANSITION ENGINE ── */
+/* ── CROSSFADE VIEW ENGINE ──
+   Exit (160ms) and Enter (260ms) start on the SAME frame.
+   Render is called BEFORE animation so content is ready instantly.
+   Lock only lasts 160ms (exit duration) so rapid nav still works.  */
 let _viewTransitioning = false;
 function showView(v){
-  // Prevent spam-clicking
   if(_viewTransitioning) return;
 
   const nextEl = document.getElementById('view-'+v);
   if(!nextEl) return;
 
-  // Guard: auth redirect for protected views
   if(v==='submit' && !currentUser){ showView('auth'); return; }
 
   const currentEl = document.querySelector('.view.active');
-
-  // Same view — skip
   if(currentEl === nextEl) return;
 
-  // Pre-render the data before transition
   const hideFooter=['leaderboard','auth','admin'];
   const footerEl = document.querySelector('footer');
 
+  // ── Render content NOW (before animation) so it's paint-ready ──
   if(v==='home') renderHome();
   if(v==='dashboard' && currentUser) renderDashboard();
   if(v==='track' && currentUser) loadTrack();
@@ -2708,40 +2942,32 @@ function showView(v){
   footerEl.classList.toggle('no-gap', hideFooter.includes(v));
   footerEl.style.display = hideFooter.includes(v) ? 'none' : '';
 
-  // Flash overlay
-  const flash = document.getElementById('page-flash');
-
   if(!currentEl){
-    // First load — just show
     nextEl.classList.add('active');
     return;
   }
 
   _viewTransitioning = true;
 
-  // Step 1: exit current
+  // ── Step 1: exit current view (floats above via z-index:2) ──
   currentEl.classList.remove('active');
   currentEl.classList.add('exiting');
 
-  // Trigger flash
-  if(flash){ flash.classList.add('firing'); }
+  // ── Step 2: enter next view on the very next frame (true crossfade) ──
+  nextEl.style.display = 'block';
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      nextEl.classList.add('active');
+      try{ window.scrollTo({top:0,behavior:'instant'}); }catch(e){ window.scrollTo(0,0); }
+    });
+  });
 
+  // ── Step 3: cleanup exiting view after its 160ms animation ──
   setTimeout(()=>{
-    // Step 2: clean exit, enter next
     currentEl.classList.remove('exiting');
     currentEl.style.display = 'none';
-
-    if(flash){ flash.classList.remove('firing'); }
-
-    nextEl.style.display = '';
-    nextEl.classList.add('active');
-
-    // Scroll to top
-    try{ window.scrollTo({top:0,behavior:'instant'}); }
-    catch(e){ window.scrollTo(0,0); }
-
     _viewTransitioning = false;
-  }, 200); // matches exit animation duration
+  }, 170);
 }
 
 function renderNav(active){
