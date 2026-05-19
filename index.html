@@ -82,8 +82,21 @@ label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);le
 @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes glow-breathe{0%,100%{box-shadow:0 0 20px rgba(57,211,83,.2)}50%{box-shadow:0 0 40px rgba(57,211,83,.5)}}
-@keyframes scan{from{transform:translateY(-100%)}to{transform:translateY(100vh)}}
-@keyframes number-count{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@keyframes scan{
+  from{ transform:translate3d(0,-100%,0); opacity:.6; }
+  80% { opacity:.6; }
+  to  { transform:translate3d(0,100vh,0); opacity:0; }
+}
+.scan-line{
+  position:fixed;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent 0%,rgba(57,211,83,.15) 20%,rgba(57,211,83,.5) 50%,rgba(57,211,83,.15) 80%,transparent 100%);
+  box-shadow:0 0 12px rgba(57,211,83,.4), 0 0 40px rgba(57,211,83,.15);
+  animation:scan 9s cubic-bezier(.4,0,.6,1) infinite;
+  pointer-events:none;z-index:1;
+  will-change:transform;
+  backface-visibility:hidden;
+  transform:translate3d(0,-100%,0);
+}@keyframes number-count{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
 
 .anim{animation:fadeUp .45s ease both;}
 .spinner{width:18px;height:18px;border:2px solid var(--border);border-top:2px solid var(--g);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
@@ -96,7 +109,11 @@ label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);le
 
 /* ── NAVIGATION ── */
 @keyframes nav-border-flow{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-nav{position:sticky;top:0;z-index:500;background:linear-gradient(135deg,rgba(2,10,4,.97) 0%,rgba(4,14,8,.97) 30%,rgba(6,26,9,.96) 60%,rgba(4,18,6,.97) 100%);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border-bottom:1px solid transparent;height:68px;display:flex;align-items:center;box-shadow:0 8px 40px rgba(0,0,0,.6),0 0 80px rgba(57,211,83,.04);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);transition:height .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,background .3s ease;}
+nav{position:fixed;top:0;left:0;right:0;z-index:500;background:linear-gradient(135deg,rgba(2,10,4,.97) 0%,rgba(4,14,8,.97) 30%,rgba(6,26,9,.96) 60%,rgba(4,18,6,.97) 100%);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border-bottom:1px solid transparent;height:68px;display:flex;align-items:center;box-shadow:0 8px 40px rgba(0,0,0,.6),0 0 80px rgba(57,211,83,.04);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);transition:height .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,background .3s ease,transform .35s cubic-bezier(.22,1,.36,1);}
+nav.hidden{transform:translateY(-100%);}
+body{padding-top:68px;}
+nav.scrolled{height:54px;}
+body:has(nav.scrolled){padding-top:54px;}
 nav.scrolled{height:54px;background:linear-gradient(135deg,rgba(2,10,4,.99) 0%,rgba(4,14,8,.99) 100%);box-shadow:0 4px 24px rgba(0,0,0,.8),0 0 40px rgba(57,211,83,.06);}
 nav::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -30%,rgba(57,211,83,.18) 0%,rgba(57,211,83,.06) 40%,transparent 70%);pointer-events:none;z-index:1;}
 nav::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g) 35%,rgba(100,255,130,.9) 50%,var(--g) 65%,transparent);background-size:200% auto;animation:nav-border-flow 6s linear infinite;pointer-events:none;opacity:.75;}
@@ -134,120 +151,100 @@ nav.scrolled .nav-logo-icon{width:34px;height:34px;font-size:16px;}
 ══════════════════════════════════════════════ */
 
 /* -- Enter: slide up + fade with spring easing -- */
-/* ════════════════════════════════════════
-   MORPH TRANSITION ENGINE
-   Technique: a full-screen panel sweeps in from left → pauses at
-   full cover → content swaps → panel sweeps out to right.
-   Only opacity + transform animate → GPU-composited, zero jank.
-════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   CLIP-PATH IRIS MORPH — opens from the clicked nav link origin
+   ─────────────────────────────────────────────────────────────
+   Overlay panel sweeps in as a green-tinted veil, the old view
+   fades out underneath, then the veil peels back revealing the
+   new view already in place. GPU-only: clip-path + opacity.
+═══════════════════════════════════════════════════════════════ */
 
-/* ── Enter: new view rises from below while fading in ── */
-@keyframes vEnter{
-  0%  {opacity:0;transform:translateY(18px);}
-  50% {opacity:1;}
-  100%{opacity:1;transform:translateY(0);}
+/* ── Morph veil: the coloured overlay that opens & closes ── */
+#morph-veil{
+  position:fixed;inset:0;z-index:9995;pointer-events:none;
+  background:linear-gradient(135deg,
+    rgba(4,14,6,.97) 0%,
+    rgba(8,26,12,.97) 40%,
+    rgba(6,18,8,.97) 100%);
+  /* Grid texture inside the veil */
+  background-image:
+    linear-gradient(135deg,rgba(4,14,6,.97),rgba(8,26,12,.97)),
+    linear-gradient(rgba(57,211,83,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(57,211,83,.04) 1px,transparent 1px);
+  background-size:100%,44px 44px,44px 44px;
+  clip-path:circle(0% at var(--ox,50%) var(--oy,50%));
+  will-change:clip-path,opacity;
+  opacity:0;
 }
-/* ── Exit: shrinks up and fades ── */
-@keyframes vExit{
-  0%  {opacity:1;transform:translateY(0) scale(1);}
-  100%{opacity:0;transform:translateY(-8px) scale(1.006);}
-}
-
-/* ── Morph wipe: full-screen panel ── */
-@keyframes morphIn{
-  0%  {transform:translateX(-100%);}
-  100%{transform:translateX(0%);}
-}
-@keyframes morphOut{
-  0%  {transform:translateX(0%);}
-  100%{transform:translateX(100%);}
-}
-/* ── Top progress streak ── */
-@keyframes streakRun{
-  0%  {transform:scaleX(0);transform-origin:left;opacity:1;}
-  50% {transform:scaleX(1);transform-origin:left;opacity:1;}
-  51% {transform-origin:right;}
-  100%{transform:scaleX(0);transform-origin:right;opacity:.5;}
-}
-
-/* Morph panel */
-#view-curtain{
-  position:fixed;inset:0;z-index:9997;pointer-events:none;
-  transform:translateX(-100%);
-  background:linear-gradient(
-    108deg,
-    rgba(4,14,6,1) 0%,
-    rgba(8,26,12,1) 38%,
-    rgba(12,36,16,1) 50%,
-    rgba(6,20,9,1) 62%,
-    rgba(4,12,5,1) 100%
-  );
-  will-change:transform;
-}
-/* Green shimmer on leading edge */
-#view-curtain::before{
-  content:'';position:absolute;top:0;right:0;bottom:0;width:4px;
-  background:linear-gradient(180deg,transparent 0%,var(--g) 30%,rgba(100,255,130,.9) 50%,var(--g) 70%,transparent 100%);
-  box-shadow:0 0 32px 8px rgba(57,211,83,.6),0 0 80px 20px rgba(57,211,83,.25);
-  opacity:0;transition:opacity .06s;
-}
-/* Grid texture on panel */
-#view-curtain::after{
+#morph-veil::before{
   content:'';position:absolute;inset:0;
-  background-image:linear-gradient(rgba(57,211,83,.025) 1px,transparent 1px),
-                   linear-gradient(90deg,rgba(57,211,83,.025) 1px,transparent 1px);
-  background-size:48px 48px;
+  background:radial-gradient(ellipse at var(--ox,50%) var(--oy,50%),
+    rgba(57,211,83,.18) 0%,transparent 55%);
+  opacity:0;transition:opacity .12s ease;
 }
-#view-curtain.phase-in{
-  animation:morphIn .28s cubic-bezier(.65,0,.35,1) forwards;
-}
-#view-curtain.phase-in::before{opacity:1;}
-#view-curtain.phase-out{
-  animation:morphOut .28s cubic-bezier(.65,0,.35,1) forwards;
-}
-/* Trailing edge shimmer on exit */
-#view-curtain.phase-out::before{
-  right:auto;left:0;
-  box-shadow:0 0 32px 8px rgba(57,211,83,.5),0 0 80px 20px rgba(57,211,83,.2);
-  opacity:1;
+#morph-veil.glow::before{ opacity:1; }
+
+/* ── Neon ring that pulses at the origin point ── */
+#morph-ring{
+  position:fixed;width:60px;height:60px;
+  border-radius:50%;pointer-events:none;z-index:9996;
+  border:1.5px solid rgba(57,211,83,.9);
+  box-shadow:0 0 16px rgba(57,211,83,.7),0 0 40px rgba(57,211,83,.3),
+             inset 0 0 12px rgba(57,211,83,.15);
+  transform:translate(-50%,-50%) scale(0);
+  opacity:0;
+  transition:none;
+  will-change:transform,opacity;
 }
 
-/* Top streak */
-#view-curtain-streak{
-  position:fixed;top:0;left:0;right:0;height:2px;z-index:9998;
-  pointer-events:none;transform:scaleX(0);transform-origin:left;
-  background:linear-gradient(90deg,transparent,var(--g),rgba(100,255,130,.95),var(--g),transparent);
-  box-shadow:0 0 16px rgba(57,211,83,.9),0 0 40px rgba(57,211,83,.4);
-  will-change:transform,opacity;opacity:0;
+/* ── Curtain: top-edge neon bar (kept as accent) ── */
+#view-curtain{
+  position:fixed;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--g) 20%,
+    rgba(120,255,150,.95) 50%,var(--g) 80%,transparent);
+  z-index:9997;pointer-events:none;opacity:0;
+  box-shadow:0 0 18px rgba(57,211,83,.9),0 0 50px rgba(57,211,83,.3);
+  will-change:opacity;
+  transition:opacity .08s ease;
 }
-#view-curtain-streak.firing{
-  animation:streakRun .56s cubic-bezier(.65,0,.35,1) forwards;
-}
+#view-curtain.firing{ opacity:1; }
 
+/* ── Flash ── */
 #view-flash{
-  position:fixed;inset:0;z-index:9996;pointer-events:none;opacity:0;
-  background:radial-gradient(ellipse at 50% 48%,rgba(57,211,83,.055) 0%,transparent 55%);
+  position:fixed;inset:0;z-index:9994;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse at var(--ox,50%) 48%,
+    rgba(57,211,83,.09) 0%,transparent 55%);
   transition:opacity .1s ease;
 }
-#view-flash.active{opacity:1;}
+#view-flash.active{ opacity:1; }
 
+/* ── View base ── */
 .view{
   display:none;position:relative;z-index:1;
-  will-change:opacity,transform;
+  will-change:opacity;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
 }
 .view.active{
   display:block;
-  animation:vEnter .36s cubic-bezier(.22,1,.36,1) both;
+  animation:viewReveal .35s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes viewReveal{
+  from{ opacity:0; }
+  to  { opacity:1; }
 }
 .view.exiting{
   display:block;
-  animation:vExit .18s cubic-bezier(.4,0,1,1) forwards;
+  animation:viewHide .16s ease forwards;
   pointer-events:none;
   position:absolute;top:0;left:0;right:0;z-index:2;
 }
+@keyframes viewHide{
+  from{ opacity:1; }
+  to  { opacity:0; }
+}
 
-#page-flash{position:fixed;inset:0;z-index:9995;pointer-events:none;opacity:0;}
+/* ── PAGE FLASH (compat) ── */
+#page-flash{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:0;}
 
 /* ── LAYOUT ── */
 .container{max-width:1140px;margin:0 auto;padding:0 28px;}
@@ -421,20 +418,7 @@ footer.no-gap{margin-top:0;}
 .footer-badge-pill:hover{border-color:rgba(57,211,83,.35);color:var(--g);}
 .footer-badge-pill .dot{width:5px;height:5px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g);flex-shrink:0;}
 
-/* Responsive */
-@media(max-width:860px){
-  .footer-cols{grid-template-columns:1fr 1fr;gap:32px;}
-  .footer-cols>div:first-child{grid-column:1/-1;}
-  .footer-brand-desc{max-width:100%;}
-  .footer-stats-inner{gap:8px;}
-  .footer-stat-sep{display:none;}
-}
-@media(max-width:500px){
-  .footer-cols{grid-template-columns:1fr;}
-  .footer-bottom-row{flex-direction:column;align-items:flex-start;gap:10px;}
-  .footer-stats-strip{padding:16px 20px;}
-  .footer-stat-val{font-size:22px;}
-}
+/* footer responsive handled in main responsive block */
 .dev-card{
   padding:14px 8px 12px;
   border:1px solid var(--border);
@@ -485,7 +469,16 @@ footer.no-gap{margin-top:0;}
 /* ── HERO ── */
 .hero-section{min-height:92vh;min-height:92dvh;display:flex;align-items:center;padding:30px 0 50px;}
 .hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
-.hero-line{height:1px;width:60px;background:linear-gradient(90deg,var(--g),transparent);}
+.hero-line{
+  height:1px;width:80px;
+  background:linear-gradient(90deg,var(--g),rgba(57,211,83,.3),transparent);
+  transform-origin:left center;
+  transform:scaleX(0);
+  opacity:0;
+  transition:transform .55s .1s cubic-bezier(.22,1,.36,1), opacity .3s .1s ease;
+  will-change:transform,opacity;
+  border-radius:1px;
+}
 .hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(68px,12vw,128px);line-height:.88;letter-spacing:.01em;margin-bottom:30px;}
 .hero-title .accent{background:linear-gradient(135deg,var(--g),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:var(--g);}
 .hero-subtitle{font-size:16px;color:var(--muted2);max-width:500px;line-height:1.8;margin-bottom:40px;}
@@ -943,14 +936,7 @@ input,select,textarea{
 .val-banner-title{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#ef5350;letter-spacing:.08em;font-weight:700;text-transform:uppercase;margin-bottom:4px;}
 .val-banner-list{font-size:12px;color:rgba(239,83,80,.8);line-height:1.6;}
 
-@media(max-width:750px){
-  #dash-inner,
-  #view-track>div,
-  #view-submit>div,
-  #view-leaderboard>div,
-  #admin-panel,
-  #admin-login{padding-left:16px!important;padding-right:16px!important;padding-top:28px!important;}
-}
+/* inner page padding handled in main responsive block */
 
 /* ── MOBILE NAV ── */
 .nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border-radius:4px;background:transparent;border:1px solid var(--border);transition:border-color .2s;}
@@ -965,104 +951,184 @@ input,select,textarea{
 .mobile-menu .nav-link{font-size:13px;padding:12px 16px;border-radius:4px;display:block;text-align:left;width:100%;letter-spacing:.06em;}
 
 /* ── RESPONSIVE ── */
-@media(max-width:900px){
-  .grid4{grid-template-columns:repeat(2,1fr);}
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE SYSTEM — PC · Tablet · Mobile
+   Breakpoints: 1200 · 900 · 750 · 480 · 360
+══════════════════════════════════════════════════════════════ */
+
+/* ── 1200px — wide desktop tweak ── */
+@media(max-width:1200px){
+  .container{padding:0 24px;}
 }
 
+/* ── 900px — tablet landscape / small desktop ── */
+@media(max-width:900px){
+  .container{padding:0 20px;}
+  .grid4{grid-template-columns:repeat(2,1fr);}
+  .grid3{grid-template-columns:repeat(2,1fr);}
+  #est-devices{grid-template-columns:repeat(4,1fr) !important;}
+  .footer-cols{grid-template-columns:1fr 1fr;gap:28px;}
+  .footer-cols>div:first-child{grid-column:1/-1;}
+  .footer-brand-desc{max-width:100%;}
+  .footer-stats-inner{gap:8px;}
+  .footer-stat-sep{display:none;}
+  /* Dashboard 2-col stat cards */
+  #view-dashboard .grid4{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ── 750px — tablet portrait / large phone ── */
 @media(max-width:750px){
+  /* Body offset for smaller nav */
+  body{padding-top:60px;}
+
   /* Nav */
+  nav{height:60px;}
+  nav.scrolled{height:52px;}
   .nav-hamburger{display:flex;}
   .nav-links{display:none;}
   .nav-inner{padding:0 16px;}
+  .nav-logo-title{font-size:18px;}
+  .nav-logo-sub{display:none;}
+  .mobile-menu{top:60px;}
 
-  /* Grids */
+  /* Container & section */
+  .container{padding:0 16px;}
+  .section{padding:36px 0;}
+  .section-alt{padding:36px 0;}
+
+  /* Grids → single column */
   .grid2,.grid3,.grid4{grid-template-columns:1fr;}
 
   /* Hero */
-  .hero-section{min-height:auto;padding-bottom:36px;margin-top:40px;}
-  .hero-title{font-size:clamp(52px,14vw,82px);}
-  .hero-subtitle{font-size:14px;margin-bottom:28px;}
-  .hero-cta{gap:10px;margin-bottom:40px;}
-  .hero-cta .btn{flex:1;justify-content:center;min-width:0;}
+  .hero-section{min-height:auto;padding-bottom:36px;}
+  .hero-title{font-size:clamp(46px,13vw,78px);}
+  .hero-subtitle{font-size:13px;margin-bottom:24px;}
+  .hero-cta{flex-direction:column;gap:10px;margin-bottom:36px;}
+  .hero-cta .btn{width:100%;justify-content:center;}
 
-
-
-  /* Sections */
-  .section{padding:48px 0;}
-  .container{padding:0 16px;}
-
-  /* Cards & forms */
-  .card{padding:18px;}
-
-  /* Submit form grid */
-  #view-submit .grid2{grid-template-columns:1fr;}
-  #view-submit .fg[style*="grid-column:1/-1"]{grid-column:1;}
-
-  /* Dashboard */
-  #view-dashboard{padding:28px 16px;}
-  #view-dashboard h2.disp{font-size:38px;}
-  #view-dashboard .grid4{grid-template-columns:repeat(2,1fr);}
-  #view-dashboard .grid2{grid-template-columns:1fr;}
+  /* Cards */
+  .card{padding:18px 16px;}
 
   /* Stat cards */
   .stat-val{font-size:38px;}
+  .stat-lbl{font-size:8px;}
 
-  /* Leaderboard rows */
-  .lb-row{padding:14px 16px;gap:10px;}
+  /* Leaderboard */
+  .lb-row{padding:12px 14px;gap:10px;}
   .lb-avatar{width:32px;height:32px;font-size:12px;}
+  .lb-points{font-size:13px;}
 
-  /* Track / submit page headers */
-  #view-track h2,.disp[style*="font-size:52px"]{font-size:36px;}
-  #view-submit h2.disp{font-size:40px;}
+  /* Submit form */
+  #view-submit .grid2{grid-template-columns:1fr;}
+  #view-submit h2.disp{font-size:36px;}
 
-  /* Buttons bar in track/dashboard */
+  /* Track */
+  #view-track h2{font-size:34px;}
+
+  /* Dashboard */
+  #dash-inner{padding:24px 16px;}
+  #view-dashboard h2.disp{font-size:36px;}
+  #view-dashboard .grid4{grid-template-columns:repeat(2,1fr);}
+  #view-dashboard .grid2{grid-template-columns:1fr;}
+
+  /* Inner page padding */
+  #dash-inner,
+  #view-track>div,
+  #view-submit>div,
+  #view-leaderboard>div,
+  #admin-panel,
+  #admin-login{padding-left:16px!important;padding-right:16px!important;padding-top:24px!important;}
+
+  /* Buttons */
+  .btn{padding:11px 18px;font-size:11.5px;}
   .btn-bar-mobile{flex-direction:column;width:100%;}
   .btn-bar-mobile .btn{width:100%;justify-content:center;}
 
-  /* Progress labels smaller */
+  /* Chips */
+  .chip{font-size:9px;padding:6px 11px;}
+
+  /* Progress labels */
   .prog-lbl{font-size:6px;}
 
-  /* Chips wrap nicely */
-  .chip{font-size:9px;padding:6px 12px;}
-
-  /* Condition row stacks */
+  /* Condition buttons */
   .cond-row{flex-wrap:wrap;gap:8px;}
   .cond-btn{flex:1 1 calc(50% - 8px);padding:11px 4px;font-size:11px;}
 
-  /* Device estimator grid — 4 cols on mobile */
-  #est-devices{grid-template-columns:repeat(4,1fr) !important;gap:7px !important;}
-  .dev-card{padding:10px 4px 9px !important;}
-  .dev-icon{font-size:20px !important;}
-  .dev-lbl{font-size:8px !important;}
-  .dev-pts{font-size:11px !important;}
+  /* Device estimator */
+  #est-devices{grid-template-columns:repeat(4,1fr)!important;gap:7px!important;}
+  .dev-card{padding:10px 4px 9px!important;}
+  .dev-icon{font-size:20px!important;}
+  .dev-lbl{font-size:8px!important;}
+  .dev-pts{font-size:11px!important;}
+  .est-card-inner{padding:20px 16px!important;}
+  #est-val{font-size:40px!important;}
+  #est-result{padding:16px!important;}
 
-  /* Estimator card */
-  .est-card-inner{padding:20px 16px !important;}
-  #est-val{font-size:40px !important;}
-  #est-result{padding:18px !important;}
-
-  /* Admin status buttons */
+  /* Admin */
   .status-action{font-size:9px;padding:4px 8px;}
 
   /* Footer */
-  .footer-inner{justify-content:center;text-align:center;flex-direction:column;align-items:center;}
-  footer{padding:24px 16px;}
+  .footer-cols{grid-template-columns:1fr 1fr;}
+  .footer-cols>div:first-child{grid-column:1/-1;}
+  .footer-body{padding:20px 16px 0;}
+  .footer-stats-strip{padding:14px 16px;}
+  .footer-stat-val{font-size:24px;}
+  .footer-bottom-row{flex-direction:column;align-items:flex-start;gap:10px;}
+  .footer-badges{flex-wrap:wrap;}
+
+  /* Tabs */
+  .tab-btn{font-size:10px;padding:10px 6px;}
 
   /* Toast */
-  #toast{max-width:calc(100vw - 32px);white-space:normal;text-align:center;font-size:11px;bottom:20px;}
-
-  /* Tab row */
-  .tab-btn{font-size:10px;padding:10px 6px;}
+  #toast{max-width:calc(100vw - 28px);white-space:normal;text-align:center;font-size:11px;bottom:16px;}
 }
 
-@media(max-width:380px){
-  .hero-title{font-size:clamp(44px,13vw,68px);}
-  #est-devices{grid-template-columns:repeat(4,1fr) !important;gap:5px !important;}
-  .dev-card{padding:8px 3px 7px !important;}
-  .dev-icon{font-size:18px !important;}
-  .dev-lbl{font-size:7px !important;}
+/* ── 480px — standard phone ── */
+@media(max-width:480px){
+  .container{padding:0 14px;}
+  .section{padding:28px 0;}
+
+  .hero-title{font-size:clamp(40px,12.5vw,64px);}
+  .hero-subtitle{font-size:12.5px;}
+
+  /* Cards tighter */
+  .card{padding:16px 14px;}
+
+  /* Stat cards stacked 2 per row */
+  #view-dashboard .grid4{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .stat-val{font-size:34px;}
+
+  /* Footer full-width single column */
+  .footer-cols{grid-template-columns:1fr;}
+  .footer-stat-val{font-size:20px;}
+  .footer-stat-lbl{font-size:7px;letter-spacing:.08em;}
+
+  /* Device estimator tight */
+  #est-devices{gap:5px!important;}
+  .dev-card{padding:8px 3px 7px!important;}
+  .dev-icon{font-size:18px!important;}
+  .dev-lbl{font-size:7px!important;}
   .dev-pts{display:none;}
-  .stat-val{font-size:32px;}
+
+  /* Leaderboard rank number */
+  .lb-rank{font-size:14px;min-width:20px;}
+
+  /* About section */
+  .about-impact-grid{grid-template-columns:repeat(2,1fr);}
+  .about-diff-grid{grid-template-columns:1fr;}
+  .about-cta-wrap{padding:28px 16px;}
+}
+
+/* ── 360px — small phones (SE, Galaxy A) ── */
+@media(max-width:360px){
+  .container{padding:0 12px;}
+  .hero-title{font-size:clamp(36px,12vw,56px);}
+  .hero-cta .btn{font-size:11px;padding:10px 14px;}
+  .stat-val{font-size:30px;}
+  #est-devices{grid-template-columns:repeat(3,1fr)!important;gap:5px!important;}
+  .nav-logo-title{font-size:16px;}
+  .footer-stat-val{font-size:18px;}
+  .card{padding:14px 12px;}
 }
 
 /* ══════════════════════════════════════════════════
@@ -1095,7 +1161,11 @@ input,select,textarea{
 @keyframes quizSlide  {from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:translateX(0)}}
 @keyframes statPulse  {0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
 @keyframes borderGlow {0%,100%{box-shadow:0 0 12px rgba(57,211,83,.18)}50%{box-shadow:0 0 32px rgba(57,211,83,.5),0 0 60px rgba(57,211,83,.18)}}
-@keyframes scanFast   {from{transform:translateY(-100%)}to{transform:translateY(100vh)}}
+@keyframes scanFast{
+  from{ transform:translate3d(0,-100%,0); opacity:.7; }
+  75% { opacity:.7; }
+  to  { transform:translate3d(0,100vh,0); opacity:0; }
+}
 @keyframes heroChar   {from{opacity:0;transform:translateY(60px) skewY(4deg)}to{opacity:1;transform:translateY(0) skewY(0)}}
 @keyframes marqueeFade{from{opacity:0}to{opacity:1}}
 
@@ -1125,7 +1195,7 @@ input,select,textarea{
 [data-delay="8"]{transition-delay:.64s!important;}
 
 /* ── Nav entrance ── */
-nav{animation:revealDown .55s cubic-bezier(.22,1,.36,1) both;}
+nav{animation:none;}
 .nav-logo{animation:revealLeft .55s .15s cubic-bezier(.22,1,.36,1) both;}
 .nav-links .nav-link{animation:navIn .4s both;}
 .nav-links .nav-link:nth-child(1){animation-delay:.18s}
@@ -1149,29 +1219,37 @@ nav{animation:revealDown .55s cubic-bezier(.22,1,.36,1) both;}
 
 /* Accent word gets a color shimmer on top of the glitch */
 @keyframes heroAccentShimmer {
-  0%,100%{ background-position:200% center; filter:brightness(1); }
-  50%    { background-position:-200% center; filter:brightness(1.25); }
-}
-@keyframes heroAccentGlitch {
-  0%,6%,100%{ filter:brightness(1) hue-rotate(0deg); transform:skewX(0) translateX(0); }
-  1%  { filter:brightness(1.3) hue-rotate(10deg); transform:skewX(-3deg) translateX(2px); }
-  2.5%{ filter:brightness(.8) hue-rotate(-8deg); transform:skewX(2deg) translateX(-3px); }
-  4%  { filter:brightness(1.2) hue-rotate(5deg);  transform:skewX(-1deg); }
-  5%  { filter:brightness(1);  transform:skewX(0); }
+  0%   { background-position: 0% center; }
+  100% { background-position: 400% center; }
 }
 
 /* Word spans */
-.hw { display:inline-block; }
+.hw { display:inline-block; will-change:transform; }
 
-/* Each word: different total duration → never sync → feels organic */
 .hw-recycle  { animation: heroWordGlitch 7.3s  1.2s ease-in-out infinite; }
-.hw-smarter  {
-  animation: heroAccentGlitch 5.9s 0.4s ease-in-out infinite,
-             heroAccentShimmer 4s linear infinite,
-             float 5s 1.5s ease-in-out infinite;
-  background:linear-gradient(90deg,var(--g),var(--accent2),var(--g));
-  background-size:200%;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+/* Float wrapper — transform lives here so background-clip:text on child is never composited away */
+.hw-smarter-float{display:inline-block;animation:float 3.6s ease-in-out infinite;will-change:transform;}
+
+.hw-smarter,
+.hw-smarter.accent {
+  display:inline-block;
+  background: linear-gradient(90deg,
+    var(--g)         0%,
+    var(--accent2)  20%,
+    #ffffff          35%,
+    var(--accent2)  50%,
+    var(--g)         65%,
+    var(--accent2)  80%,
+    var(--g)        100%
+  ) !important;
+  background-size: 400% !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  color: transparent !important;
+  animation: heroAccentShimmer 4s linear infinite !important;
+  will-change: background-position;
+  /* transform/float is on .hw-smarter-float parent — never on this element */
 }
 .hw-live     { animation: heroWordGlitch 9.1s  2.8s ease-in-out infinite; }
 .hw-greener  { animation: heroWordGlitch 6.7s  0.9s ease-in-out infinite; }
@@ -2092,8 +2170,9 @@ button:focus-visible{outline-offset:4px;}
 <div id="page-flash"></div>
 
 <!-- VIEW TRANSITION LAYER -->
+<div id="morph-veil"></div>
+<div id="morph-ring"></div>
 <div id="view-curtain"></div>
-<div id="view-curtain-streak"></div>
 <div id="view-flash"></div>
 
 <!-- TOAST -->
@@ -2131,7 +2210,7 @@ button:focus-visible{outline-offset:4px;}
         <div class="hero-line"></div>
       </div>
       <div class="hero-title anim" style="animation-delay:.1s">
-        <span class="hw hw-recycle">RECYCLE</span><br><span class="hw hw-smarter accent">SMARTER.</span><br><span class="hw hw-live">LIVE</span> <span class="hw hw-greener">GREENER.</span>
+        <span class="hw hw-recycle">RECYCLE</span><br><span class="hw-smarter-float"><span class="hw hw-smarter accent">SMARTER.</span></span><br><span class="hw hw-live">LIVE</span> <span class="hw hw-greener">GREENER.</span>
       </div>
       <p class="hero-subtitle anim" style="animation-delay:.2s">
         Schedule free doorstep pickups, track your environmental impact in real time, and earn rewards for every device you recycle responsibly.
@@ -2960,7 +3039,7 @@ button:focus-visible{outline-offset:4px;}
         <!-- Platform column -->
         <div>
           <div class="footer-col-title">Platform</div>
-          <div class="footer-col-link" onclick="showView('home')">Home</div>
+          <div class="footer-col-link" onclick="showView('home');window.scrollTo({top:0,behavior:'smooth'})">Home</div>
           <div class="footer-col-link" onclick="showView('leaderboard')">Rankings</div>
           <div class="footer-col-link" onclick="showView('auth')">Sign In</div>
           <div class="footer-col-link" onclick="showView('submit')">Schedule Pickup</div>
@@ -3141,12 +3220,31 @@ function showToast(msg,type='success'){
   },3200);
 }
 
-// ── NAV SCROLL SHRINK ──
+// ── NAV SCROLL SHRINK + HIDE ──
 (function(){
-  const nav=document.querySelector('nav');
-  function onScroll(){nav.classList.toggle('scrolled',window.scrollY>40);}
-  window.addEventListener('scroll',onScroll,{passive:true});
-  onScroll();
+  const nav = document.querySelector('nav');
+  let _last = 0;
+  let _ticking = false;
+
+  function update(){
+    const y = window.scrollY;
+    // Compact style when past 40px
+    nav.classList.toggle('scrolled', y > 40);
+    // Hide going down, show going up — only after 80px from top
+    if(y > 80){
+      nav.classList.toggle('hidden', y > _last);
+    } else {
+      nav.classList.remove('hidden');
+    }
+    _last = y;
+    _ticking = false;
+  }
+
+  window.addEventListener('scroll', ()=>{
+    if(!_ticking){ requestAnimationFrame(update); _ticking = true; }
+  }, {passive:true});
+
+  update();
 })();
 
 // ── MOBILE MENU ──
@@ -3161,40 +3259,71 @@ function closeMobileMenu(){
   document.getElementById('nav-hamburger').classList.remove('open');
 }
 
-// ── MORPH TRANSITION ENGINE ──
-/* ════════════════════════════════════════════════════════
-   Timeline (total ~560ms):
-     0ms   – streak fires (560ms full run)
-     0ms   – panel sweeps IN from left  (280ms, cubic ease)
-     260ms – content swaps (panel fully covers screen)
-     280ms – panel sweeps OUT to right  (280ms, cubic ease)
-     lock releases at ~580ms
-════════════════════════════════════════════════════════ */
-const _curtain  = document.getElementById('view-curtain');
-const _streak   = document.getElementById('view-curtain-streak');
-const _flash    = document.getElementById('view-flash');
+// ── NAVIGATION ──
+/* ══════════════════════════════════════════════════════════════
+   CLIP-PATH IRIS MORPH ENGINE
+   ─────────────────────────────────────────────────────────────
+   1. On nav click → capture (ox, oy) from the clicked element
+      centroid, or fallback to screen centre.
+   2. Neon RING pulses at that origin (16ms).
+   3. Morph VEIL clips open from (ox, oy) as a growing circle
+      (Web Animations API, 220ms ease-in).
+   4. At 120ms (mid-open): old view fades out, new view renders
+      underneath; curtain bar lights up briefly.
+   5. Veil clips CLOSED back to (ox, oy) (180ms ease-out) —
+      revealing the new view already in place underneath.
+   6. Everything cleans up; lock releases.
+   Total: ≈ 400ms  |  GPU-only: clip-path + opacity
+══════════════════════════════════════════════════════════════ */
+const _veil    = document.getElementById('morph-veil');
+const _ring    = document.getElementById('morph-ring');
+const _curtain = document.getElementById('view-curtain');
+const _flash   = document.getElementById('view-flash');
 let _viewTransitioning = false;
+let _currentView = null;
+let _lastOrigin  = { x: '50%', y: '50%' }; // fallback origin
 
-function showView(v){
+/* Store click origin whenever user clicks a nav link or footer link */
+function _captureOrigin(e){
+  const el = e.currentTarget || e.target;
+  if(!el) return;
+  const r = el.getBoundingClientRect();
+  const x = Math.round(r.left + r.width  / 2);
+  const y = Math.round(r.top  + r.height / 2);
+  _lastOrigin = { x: x+'px', y: y+'px' };
+  // Position neon ring at origin
+  _ring.style.left = x+'px';
+  _ring.style.top  = y+'px';
+}
+
+/* Attach origin capture to all nav / footer clickable links */
+function _bindOriginListeners(){
+  document.querySelectorAll('[onclick^="showView"], .nav-link, .footer-col-link')
+    .forEach(el => {
+      el.removeEventListener('click', _captureOrigin);
+      el.addEventListener('click', _captureOrigin, { passive:true });
+    });
+}
+
+function showView(v, _originOverride){
   if(_viewTransitioning) return;
 
   const nextEl = document.getElementById('view-'+v);
   if(!nextEl) return;
-
   if(v==='submit' && !currentUser){ showView('auth'); return; }
 
   const currentEl = document.querySelector('.view.active');
   if(currentEl === nextEl) return;
 
-  const hideFooter=['leaderboard','auth','admin'];
-  const footerEl = document.querySelector('footer');
+  const hideFooter = ['leaderboard','auth','admin'];
+  const footerEl   = document.querySelector('footer');
 
-  // Pre-render before panel covers screen
-  if(v==='home') renderHome();
-  if(v==='dashboard' && currentUser) renderDashboard();
-  if(v==='track' && currentUser) loadTrack();
-  if(v==='leaderboard') loadLeaderboard();
-  if(v==='submit') renderSubmitForm();
+  // ── Pre-render content (paint-ready before veil opens) ──
+  if(v==='home')                  renderHome();
+  if(v==='dashboard'&&currentUser) renderDashboard();
+  if(v==='track'&&currentUser)     loadTrack();
+  if(v==='leaderboard')            loadLeaderboard();
+  if(v==='submit')                 renderSubmitForm();
 
   renderNav(v);
   footerEl.classList.toggle('no-gap', hideFooter.includes(v));
@@ -3202,49 +3331,71 @@ function showView(v){
 
   if(!currentEl){
     nextEl.classList.add('active');
+    _currentView = v;
+    setTimeout(_bindOriginListeners, 50);
     return;
   }
 
   _viewTransitioning = true;
+  _currentView = v;
 
-  // 1 — streak + panel sweep IN
-  _streak.classList.remove('firing');
-  void _streak.offsetWidth;
-  _streak.classList.add('firing');
+  const ox = _lastOrigin.x;
+  const oy = _lastOrigin.y;
 
-  _curtain.classList.remove('phase-in','phase-out');
-  void _curtain.offsetWidth;
-  _curtain.classList.add('phase-in');
+  // Stamp CSS origin vars on veil & flash
+  _veil.style.setProperty('--ox', ox);
+  _veil.style.setProperty('--oy', oy);
+  _flash.style.setProperty('--ox', ox);
 
-  // 2 — at full cover: swap content
-  setTimeout(()=>{
-    currentEl.classList.remove('active','exiting');
-    currentEl.style.display = 'none';
+  // ── STEP 1: Neon ring pulse at origin ──
+  _ring.style.cssText += `;left:${ox};top:${oy};transform:translate(-50%,-50%) scale(0);opacity:0;transition:none;`;
+  void _ring.offsetWidth;
+  _ring.style.transition = 'transform .32s cubic-bezier(.22,1,.36,1), opacity .32s ease';
+  _ring.style.transform  = 'translate(-50%,-50%) scale(3.5)';
+  _ring.style.opacity    = '0';
+  setTimeout(()=>{ _ring.style.transition='none'; _ring.style.transform='translate(-50%,-50%) scale(0)'; }, 340);
 
-    nextEl.style.display = 'block';
-    try{ window.scrollTo({top:0,behavior:'instant'}); }catch(e){ window.scrollTo(0,0); }
+  // Compute diagonal for full-cover radius (px)
+  const diag = Math.ceil(Math.sqrt(window.innerWidth**2 + window.innerHeight**2)) + 40;
 
-    // flash
+  // ── STEP 2: Veil clips OPEN (circle grows from origin) ──
+  _veil.style.opacity   = '1';
+  _veil.style.clipPath  = `circle(0px at ${ox} ${oy})`;
+  _veil.classList.add('glow');
+  void _veil.offsetWidth;
+
+  _veil.animate([
+    { clipPath: `circle(0px at ${ox} ${oy})`,     easing: 'cubic-bezier(.4,0,.6,1)' },
+    { clipPath: `circle(${diag}px at ${ox} ${oy})` }
+  ], { duration: 220, fill: 'forwards' }).onfinish = () => {
+
+    // ── STEP 3: Swap content under the veil ──
+    _curtain.classList.add('firing');
     _flash.classList.add('active');
-    setTimeout(()=>_flash.classList.remove('active'), 110);
 
-    // 3 — panel sweeps OUT, new view enters
-    _curtain.classList.remove('phase-in');
-    void _curtain.offsetWidth;
-    _curtain.classList.add('phase-out');
+    currentEl.classList.remove('active');
+    currentEl.style.display = 'none';
+    try{ window.scrollTo({top:0,behavior:'instant'}); }catch(e){ window.scrollTo(0,0); }
+    nextEl.style.display = 'block';
+    nextEl.classList.add('active');
 
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      nextEl.classList.add('active');
-    }));
-
-    // cleanup
     setTimeout(()=>{
-      _curtain.classList.remove('phase-out');
-      _streak.classList.remove('firing');
-      _viewTransitioning = false;
-    }, 300);
+      _flash.classList.remove('active');
+      _curtain.classList.remove('firing');
+    }, 100);
 
-  }, 260);
+    // ── STEP 4: Veil clips CLOSED (circle shrinks back) ──
+    _veil.animate([
+      { clipPath: `circle(${diag}px at ${ox} ${oy})`, easing: 'cubic-bezier(.4,0,.2,1)' },
+      { clipPath: `circle(0px at ${ox} ${oy})` }
+    ], { duration: 200, fill: 'forwards' }).onfinish = () => {
+      _veil.style.opacity  = '0';
+      _veil.style.clipPath = `circle(0px at ${ox} ${oy})`;
+      _veil.classList.remove('glow');
+      _viewTransitioning = false;
+      setTimeout(_bindOriginListeners, 50);
+    };
+  };
 }
 
 function renderNav(active){
@@ -4047,6 +4198,8 @@ renderNav('home');
 renderAuthForm();
 renderHome();
 if(currentUser)showView('dashboard');
+// Bind morph origin listeners to all nav/footer links on first load
+setTimeout(_bindOriginListeners, 80);
 
 /* ════════════════════════════════════════════════
    ANIMATION ENGINE — A to Z
@@ -4253,16 +4406,15 @@ if(currentUser)showView('dashboard');
     card.style.setProperty('--my',y+'%');
   });
 
-  /* ── 8. Hero eyebrow line expand ── */
+  /* ── 8. Hero eyebrow line expand (scaleX — GPU only, no layout) ── */
   const heroLine=document.querySelector('.hero-line');
   if(heroLine){
-    heroLine.style.width='0';
-    heroLine.style.opacity='0';
-    setTimeout(()=>{
-      heroLine.style.transition='width .35s .15s cubic-bezier(.22,1,.36,1), opacity .2s .15s';
-      heroLine.style.width='60px';
-      heroLine.style.opacity='1';
-    },100);
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        heroLine.style.transform='scaleX(1)';
+        heroLine.style.opacity='1';
+      });
+    });
   }
 
   /* ── 9. Marquee chip fade-in on first load ── */
