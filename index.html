@@ -466,6 +466,130 @@ footer.no-gap{margin-top:0;}
 .badge-card:not(.locked):hover{transform:scale(1.05);}
 .badge-emoji{font-size:28px;display:block;margin-bottom:4px;animation:float 3s ease infinite;}
 
+/* ── PREMIUM BADGE CARDS ── */
+@keyframes badgeShine{
+  0%{transform:translateX(-120%) skewX(-18deg);}
+  100%{transform:translateX(220%) skewX(-18deg);}
+}
+@keyframes badgeGlowPulse{
+  0%,100%{box-shadow:0 0 18px var(--badge-glow,rgba(57,211,83,.35)),0 4px 20px rgba(0,0,0,.5);}
+  50%{box-shadow:0 0 34px var(--badge-glow,rgba(57,211,83,.6)),0 8px 30px rgba(0,0,0,.5);}
+}
+@keyframes badgeEmojiFloat{
+  0%,100%{transform:translateY(0) scale(1);}
+  40%{transform:translateY(-5px) scale(1.08);}
+  70%{transform:translateY(-2px) scale(1.03);}
+}
+@keyframes badgeLockShake{
+  0%,100%{transform:rotate(0);}
+  25%{transform:rotate(-6deg);}
+  75%{transform:rotate(6deg);}
+}
+@keyframes badgeUnlockPop{
+  0%{transform:scale(.6) rotate(-10deg);opacity:0;}
+  65%{transform:scale(1.18) rotate(4deg);opacity:1;}
+  100%{transform:scale(1) rotate(0);opacity:1;}
+}
+.dash-badge-card{
+  text-align:center;
+  padding:22px 14px 18px;
+  border-radius:16px;
+  position:relative;overflow:hidden;
+  transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s,border-color .3s;
+  cursor:default;
+}
+/* Unlocked state */
+.dash-badge-card:not(.locked){
+  background:linear-gradient(155deg,rgba(11,30,14,.98),rgba(6,18,9,1));
+  border:1px solid rgba(57,211,83,.32);
+  box-shadow:0 0 18px var(--badge-glow,rgba(57,211,83,.25)),0 4px 20px rgba(0,0,0,.5);
+  animation:badgeGlowPulse 3s ease-in-out infinite;
+}
+.dash-badge-card:not(.locked):hover{
+  transform:translateY(-5px) scale(1.03);
+  border-color:rgba(57,211,83,.6);
+}
+/* Top shimmer line */
+.dash-badge-card:not(.locked)::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--badge-accent,var(--g)),transparent);
+  border-radius:2px;
+}
+/* Shine sweep on hover */
+.dash-badge-card:not(.locked)::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.06) 50%,transparent 60%);
+  transform:translateX(-120%) skewX(-18deg);
+  pointer-events:none;
+}
+.dash-badge-card:not(.locked):hover::after{
+  animation:badgeShine .6s ease forwards;
+}
+/* Locked state */
+.dash-badge-card.locked{
+  background:linear-gradient(155deg,rgba(8,16,10,.8),rgba(4,10,6,.9));
+  border:1px solid rgba(255,255,255,.06);
+  opacity:.55;filter:none;
+}
+/* Emoji */
+.dash-badge-card:not(.locked) .badge-emoji{
+  font-size:36px;display:block;margin-bottom:10px;
+  animation:badgeEmojiFloat 3.5s ease-in-out infinite;
+  filter:drop-shadow(0 0 10px var(--badge-glow,rgba(57,211,83,.5)));
+}
+.dash-badge-card.locked .badge-emoji{
+  font-size:30px;display:block;margin-bottom:10px;
+  opacity:.25;filter:grayscale(1);
+}
+/* Lock icon overlay */
+.badge-lock-icon{
+  position:absolute;top:12px;right:12px;
+  font-size:13px;opacity:.35;
+  animation:badgeLockShake 4s ease-in-out infinite;
+}
+/* Name */
+.badge-name{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:.1em;font-weight:700;
+  margin-bottom:4px;line-height:1.3;
+}
+.dash-badge-card:not(.locked) .badge-name{color:var(--g);}
+.dash-badge-card.locked .badge-name{color:var(--muted);opacity:.5;}
+/* Desc */
+.badge-desc{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  color:var(--muted);letter-spacing:.04em;line-height:1.5;
+  margin-bottom:8px;
+}
+/* Unlocked pill */
+.badge-unlocked-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  color:var(--g);letter-spacing:.08em;
+  background:rgba(57,211,83,.12);border:1px solid rgba(57,211,83,.28);
+  border-radius:20px;padding:3px 10px;
+  animation:badgeUnlockPop .5s cubic-bezier(.22,1,.36,1) both;
+}
+.badge-unlocked-pill::before{content:'✦';font-size:7px;}
+/* Locked pill */
+.badge-locked-pill{
+  display:inline-block;
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  color:var(--muted);letter-spacing:.06em;opacity:.45;
+}
+/* Inner glow bg */
+.badge-inner-glow{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% -10%,var(--badge-glow,rgba(57,211,83,.14)) 0%,transparent 65%);
+}
+/* Tier colors */
+.dash-badge-card[data-tier="bronze"]{--badge-glow:rgba(205,127,50,.3);--badge-accent:#cd7f32;}
+.dash-badge-card[data-tier="silver"]{--badge-glow:rgba(180,180,200,.3);--badge-accent:#c0c0c8;}
+.dash-badge-card[data-tier="gold"]  {--badge-glow:rgba(255,200,50,.35);--badge-accent:#ffd700;}
+.dash-badge-card[data-tier="green"] {--badge-glow:rgba(57,211,83,.35); --badge-accent:#39d353;}
+.dash-badge-card[data-tier="blue"]  {--badge-glow:rgba(41,182,246,.35);--badge-accent:#29b6f6;}
+.dash-badge-card[data-tier="diamond"]{--badge-glow:rgba(171,71,188,.4);--badge-accent:#ab47bc;}
+
 /* ── HERO ── */
 .hero-section{min-height:92vh;min-height:92dvh;display:flex;align-items:center;padding:30px 0 50px;}
 .hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
@@ -723,20 +847,7 @@ input,select,textarea{
   box-shadow:0 0 8px currentColor;
 }
 
-/* Badge cards premium */
-.dash-badge-card{
-  text-align:center;padding:16px 10px 12px;
-  border-radius:12px;border:1px solid var(--border);
-  background:linear-gradient(160deg,var(--card2),var(--card));
-  transition:all .25s;position:relative;overflow:hidden;
-}
-.dash-badge-card:not(.locked):hover{
-  border-color:rgba(57,211,83,.3);
-  transform:translateY(-3px);
-  box-shadow:0 8px 20px rgba(0,0,0,.4);
-}
-.dash-badge-card.locked{opacity:.3;filter:grayscale(1);}
-.dash-badge-card .badge-emoji{animation:float 3s ease-in-out infinite;}
+/* Badge cards premium — see badge section above */
 
 /* ══════════════════════════════════════════
    PREMIUM SCHEDULE PICKUP ENHANCEMENTS
@@ -2087,6 +2198,88 @@ input:focus,select:focus,textarea:focus{
 .about-contact-item:hover{border-color:var(--border2);background:rgba(57,211,83,.09);transform:translateY(-2px);}
 .about-contact-icon{font-size:18px;}
 
+/* ══ ABOUT SECTION — ENTRANCE & SCROLL ANIMATIONS ══ */
+
+/* Hero eyebrow line — starts collapsed, JS expands */
+.about-eyebrow-line{
+  transform-origin:left center;
+  transform:scaleX(0);
+  opacity:0;
+  transition:transform .6s .35s cubic-bezier(.22,1,.36,1), opacity .3s .35s ease;
+}
+.about-eyebrow-line.expanded{transform:scaleX(1);opacity:.4;}
+
+/* Hero chips — staggered entrance */
+.about-chip{opacity:0;transform:translateY(14px) scale(.92);transition:opacity .45s cubic-bezier(.22,1,.36,1),transform .45s cubic-bezier(.22,1,.36,1),background .25s,border-color .25s,box-shadow .25s;}
+.about-chip.chip-in{opacity:1;transform:translateY(0) scale(1);}
+
+/* Hero title & sub entrance */
+.about-hero-title{opacity:0;transform:translateY(22px);transition:opacity .6s .1s cubic-bezier(.22,1,.36,1),transform .6s .1s cubic-bezier(.22,1,.36,1);}
+.about-hero-title.title-in{opacity:1;transform:translateY(0);}
+.about-hero-sub{opacity:0;transform:translateY(16px);transition:opacity .55s .22s cubic-bezier(.22,1,.36,1),transform .55s .22s cubic-bezier(.22,1,.36,1);}
+.about-hero-sub.sub-in{opacity:1;transform:translateY(0);}
+
+/* Impact card number pop-in */
+@keyframes aboutImpactNumIn{
+  from{opacity:0;transform:translateY(18px) scale(.8);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+.about-impact-card.revealed .about-impact-num{
+  animation:aboutImpactNumIn .55s cubic-bezier(.22,1,.36,1) both;
+}
+.about-impact-card.revealed[data-delay="2"] .about-impact-num{animation-delay:.1s;}
+.about-impact-card.revealed[data-delay="3"] .about-impact-num{animation-delay:.2s;}
+.about-impact-card.revealed[data-delay="4"] .about-impact-num{animation-delay:.3s;}
+
+/* Diff card icon bounce on reveal */
+@keyframes aboutIconBounce{
+  0%{transform:scale(.7) rotate(-8deg);opacity:0;}
+  60%{transform:scale(1.15) rotate(4deg);opacity:1;}
+  100%{transform:scale(1) rotate(0);opacity:1;}
+}
+.about-diff-card.revealed .about-diff-icon-wrap{
+  animation:aboutIconBounce .5s cubic-bezier(.22,1,.36,1) both;
+}
+.about-diff-card.revealed[data-delay="2"] .about-diff-icon-wrap{animation-delay:.08s;}
+.about-diff-card.revealed[data-delay="3"] .about-diff-icon-wrap{animation-delay:.16s;}
+
+/* Diff card number pop */
+@keyframes aboutDiffNumPop{
+  from{opacity:0;transform:translateY(12px);}
+  to{opacity:.14;transform:translateY(0);}
+}
+.about-diff-card.revealed .about-diff-num{animation:aboutDiffNumPop .5s .05s cubic-bezier(.22,1,.36,1) both;}
+
+/* Team card avatar rings — pause until revealed */
+.about-team-card:not(.revealed) .about-avatar-ring,
+.about-team-card:not(.revealed) .about-avatar-ring2{animation-play-state:paused;}
+.about-team-card.revealed .about-avatar-ring,
+.about-team-card.revealed .about-avatar-ring2{animation-play-state:running;}
+
+/* Section tags */
+@keyframes aboutTagPop{
+  0%{opacity:0;transform:scale(.7) translateY(8px);}
+  70%{transform:scale(1.08) translateY(-2px);}
+  100%{opacity:1;transform:scale(1) translateY(0);}
+}
+#view-about .tag{opacity:0;}
+#view-about .tag.revealed{opacity:1;animation:aboutTagPop .5s cubic-bezier(.22,1,.36,1) both;}
+
+/* CTA block */
+@keyframes aboutCtaIn{
+  from{opacity:0;transform:translateY(32px) scale(.97);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+.about-cta-wrap[data-reveal].revealed{animation:aboutCtaIn .7s cubic-bezier(.22,1,.36,1) both;}
+
+/* Process rail nodes stagger */
+.about-process-step{opacity:0;transform:translateY(20px);transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1);}
+.about-process-step.step-in{opacity:1;transform:translateY(0);}
+
+/* Glow divider in about */
+#view-about .glow-divider{opacity:0;transition:opacity .8s ease;}
+#view-about .glow-divider.divider-in{opacity:1;}
+
 /* ── Responsive ── */
 @media(max-width:900px){
   .about-impact-grid{grid-template-columns:repeat(2,1fr);}
@@ -2568,7 +2761,6 @@ button:focus-visible{outline-offset:4px;}
             </div>
             <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
               <button class="btn btn-g" onclick="showView('auth')" style="padding:14px 32px;font-size:13px">Join the Movement →</button>
-              <button class="btn btn-o" onclick="showView('submit')" style="padding:14px 24px;font-size:12px">Schedule Pickup</button>
               <button class="btn btn-ghost" onclick="showView('home')" style="padding:14px 24px;font-size:12px">← Back to Home</button>
             </div>
           </div>
@@ -3099,12 +3291,12 @@ const STATUS_FLOW=["Pending","Confirmed","Picked Up","Processing","Completed"];
 const STATUS_COLOR={Pending:"#ffb300",Confirmed:"#29b6f6","Picked Up":"#ab47bc",Processing:"#ff7043",Completed:"#39d353"};
 const COND_MULT={excellent:1.3,good:1,fair:.65,broken:.25};
 const BADGES=[
-  {emoji:"🌱",name:"First Drop",desc:"Submit your first pickup",check:u=>u.totalPickups>=1},
-  {emoji:"⚡",name:"Power Saver",desc:"Recycle 3+ devices",check:u=>u.totalDevices>=3},
-  {emoji:"🔩",name:"Metals Hero",desc:"Recycle 5+ devices",check:u=>u.totalDevices>=5},
-  {emoji:"🌍",name:"Earth Guard",desc:"Recycle 10+ devices",check:u=>u.totalDevices>=10},
-  {emoji:"💎",name:"Pro Recycler",desc:"Earn 500+ points",check:u=>u.points>=500},
-  {emoji:"🏆",name:"Champion",desc:"Earn 1000+ points",check:u=>u.points>=1000}
+  {emoji:"🌱",name:"First Drop",desc:"Submit your first pickup",tier:"green",  check:u=>u.totalPickups>=1},
+  {emoji:"⚡",name:"Power Saver",desc:"Recycle 3+ devices",     tier:"blue",   check:u=>u.totalDevices>=3},
+  {emoji:"🔩",name:"Metals Hero",desc:"Recycle 5+ devices",     tier:"bronze", check:u=>u.totalDevices>=5},
+  {emoji:"🌍",name:"Earth Guard",desc:"Recycle 10+ devices",    tier:"silver", check:u=>u.totalDevices>=10},
+  {emoji:"💎",name:"Pro Recycler",desc:"Earn 500+ points",      tier:"gold",   check:u=>u.points>=500},
+  {emoji:"🏆",name:"Champion",desc:"Earn 1000+ points",         tier:"diamond",check:u=>u.points>=1000}
 ];
 const QUIZ=[
   {q:"What percentage of e-waste is formally recycled globally?",opts:["12%","20%","35%","52%"],ans:1,fact:"Only about 20% of global e-waste is formally recycled."},
@@ -3681,12 +3873,17 @@ function renderDashboard(){
       </div>`).join('');
     if(pickups.length>5)dp.innerHTML+=`<button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="showView('track')">View All ${pickups.length} Pickups →</button>`;
   }
-  document.getElementById('dash-badges').innerHTML=BADGES.map(b=>{
+  document.getElementById('dash-badges').innerHTML=BADGES.map((b,i)=>{
     const unlocked=b.check({points:u.points,totalDevices:u.totalDevices,totalPickups:u.totalPickups});
-    return `<div class="card badge-card ${unlocked?'':'locked'}" title="${b.desc}">
+    return `<div class="dash-badge-card ${unlocked?'':'locked'}" data-tier="${b.tier}" title="${b.desc}" style="animation-delay:${i*.08}s">
+      ${unlocked?'<div class="badge-inner-glow"></div>':''}
+      ${!unlocked?'<span class="badge-lock-icon">🔒</span>':''}
       <span class="badge-emoji">${b.emoji}</span>
-      <div class="mono" style="font-size:9px;color:${unlocked?'var(--g)':'var(--muted)'};letter-spacing:.08em;margin-bottom:2px">${b.name}</div>
-      <div class="mono" style="font-size:8px;color:var(--g);visibility:${unlocked?'visible':'hidden'}">✓ Unlocked</div>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-desc">${b.desc}</div>
+      ${unlocked
+        ? `<span class="badge-unlocked-pill">Unlocked</span>`
+        : `<span class="badge-locked-pill">Locked</span>`}
     </div>`;
   }).join('');
 }
@@ -4490,6 +4687,89 @@ setTimeout(_bindOriginListeners, 80);
     });
     quizObs.observe(quizBox,{childList:true,subtree:true});
   }
+
+  /* ── 16b. About view entrance animations ── */
+  function initAboutAnimations(){
+    const view = document.getElementById('view-about');
+    if(!view) return;
+
+    // Reset so animations replay on each visit
+    view.querySelectorAll('.about-hero-title').forEach(el=>el.classList.remove('title-in'));
+    view.querySelectorAll('.about-hero-sub').forEach(el=>el.classList.remove('sub-in'));
+    view.querySelectorAll('.about-eyebrow-line').forEach(el=>el.classList.remove('expanded'));
+    view.querySelectorAll('.about-chip').forEach(el=>el.classList.remove('chip-in'));
+    view.querySelectorAll('.about-process-step').forEach(el=>el.classList.remove('step-in'));
+    view.querySelectorAll('#view-about .glow-divider').forEach(el=>el.classList.remove('divider-in'));
+    // Remove revealed from about-specific elements so they re-animate
+    view.querySelectorAll('.about-impact-card,.about-diff-card,.about-mv-card,.about-team-card,.about-cta-wrap,.about-tl-card').forEach(el=>{
+      el.classList.remove('revealed');
+      el._aboutCountDone=false;
+    });
+    view.querySelectorAll('#view-about .tag').forEach(el=>el.classList.remove('revealed'));
+
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        // Title + sub
+        view.querySelectorAll('.about-hero-title').forEach(el=>el.classList.add('title-in'));
+        view.querySelectorAll('.about-hero-sub').forEach(el=>el.classList.add('sub-in'));
+        // Eyebrow line
+        setTimeout(()=>view.querySelectorAll('.about-eyebrow-line').forEach(el=>el.classList.add('expanded')),130);
+        // Chips stagger
+        view.querySelectorAll('.about-chip').forEach((el,i)=>setTimeout(()=>el.classList.add('chip-in'),290+i*75));
+        // Glow divider
+        setTimeout(()=>view.querySelectorAll('#view-about .glow-divider').forEach(el=>el.classList.add('divider-in')),520);
+      });
+    });
+
+    // Process steps
+    view.querySelectorAll('.about-process-step').forEach((el,i)=>setTimeout(()=>el.classList.add('step-in'),420+i*95));
+
+    // Scroll reveal & counters
+    setTimeout(()=>{
+      tagReveal();
+      view.querySelectorAll('[data-reveal]').forEach(el=>{
+        const rect=el.getBoundingClientRect();
+        if(rect.top < window.innerHeight+100) el.classList.add('revealed');
+      });
+      // Number counters for impact nums
+      view.querySelectorAll('.about-impact-num').forEach(el=>{
+        const raw=el.textContent.trim();
+        const match=raw.match(/^([\u20b9#]?)(\d+(?:\.\d+)?)(L|M|B|%|\+|hr)?$/);
+        if(!match) return;
+        const prefix=match[1]||'',numStr=match[2],suffix=match[3]||'';
+        const target=parseFloat(numStr);
+        const isFloat=numStr.includes('.');
+        if(isNaN(target)||target===0) return;
+        el._aboutCountDone=false;
+        const obs=new IntersectionObserver(entries=>{
+          entries.forEach(e=>{
+            if(e.isIntersecting&&!el._aboutCountDone){
+              el._aboutCountDone=true;obs.disconnect();
+              const t0=performance.now(),dur=1300;
+              function tick(now){
+                const p=Math.min((now-t0)/dur,1),ease=1-Math.pow(1-p,4);
+                const val=isFloat?(target*ease).toFixed(1):Math.round(target*ease);
+                el.textContent=prefix+val+suffix;
+                if(p<1)requestAnimationFrame(tick);else el.textContent=raw;
+              }
+              requestAnimationFrame(tick);
+            }
+          });
+        },{threshold:.25});
+        obs.observe(el);
+      });
+    },70);
+  }
+
+  (function(){
+    const _sv3=window.showView;
+    window.showView=function(name){
+      if(_sv3)_sv3.call(this,name);
+      if(name==='about')setTimeout(initAboutAnimations,80);
+    };
+    if(document.getElementById('view-about')&&document.getElementById('view-about').classList.contains('active'))
+      setTimeout(initAboutAnimations,130);
+  })();
 
   /* ── 16. Auth page canvas particles ── */
   (function(){
