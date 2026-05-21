@@ -2960,12 +2960,12 @@ button:focus-visible{outline-offset:4px;}
               <select id="f-device" onchange="updateEstPts();updateBrandList();updateStepPills(1)">
                 <option value="">Select your device…</option>
                 <option value="smartphone" data-pts="50">📲 Smartphone (+50 pts)</option>
-                <option value="laptop" data-pts="120">💻 Laptop (+120 pts)</option>
+                <option value="laptop" data-pts="200">💻 Laptop (+200 pts)</option>
                 <option value="tablet" data-pts="80">📱 Tablet (+80 pts)</option>
                 <option value="tv" data-pts="150">📺 Television (+150 pts)</option>
                 <option value="battery" data-pts="60">⚡ Battery / UPS (+60 pts)</option>
-                <option value="printer" data-pts="100">🖨️ Printer (+100 pts)</option>
-                <option value="ac" data-pts="200">❄️ Air Conditioner (+200 pts)</option>
+                <option value="printer" data-pts="30">🖨️ Printer (+30 pts)</option>
+                <option value="ac" data-pts="80">❄️ Air Conditioner (+80 pts)</option>
                 <option value="other" data-pts="40">⚙️ Other Electronics (+40 pts)</option>
               </select>
             </div>
@@ -3049,6 +3049,19 @@ button:focus-visible{outline-offset:4px;}
                 <input type="text" inputmode="text" autocomplete="address-level2" id="f-city" placeholder="e.g. Greater Noida"/>
               </div>
               <div class="fg">
+                <label>Pin Code</label>
+                <input type="text" inputmode="numeric" autocomplete="postal-code" id="f-pincode" placeholder="e.g. 110001" maxlength="6" oninput="this.value=this.value.replace(/[^0-9]/g,'');updateStepPills(3)"/>
+              </div>
+            </div>
+            <div class="submit-row2">
+              <div class="fg">
+                <label>State</label>
+                <select id="f-state" onchange="updateStepPills(3)">
+                  <option value="">Select State</option>
+                  <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option><option>Bihar</option><option>Chhattisgarh</option><option>Goa</option><option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option><option>Jharkhand</option><option>Karnataka</option><option>Kerala</option><option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option><option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option><option>Odisha</option><option>Punjab</option><option>Rajasthan</option><option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option><option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option><option>Andaman and Nicobar Islands</option><option>Chandigarh</option><option>Dadra and Nagar Haveli and Daman and Diu</option><option>Delhi</option><option>Jammu and Kashmir</option><option>Ladakh</option><option>Lakshadweep</option><option>Puducherry</option>
+                </select>
+              </div>
+              <div class="fg">
                 <label>Notes <span style="font-family:'Outfit',sans-serif;text-transform:none;letter-spacing:0;font-size:11px">(optional)</span></label>
                 <input type="text" inputmode="text" id="f-notes" placeholder="Special instructions…"/>
               </div>
@@ -3100,7 +3113,15 @@ button:focus-visible{outline-offset:4px;}
             <div class="sum-divider"></div>
             <div class="summary-row">
               <span class="sum-icon">📍</span>
-              <div><div class="sum-label">Location</div><div class="sum-val" id="sum-city-val">—</div></div>
+              <div><div class="sum-label">City</div><div class="sum-val" id="sum-city-val">—</div></div>
+            </div>
+            <div class="summary-row">
+              <span class="sum-icon">🗺️</span>
+              <div><div class="sum-label">State</div><div class="sum-val" id="sum-state-val">—</div></div>
+            </div>
+            <div class="summary-row">
+              <span class="sum-icon">📮</span>
+              <div><div class="sum-label">Pin Code</div><div class="sum-val" id="sum-pincode-val">—</div></div>
             </div>
             <div class="summary-row">
               <span class="sum-icon">📞</span>
@@ -3279,12 +3300,12 @@ button:focus-visible{outline-offset:4px;}
 // ── DATA ──
 const DEVICES=[
   {id:"smartphone",label:"Smartphone",pts:50,kg:.18,icon:"📲",vlo:1200,vhi:6000},
-  {id:"laptop",label:"Laptop",pts:120,kg:2.1,icon:"💻",vlo:3500,vhi:18000},
+  {id:"laptop",label:"Laptop",pts:200,kg:2.1,icon:"💻",vlo:3500,vhi:18000},
   {id:"tablet",label:"Tablet",pts:80,kg:.65,icon:`<svg width="20" height="27" viewBox="0 0 20 27" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.9" y="0.9" width="18.2" height="25.2" rx="2.8" stroke="currentColor" stroke-width="1.8"/><rect x="3.5" y="3.5" width="13" height="17.5" rx="1" fill="currentColor" opacity="0.13"/><rect x="3.5" y="3.5" width="13" height="17.5" rx="1" stroke="currentColor" stroke-width="1.1"/><circle cx="10" cy="24" r="1.3" fill="currentColor"/><circle cx="10" cy="2.3" r="0.7" fill="currentColor" opacity="0.5"/></svg>`,vlo:1500,vhi:9000},
   {id:"tv",label:"Television",pts:150,kg:8.5,icon:"📺",vlo:1000,vhi:7000},
   {id:"battery",label:"Battery/UPS",pts:60,kg:1.2,icon:"⚡",vlo:800,vhi:3500},
-  {id:"printer",label:"Printer",pts:100,kg:3.8,icon:"🖨️",vlo:500,vhi:3000},
-  {id:"ac",label:"AC Unit",pts:200,kg:12,icon:"❄️",vlo:4000,vhi:15000},
+  {id:"printer",label:"Printer",pts:30,kg:3.8,icon:"🖨️",vlo:500,vhi:3000},
+  {id:"ac",label:"AC Unit",pts:80,kg:12,icon:"❄️",vlo:4000,vhi:15000},
   {id:"other",label:"Other",pts:40,kg:1,icon:"⚙️",vlo:300,vhi:2000}
 ];
 const STATUS_FLOW=["Pending","Confirmed","Picked Up","Processing","Completed"];
@@ -3960,6 +3981,12 @@ function syncSummary(){
   const addr=(document.getElementById('f-address')||{}).value.trim();
   document.getElementById('sum-city-val').textContent=city||(addr?addr.split(',')[0]:'—');
 
+  const pincode=(document.getElementById('f-pincode')||{}).value.trim();
+  document.getElementById('sum-pincode-val').textContent=pincode||'—';
+
+  const state=(document.getElementById('f-state')||{}).value.trim();
+  document.getElementById('sum-state-val').textContent=state||'—';
+
   const phone=(document.getElementById('f-phone')||{}).value.trim();
   document.getElementById('sum-phone-val').textContent=phone||'—';
 
@@ -3980,7 +4007,7 @@ function syncSummary(){
 
 // wire live sync to all fields
 document.addEventListener('input',e=>{
-  if(['f-device','f-brand','f-model','f-qty','f-phone','f-city','f-address'].includes(e.target.id)) syncSummary();
+  if(['f-device','f-brand','f-model','f-qty','f-phone','f-city','f-address','f-pincode','f-state'].includes(e.target.id)) syncSummary();
   // Clear error state on user input
   if(['f-phone','f-address','f-city'].includes(e.target.id) && e.target.value.trim()){
     clearFieldState(e.target.id);
@@ -4127,7 +4154,7 @@ function setFieldOk(id){
 function submitPickup(){
   if(!currentUser){showView('auth');return;}
   // Clear previous states
-  ['f-device','f-phone','f-address','f-city'].forEach(id=>{
+  ['f-device','f-phone','f-address','f-city','f-pincode','f-state'].forEach(id=>{
     clearFieldState(id);
     document.getElementById(id)?.closest('.submit-section')?.classList.remove('has-error');
   });
@@ -4142,6 +4169,8 @@ function submitPickup(){
     phone:document.getElementById('f-phone').value.trim(),
     address:document.getElementById('f-address').value.trim(),
     city:document.getElementById('f-city').value.trim(),
+    pincode:document.getElementById('f-pincode').value.trim(),
+    state:(document.getElementById('f-state')||{}).value.trim(),
     notes:document.getElementById('f-notes').value.trim()
   };
 
@@ -4173,6 +4202,19 @@ function submitPickup(){
     setFieldError('f-city','City name is required');
     errors.push('City');
   } else { setFieldOk('f-city'); }
+
+  if(!form.pincode){
+    setFieldError('f-pincode','Pin code is required');
+    errors.push('Pin code');
+  } else if(!/^\d{6}$/.test(form.pincode)){
+    setFieldError('f-pincode','Enter a valid 6-digit pin code');
+    errors.push('Valid pin code');
+  } else { setFieldOk('f-pincode'); }
+
+  if(!form.state){
+    setFieldError('f-state','Please select a state');
+    errors.push('State');
+  } else { setFieldOk('f-state'); }
 
   if(errors.length>0){
     const banner=document.getElementById('submit-val-banner');
